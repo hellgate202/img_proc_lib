@@ -19,7 +19,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       video_o.tid    <= '0;
     end
   else
-    if( video_o.tready )
+    if( video_i.tready )
       begin
         video_o.tvalid <= video_i.tvalid;
         video_o.tlast  <= video_i.tlast;
@@ -30,16 +30,17 @@ always_ff @( posedge clk_i, posedge rst_i )
         video_o.tid    <= video_i.tid;
       end
 
-assign video_i.tready = video_o.tready;
+assign video_i.tready = !video_o.tvalid || video_o.tready;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     video_o.tdata <= '0;
   else
-    begin
-      video_o.tdata[PX_WIDTH - 1 : 0]                <= video_i.tdata[PX_WIDTH - 1 : 0];
-      video_o.tdata[2 * PX_WIDTH - 1 : PX_WIDTH]     <= video_i.tdata[PX_WIDTH - 1 : 0];
-      video_o.tdata[3 * PX_WIDTH - 1 : 2 * PX_WIDTH] <= video_i.tdata[PX_WIDTH - 1 : 0]; 
-    end
+    if( video_i.tready )
+      begin
+        video_o.tdata[PX_WIDTH - 1 : 0]                <= video_i.tdata[PX_WIDTH - 1 : 0];
+        video_o.tdata[2 * PX_WIDTH - 1 : PX_WIDTH]     <= video_i.tdata[PX_WIDTH - 1 : 0];
+        video_o.tdata[3 * PX_WIDTH - 1 : 2 * PX_WIDTH] <= video_i.tdata[PX_WIDTH - 1 : 0]; 
+      end
 
 endmodule
