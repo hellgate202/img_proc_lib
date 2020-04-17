@@ -1,5 +1,6 @@
-module video_stream_to_window #(
+module window_buf #(
   parameter int TDATA_WIDTH   = 32,
+  parameter int PX_WIDTH      = 30,
   parameter int WIN_SIZE      = 5,
   parameter int MAX_LINE_SIZE = 1920
 )(
@@ -13,10 +14,10 @@ localparam int BUF_CNT_W  = $clog2( WIN_SIZE );
 localparam int SHIFT_POOL = ( WIN_SIZE + 1 ) * 2;
 
 typedef struct packed {
-  logic [TDATA_WIDTH - 1 : 0] tdata;
-  logic                       tvalid;
-  logic                       tlast;
-  logic                       tuser;
+  logic [PX_WIDTH - 1 : 0] tdata;
+  logic                    tvalid;
+  logic                    tlast;
+  logic                    tuser;
 } axi4_stream_word_t;
 
 axi4_stream_word_t video_i_d1;
@@ -27,7 +28,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( video_i.tready )
       begin
-        video_i_d1.tdata  <= video_i.tdata;
+        video_i_d1.tdata  <= video_i.tdata[PX_WIDTH - 1 : 0];
         video_i_d1.tvalid <= video_i.tvalid;
         video_i_d1.tlast  <= video_i.tlast;
         video_i_d1.tuser  <= video_i.tuser;
@@ -164,7 +165,8 @@ generate
 
       line_buf #(
         .MAX_LINE_SIZE ( MAX_LINE_SIZE      ),
-        .TDATA_WIDTH   ( TDATA_WIDTH        )
+        .TDATA_WIDTH   ( TDATA_WIDTH        ),
+        .PX_WIDTH      ( PX_WIDTH           )
       ) line_buf_inst (
         .clk_i         ( clk_i              ),
         .rst_i         ( rst_i              ),
@@ -174,6 +176,12 @@ generate
         .video_o       ( post_line_buf      ),
         .empty_o       (                    ),
         .unread_o      ( unread_from_buf[i] )
+      );
+
+      assign data_from_buf.tdata  = post_line_buf.tdata[PX_WIDTH - 1 : 0];
+      assign data_from_buf.tvalid = post_line_buf.tvalid;
+      assign data_from_buf.tlast  = post_line_buf.tlast;
+      assign data_from_buf.tuser  = post_line_buf.tuser;
     end
 endgenerate
 
@@ -192,8 +200,8 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 always_comb
   begin
-    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( inact_pos + 1'b1 ) * TDATA_WIDTH;
-    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( inact_pos + 1'b1 ) * TDATA_WIDTH;
+    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( inact_pos + 1'b1 ) * PX_WIDTH;
+    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( inact_pos + 1'b1 ) * PX_WIDTH;
   end
 
 assign data_to_shift_reg   = shifted_data_from_buf[WIN_SIZE - 1 : 0];
@@ -217,7 +225,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( post_line_buf_tready )
       for( int y = 0; y < WIN_SIZE; y++ )
         for( int x = 0; x < WIN_SIZE; x++ )
-          window_data_o.tdata[( y * WIN_SIZE + x + 1 ) * TDATA_WIDTH - 1 -: TDATA_WIDTH] <= data_shift_reg[y][x].tdata;
+          window_data_o.tdata[( y * WIN_SIZE + x + 1 ) * PX_WIDTH - 1 -: PX_WIDTH] <= data_shift_reg[y][x].tdata;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

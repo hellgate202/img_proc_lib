@@ -1,6 +1,7 @@
 module line_buf #(
   parameter int MAX_LINE_SIZE = 1920,
-  parameter int TDATA_WIDTH   = 32
+  parameter int TDATA_WIDTH   = 32,
+  parameter int PX_WIDTH      = 30
 )(
   input                 clk_i,
   input                 rst_i,
@@ -16,7 +17,7 @@ localparam int ADDR_WIDTH = $clog2( MAX_LINE_SIZE + 1 );
 
 assign video_i.tready = !line_locked;
 
-logic [TDATA_WIDTH - 1 : 0] tdata_d1;
+logic [PX_WIDTH - 1 : 0]    tdata_d1;
 logic                       tvalid_d1;
 logic                       tlast_d1;
 logic                       tuser_d1;
@@ -29,6 +30,7 @@ logic                       was_sof;
 logic                       unread;
 logic                       rd_req;
 logic                       line_locked;
+logic [PX_WIDTH - 1 : 0]    buf_data;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -46,7 +48,7 @@ always_ff @( posedge clk_i, posedge rst_i )
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      tdata_d1  <= TDATA_WIDTH'( 0 );
+      tdata_d1  <= PX_WIDTH'( 0 );
       tvalid_d1 <= 1'b0;
       tlast_d1  <= 1'b0;
       tuser_d1  <= 1'b0;
@@ -192,21 +194,22 @@ always_ff @( posedge clk_i, posedge rst_i )
       rd_req <= pop_line_i && !empty;
 
 dual_port_ram #(
-  .DATA_WIDTH ( TDATA_WIDTH   ),
-  .ADDR_WIDTH ( ADDR_WIDTH    )
+  .DATA_WIDTH ( PX_WIDTH   ),
+  .ADDR_WIDTH ( ADDR_WIDTH )
 ) buf_ram (
-  .wr_clk_i   ( clk_i         ),
-  .wr_addr_i  ( wr_ptr        ),
-  .wr_data_i  ( tdata_d1      ),
-  .wr_i       ( tvalid_d1     ),
-  .rd_clk_i   ( clk_i         ),
-  .rd_addr_i  ( rd_ptr        ),
-  .rd_data_o  ( video_o.tdata ),
-  .rd_i       ( 1'b1          )
+  .wr_clk_i   ( clk_i      ),
+  .wr_addr_i  ( wr_ptr     ),
+  .wr_data_i  ( tdata_d1   ),
+  .wr_i       ( tvalid_d1  ),
+  .rd_clk_i   ( clk_i      ),
+  .rd_addr_i  ( rd_ptr     ),
+  .rd_data_o  ( buf_data   ),
+  .rd_i       ( 1'b1       )
 );
 
-assign empty_o  = empty;
-assign unread_o = unread;
+assign empty_o       = empty;
+assign unread_o      = unread;
+assign video_o.tdata = TDATA_WIDTH'( buf_data );
 
 
 endmodule
