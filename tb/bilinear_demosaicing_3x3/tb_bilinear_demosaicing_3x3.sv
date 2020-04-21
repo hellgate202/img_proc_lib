@@ -5,15 +5,15 @@
 
 module tb_bilinear_demosaicing_3x3;
 
-parameter int CLK_T         = 6734;
-parameter int RAW_PX_WIDTH  = 10;
-parameter int FRAME_RES_X   = 1920;
-parameter int FRAME_RES_Y   = 1080;
-parameter int TOTAL_X       = 2200;
-parameter int TOTAL_Y       = 1125;
-parameter int FILE_PATH     = "../img.hex";
-parameter int RANDOM_TVALID = 0;
-parameter int RANDOM_TREADY = 0;
+parameter int    CLK_T         = 6734;
+parameter int    RAW_PX_WIDTH  = 10;
+parameter int    FRAME_RES_X   = 1920;
+parameter int    FRAME_RES_Y   = 1080;
+parameter int    TOTAL_X       = 2200;
+parameter int    TOTAL_Y       = 1125;
+parameter string FILE_PATH     = "../../lib/axi4_lib/scripts/img.hex";
+parameter int    RANDOM_TVALID = 0;
+parameter int    RANDOM_TREADY = 0;
 
 bit clk;
 bit rst;
@@ -98,7 +98,7 @@ initial
   begin
     video_source = new( raw_video );
     video_sink   = new( .axi4_stream_if_v ( rgb_video    ),
-                        .rd_data_mbx      ( rx_video_mbx ) );
+                        .rx_data_mbx      ( rx_video_mbx ) );
     fork
       clk_gen();
       apply_rst();
