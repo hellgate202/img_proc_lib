@@ -58,7 +58,7 @@ logic                                                   read_done;
 assign video_i.tready = pre_line_buf_tready[wr_act_pos];
 
 assign push_data  = video_i_d1.tvalid;
-assign read_done  = data_to_shift_reg[WIN_SIZE - 1].tlast;
+assign read_done  = data_shift_reg[0][0].tlast && post_line_buf_tready;
 assign read_ready = unread_to_shift_reg[WIN_SIZE - 1];
 
 assign post_line_buf_tready = window_data_o.tready || !window_data_o.tvalid;
@@ -245,6 +245,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     window_data_o.tlast <= 1'b0;
   else
+    if( post_line_buf_tready )
     window_data_o.tlast <= data_shift_reg[WIN_SIZE - 1][WIN_SIZE - 1].tlast;
 
 always_ff @( posedge clk_i, posedge rst_i )

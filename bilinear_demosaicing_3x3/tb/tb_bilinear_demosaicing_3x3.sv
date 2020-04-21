@@ -13,7 +13,7 @@ parameter int    TOTAL_X         = 2200;
 parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
 parameter int    RANDOM_TVALID   = 0;
-parameter int    RANDOM_TREADY   = 0;
+parameter int    RANDOM_TREADY   = 1;
 parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 3 * 8;
@@ -102,6 +102,11 @@ task automatic video_recorder();
       if( rx_video_mbx.num() > 0 )
         begin
           rx_video_mbx.get( rx_bytes );
+          if( rx_bytes.size() != ( ( FRAME_RES_X - 2 ) * ( RGB_TDATA_WIDTH / 8 ) ) )
+            begin
+              $display( "Wrong size of the line: %0d. Should be %0d", rx_bytes.size(), ( FRAME_RES_X - 2 ) * ( RGB_TDATA_WIDTH / 8 ) );
+              $stop();
+            end 
           while( rx_bytes.size() > 0 )
             begin
               for( int i = 0; i < ( RGB_TDATA_WIDTH / 8 ); i++ )

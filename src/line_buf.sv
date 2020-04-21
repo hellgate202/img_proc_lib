@@ -29,6 +29,7 @@ logic                       unread;
 logic                       rd_req;
 logic                       line_locked;
 logic [PX_WIDTH - 1 : 0]    buf_data;
+logic                       rd_mem;
 
 assign video_i.tready = !line_locked;
 
@@ -142,7 +143,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       video_o.tlast <= 1'b0;
     else
-      if( read_in_progress && rd_ptr == ( line_size - 1'b1 ) )
+      if( read_in_progress && rd_ptr == ( line_size - 1'b1 ) && video_o.tready )
         video_o.tlast <= 1'b1;
       else
         if( video_o.tready )
@@ -196,6 +197,8 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       rd_req <= pop_line_i && !empty;
 
+assign rd_mem = video_o.tready || pop_line_i;
+
 dual_port_ram #(
   .DATA_WIDTH ( PX_WIDTH   ),
   .ADDR_WIDTH ( ADDR_WIDTH )
@@ -207,7 +210,7 @@ dual_port_ram #(
   .rd_clk_i   ( clk_i      ),
   .rd_addr_i  ( rd_ptr     ),
   .rd_data_o  ( buf_data   ),
-  .rd_i       ( 1'b1       )
+  .rd_i       ( rd_mem     )
 );
 
 assign empty_o       = empty;
