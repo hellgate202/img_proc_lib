@@ -24,7 +24,7 @@ axi4_stream_if #(
   .TDATA_WIDTH ( 16   ),
   .TID_WIDTH   ( 1    ),
   .TDEST_WIDTH ( 1    ),
-  .TKEEP_WIDTH ( 1    )
+  .TUSER_WIDTH ( 1    )
 ) raw_video (
   .aclk        ( clk  ),
   .aresetn     ( !rst )
@@ -34,13 +34,17 @@ axi4_stream_if #(
   .TDATA_WIDTH ( 32   ),
   .TID_WIDTH   ( 1    ),
   .TDEST_WIDTH ( 1    ),
-  .TKEEP_WIDTH ( 1    )
+  .TUSER_WIDTH ( 1    )
 ) rgb_video (
   .aclk        ( clk  ),
   .aresetn     ( !rst )
 );
 
 demosaicing_ctrl_if demosaicing_ctrl();
+
+assign demosaicing_ctrl.en                = 1'b1;
+assign demosaicing_ctrl.first_px_is_odd   = 1'b1;
+assign demosaicing_ctrl.first_line_is_odd = 1'b1;
 
 AXI4StreamVideoSource #(
   .PX_WIDTH    ( RAW_PX_WIDTH ),
@@ -85,7 +89,7 @@ bilinear_demosaicing_3x3 #(
 ) DUT (
   .clk_i              ( clk              ),
   .rst_i              ( rst              ),
-  .demosaicing_ctrl_i ( demosaicing_ctrl ),
+  .demosaicing_ctrl_i ( demosaicing_ctrl.app ),
   .raw_video_i        ( raw_video        ),
   .rgb_video_o        ( rgb_video        )
 );

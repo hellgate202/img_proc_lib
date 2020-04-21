@@ -15,8 +15,6 @@ module line_buf #(
 
 localparam int ADDR_WIDTH = $clog2( MAX_LINE_SIZE + 1 );
 
-assign video_i.tready = !line_locked;
-
 logic [PX_WIDTH - 1 : 0]    tdata_d1;
 logic                       tvalid_d1;
 logic                       tlast_d1;
@@ -31,6 +29,8 @@ logic                       unread;
 logic                       rd_req;
 logic                       line_locked;
 logic [PX_WIDTH - 1 : 0]    buf_data;
+
+assign video_i.tready = !line_locked;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -119,7 +119,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( pop_line_i && !empty )
         rd_ptr <= ADDR_WIDTH'( 0 );
       else
-        if( read_in_progress %% video_o.tready )
+        if( read_in_progress && video_o.tready )
           rd_ptr <= rd_ptr + 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )

@@ -1,0 +1,7 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../bilinear_demosaicing_3x3/src/demosaicing_ctrl_if.sv
+../../ip/dual_port_ram/src/dual_port_ram.sv
+../../src/line_buf.sv
+../../src/window_buf.sv
+../../bilinear_demosaicing_3x3/src/bilinear_demosaicing_3x3.sv
+./tb_bilinear_demosaicing_3x3.sv

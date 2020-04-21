@@ -61,7 +61,7 @@ assign push_data  = video_i_d1.tvalid;
 assign read_done  = data_to_shift_reg[WIN_SIZE - 1].tlast;
 assign read_ready = unread_to_shift_reg[WIN_SIZE - 1];
 
-assign post_line_buf_tready = video_o.tready || !video_o.tvalid;
+assign post_line_buf_tready = window_data_o.tready || !window_data_o.tvalid;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -84,10 +84,10 @@ always_ff @( posedge clk_i, posedge rst_i )
       wr_act_pos <= '0;
     else
       if( push_data && video_i_d1.tvalid && video_i_d1.tlast && video_i.tready ) 
-        if( act_pos == WIN_SIZE )
+        if( wr_act_pos == WIN_SIZE )
           wr_act_pos <= '0;
         else
-          wr_act_pos <= act_pos + 1'b1;
+          wr_act_pos <= wr_act_pos + 1'b1;
 
 always_comb
   for( int i = 0; i <= WIN_SIZE; i++ )
@@ -178,10 +178,10 @@ generate
         .unread_o      ( unread_from_buf[i] )
       );
 
-      assign data_from_buf.tdata  = post_line_buf.tdata[PX_WIDTH - 1 : 0];
-      assign data_from_buf.tvalid = post_line_buf.tvalid;
-      assign data_from_buf.tlast  = post_line_buf.tlast;
-      assign data_from_buf.tuser  = post_line_buf.tuser;
+      assign data_from_buf[i].tdata  = post_line_buf.tdata[PX_WIDTH - 1 : 0];
+      assign data_from_buf[i].tvalid = post_line_buf.tvalid;
+      assign data_from_buf[i].tlast  = post_line_buf.tlast;
+      assign data_from_buf[i].tuser  = post_line_buf.tuser;
     end
 endgenerate
 
@@ -200,8 +200,8 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 always_comb
   begin
-    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( inact_pos + 1'b1 ) * PX_WIDTH;
-    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( inact_pos + 1'b1 ) * PX_WIDTH;
+    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( rd_inact_pos + 1'b1 ) * PX_WIDTH;
+    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( rd_inact_pos + 1'b1 ) * PX_WIDTH;
   end
 
 assign data_to_shift_reg   = shifted_data_from_buf[WIN_SIZE - 1 : 0];
@@ -250,6 +250,6 @@ always_ff @( posedge clk_i, posedge rst_i )
     window_data_o.tuser <= 1'b0;
   else
     if( post_line_buf_tready )
-      window_data_o <= data_shift_reg[0][WIN_SIZE - 1].tuser;
+      window_data_o.tuser <= data_shift_reg[0][WIN_SIZE - 1].tuser;
 
 endmodule
