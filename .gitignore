@@ -1,0 +1,7 @@
+*.swp
+tags
+img.hex
+rx_img.hex
+work/
+vsim.wlf
+transcript
