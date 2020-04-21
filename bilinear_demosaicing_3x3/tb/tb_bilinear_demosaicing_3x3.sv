@@ -103,7 +103,10 @@ initial
       clk_gen();
       apply_rst();
     join_none
-    repeat( 1000 )
+    repeat( 10 )
+      @( posedge clk );
+    video_source.run();
+    repeat( 10_000_000 )
       @( posedge clk );
     $stop();
   end

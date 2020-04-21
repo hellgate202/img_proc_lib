@@ -155,8 +155,11 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       was_sof <= 1'b0;
     else
-      if( tvalid_d1 )
-        was_sof <= tuser_d1;
+      if( tvalid_d1 && tuser_d1 )
+        was_sof <= 1'b1;
+      else
+        if( video_o.tvalid && video_o.tready )
+          was_sof <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

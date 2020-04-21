@@ -47,7 +47,7 @@ logic                                                   read_ready;
 logic [WIN_SIZE : 0]                                    pre_line_buf_tready;
 logic                                                   post_line_buf_tready;
 axi4_stream_word_t [WIN_SIZE : 0]                       data_from_buf;
-axi4_stream_word_t [SHIFT_POOL : 0]                     shifted_data_from_buf;
+axi4_stream_word_t [SHIFT_POOL - 1 : 0]                 shifted_data_from_buf;
 axi4_stream_word_t [WIN_SIZE - 1 : 0]                   data_to_shift_reg;
 logic [WIN_SIZE : 0]                                    unread_from_buf;
 logic [SHIFT_POOL : 0]                                  shifted_unread_from_buf;
@@ -130,11 +130,14 @@ always_ff @( posedge clk_i, posedge rst_i )
         end
 
 always_comb
-  for( int i = 0; i <= WIN_SIZE; i++ )
-    if( active_flush_buf[i] && read_done )
-      flush_buf[i] = 1'b1;
-    else
-      flush_buf[i] = 1'b0;
+  if( video_i.tdata && video_i.tuser )
+    flush_buf <= '1;
+  else
+    for( int i = 0; i <= WIN_SIZE; i++ )
+      if( active_flush_buf[i] && read_done )
+        flush_buf[i] = 1'b1;
+      else
+        flush_buf[i] = 1'b0;
 
 genvar i;
 
@@ -200,8 +203,8 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 always_comb
   begin
-    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( rd_inact_pos + 1'b1 ) * PX_WIDTH;
-    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( rd_inact_pos + 1'b1 ) * PX_WIDTH;
+    shifted_data_from_buf   = { 2{ data_from_buf } } >> ( rd_inact_pos + 1'b1 ) * $bits(axi4_stream_word_t);
+    shifted_unread_from_buf = { 2{ unread_from_buf } } >> ( rd_inact_pos + 1'b1 );
   end
 
 assign data_to_shift_reg   = shifted_data_from_buf[WIN_SIZE - 1 : 0];
@@ -213,7 +216,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( post_line_buf_tready )
       begin
-        data_shift_reg[WIN_SIZE - 1]   <= data_to_shift_reg;
+        data_shift_reg[WIN_SIZE - 1] <= data_to_shift_reg;
         for( int i = 0; i < ( WIN_SIZE - 1 ); i++ )
           data_shift_reg[i]   <= data_shift_reg[i + 1];
       end
@@ -232,24 +235,23 @@ always_ff @( posedge clk_i, posedge rst_i )
     window_data_o.tvalid <= 1'b0;
   else
     if( post_line_buf_tready )
-      if( !data_shift_reg[0][0].tvalid )
+      if( !data_shift_reg[WIN_SIZE - 1][0].tvalid )
         window_data_o.tvalid <= 1'b0;
       else
-        if( data_shift_reg[0][WIN_SIZE - 1] )
+        if( data_shift_reg[0][0].tvalid )
           window_data_o.tvalid <= 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     window_data_o.tlast <= 1'b0;
   else
-    if( post_line_buf_tready )
-      window_data_o.tlast <= data_to_shift_reg[0].tlast;
+    window_data_o.tlast <= data_shift_reg[WIN_SIZE - 1][WIN_SIZE - 1].tlast;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     window_data_o.tuser <= 1'b0;
   else
     if( post_line_buf_tready )
-      window_data_o.tuser <= data_shift_reg[0][WIN_SIZE - 1].tuser;
+      window_data_o.tuser <= data_shift_reg[WIN_SIZE - 1][0].tuser;
 
 endmodule
