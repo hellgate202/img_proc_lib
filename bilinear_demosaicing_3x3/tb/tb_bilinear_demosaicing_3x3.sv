@@ -12,7 +12,7 @@ parameter int    FRAME_RES_Y     = 1080;
 parameter int    TOTAL_X         = 2200;
 parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
-parameter int    RANDOM_TVALID   = 0;
+parameter int    RANDOM_TVALID   = 1;
 parameter int    RANDOM_TREADY   = 1;
 parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
