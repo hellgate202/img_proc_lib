@@ -1,21 +1,18 @@
 interface demosaicing_ctrl_if;
 
-logic en;
-logic first_px_is_odd;
-logic first_line_is_odd;
+logic         en;
+logic [1 : 0] pattern;
 
 modport csr
 (
   output en,
-  output first_px_is_odd,
-  output first_line_is_odd
+  output pattern
 );
 
 modport app
 (
   input en,
-  input first_px_is_odd,
-  input first_line_is_odd
+  input pattern
 );
 
 endinterface

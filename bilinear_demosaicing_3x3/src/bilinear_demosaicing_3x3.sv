@@ -22,6 +22,11 @@ localparam WIN_TDATA_WIDTH = WIN_WIDTH % 8 ?
                             ( WIN_WIDTH / 8 + 1 ) * 8 :
                             WIN_WIDTH;
 
+localparam bit [1 : 0] GBRG = 2'b00;
+localparam bit [1 : 0] BGGR = 2'b01;
+localparam bit [1 : 0] GRBG = 2'b10;
+localparam bit [1 : 0] RGGB = 2'b11;
+
 logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][RAW_PX_WIDTH - 1 : 0] win_data;
 logic [RAW_PX_WIDTH : 0]                                         g_in_rb_half_sum_0;
 logic [RAW_PX_WIDTH : 0]                                         g_in_rb_half_sum_1;
@@ -45,6 +50,11 @@ logic                                                            odd_line_d1, od
 logic                                                            win_data_val_d1, win_data_val_d2;
 logic                                                            win_line_end_d1, win_line_end_d2;
 logic                                                            win_frame_start_d1, win_frame_start_d2;
+logic                                                            first_px_is_odd;
+logic                                                            first_line_is_odd;
+
+assign first_px_is_odd   = demosaicing_ctrl_i.pattern == RGGB || demosaicing_ctrl_i.pattern == GBRG;
+assign first_line_is_odd = demosaicing_ctrl_i.pattern == RGGB || demosaicing_ctrl_i.pattern == GRBG;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( WIN_TDATA_WIDTH ),
@@ -77,11 +87,11 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( win_stream.tready && win_stream.tvalid )
       if( win_stream.tuser )
-        odd_px_reg <= demosaicing_ctrl_i.first_px_is_odd;
+        odd_px_reg <= first_px_is_odd;
       else
         odd_px_reg <= !odd_px_reg;
 
-assign odd_px = win_stream.tvalid && win_stream.tuser ? !demosaicing_ctrl_i.first_px_is_odd :
+assign odd_px = win_stream.tvalid && win_stream.tuser ? !first_px_is_odd :
                                                         odd_px_reg;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -89,12 +99,12 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( win_stream.tvalid && win_stream.tready )
       if( win_stream.tuser )
-        odd_line_reg <= !demosaicing_ctrl_i.first_line_is_odd;
+        odd_line_reg <= !first_line_is_odd;
       else
         if( win_stream.tlast )
           odd_line_reg <= !odd_line_reg;
 
-assign odd_line = win_stream.tvalid && win_stream.tuser ? !demosaicing_ctrl_i.first_line_is_odd :
+assign odd_line = win_stream.tvalid && win_stream.tuser ? !first_line_is_odd :
                                                           odd_line_reg;
 
 always_ff @( posedge clk_i, posedge rst_i )

@@ -21,6 +21,11 @@ parameter int    RAW_TDATA_WIDTH = RAW_PX_WIDTH % 8 ?
                                    ( RAW_PX_WIDTH  / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 8;
 
+localparam bit [1 : 0] GBRG = 2'b00;
+localparam bit [1 : 0] BGGR = 2'b01;
+localparam bit [1 : 0] GRBG = 2'b10;
+localparam bit [1 : 0] RGGB = 2'b11;
+
 bit clk;
 bit rst;
 
@@ -48,9 +53,8 @@ axi4_stream_if #(
 
 demosaicing_ctrl_if demosaicing_ctrl();
 
-assign demosaicing_ctrl.en                = 1'b1;
-assign demosaicing_ctrl.first_px_is_odd   = 1'b1;
-assign demosaicing_ctrl.first_line_is_odd = 1'b1;
+assign demosaicing_ctrl.en      = 1'b1;
+assign demosaicing_ctrl.pattern = RGGB;
 
 AXI4StreamVideoSource #(
   .PX_WIDTH      ( RAW_PX_WIDTH  ),
