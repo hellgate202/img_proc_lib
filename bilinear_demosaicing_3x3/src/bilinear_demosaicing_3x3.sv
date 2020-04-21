@@ -77,25 +77,24 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( win_stream.tready && win_stream.tvalid )
       if( win_stream.tuser )
-        odd_px_reg <= !demosaicing_ctrl_i.first_px_is_odd;
+        odd_px_reg <= demosaicing_ctrl_i.first_px_is_odd;
       else
         odd_px_reg <= !odd_px_reg;
 
 assign odd_px = win_stream.tvalid && win_stream.tuser ? !demosaicing_ctrl_i.first_px_is_odd :
                                                         odd_px_reg;
-
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     odd_line_reg <= 1'b0;
   else
     if( win_stream.tvalid && win_stream.tready )
       if( win_stream.tuser )
-        odd_line_reg <= demosaicing_ctrl_i.first_line_is_odd;
+        odd_line_reg <= !demosaicing_ctrl_i.first_line_is_odd;
       else
         if( win_stream.tlast )
           odd_line_reg <= !odd_line_reg;
 
-assign odd_line = win_stream.tvalid && win_stream.tuser ? !demosaicing_ctrl_i.first_px_is_odd :
+assign odd_line = win_stream.tvalid && win_stream.tuser ? !demosaicing_ctrl_i.first_line_is_odd :
                                                           odd_line_reg;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -211,36 +210,36 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( win_stream.tready )
       if( !demosaicing_ctrl_i.en )
         begin
-          rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]     <= raw_d2;
-          rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 : 0] <= raw_d2;
-          rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 : 0] <= raw_d2;
+          rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]                 <= raw_d2;
+          rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] <= raw_d2;
+          rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] <= raw_d2;
         end
       else
         if( odd_line_d2 )
           if( odd_px_d2 )
             begin
-              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]     <= g_in_rb;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 : 0] <= rb_in_br;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 : 0] <= raw_d2;
+              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]                 <= g_in_rb;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] <= rb_in_br;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] <= raw_d2;
             end
           else
             begin
-              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]     <= raw_d2;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 : 0] <= r_in_even_b_in_odd_g;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 : 0] <= r_in_odd_b_in_even_g;
+              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]                 <= raw_d2;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] <= r_in_even_b_in_odd_g;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] <= r_in_odd_b_in_even_g;
             end
         else
           if( odd_px_d2 )
             begin
-              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]     <= raw_d2;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 : 0] <= r_in_odd_b_in_even_g;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 : 0] <= r_in_even_b_in_odd_g;
+              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]                 <= raw_d2;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] <= r_in_odd_b_in_even_g;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] <= r_in_even_b_in_odd_g;
             end
           else
             begin
-              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]     <= g_in_rb;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 : 0] <= raw_d2;
-              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 : 0] <= rb_in_br;
+              rgb_video_o.tdata[RAW_PX_WIDTH - 1 : 0]                 <= g_in_rb;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] <= raw_d2;
+              rgb_video_o.tdata[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] <= rb_in_br;
             end
 
 always_ff @( posedge clk_i, posedge rst_i )

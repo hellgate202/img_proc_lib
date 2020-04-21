@@ -6,14 +6,18 @@
 module tb_bilinear_demosaicing_3x3;
 
 parameter int    CLK_T         = 6734;
-parameter int    RAW_PX_WIDTH  = 10;
-parameter int    FRAME_RES_X   = 1920;
-parameter int    FRAME_RES_Y   = 1080;
+parameter int    RAW_PX_WIDTH  = 12;
+parameter int    FRAME_RES_X   = 640;
+parameter int    FRAME_RES_Y   = 480;
 parameter int    TOTAL_X       = 2200;
 parameter int    TOTAL_Y       = 1125;
-parameter string FILE_PATH     = "../../lib/axi4_lib/scripts/img.hex";
+parameter string FILE_PATH     = "./img.hex";
 parameter int    RANDOM_TVALID = 0;
 parameter int    RANDOM_TREADY = 0;
+
+parameter int    BITS_PER_RGB_PX = ( RAW_PX_WIDTH * 3 ) % 8 ?
+                                   ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
+                                   RAW_PX_WIDTH * 3 * 8;
 
 bit clk;
 bit rst;
@@ -31,7 +35,7 @@ axi4_stream_if #(
 );
 
 axi4_stream_if #(
-  .TDATA_WIDTH ( 32   ),
+  .TDATA_WIDTH ( 40   ),
   .TID_WIDTH   ( 1    ),
   .TDEST_WIDTH ( 1    ),
   .TUSER_WIDTH ( 1    )
@@ -56,7 +60,7 @@ AXI4StreamVideoSource #(
 ) video_source;
 
 AXI4StreamSlave #(
-  .TDATA_WIDTH   ( 32            ),
+  .TDATA_WIDTH   ( 40            ),
   .TID_WIDTH     ( 1             ),
   .TDEST_WIDTH   ( 1             ),
   .TUSER_WIDTH   ( 1             ),
@@ -83,13 +87,42 @@ rst <= 1'b0;
 
 endtask
 
+task automatic video_recorder();
+  
+  bit [7 : 0] rx_bytes [$]; 
+  bit [BITS_PER_RGB_PX - 1 : 0] rx_px;
+
+  int rx_file = $fopen( "./rx_img.hex", "w" );
+
+  forever
+    begin
+      if( rx_video_mbx.num() > 0 )
+        begin
+          rx_video_mbx.get( rx_bytes );
+          while( rx_bytes.size() > 0 )
+            begin
+              for( int i = 0; i < ( BITS_PER_RGB_PX / 8 ); i++ )
+                rx_px[( i + 1 ) * 8 - 1 -: 8] = rx_bytes.pop_front();
+              $fwrite( rx_file, "%0h", rx_px[RAW_PX_WIDTH - 1 : 0] );
+              $fwrite( rx_file, "\n" );
+              $fwrite( rx_file, "%0h", rx_px[RAW_PX_WIDTH * 2 - 1 -: RAW_PX_WIDTH] );
+              $fwrite( rx_file, "\n" );
+              $fwrite( rx_file, "%0h", rx_px[RAW_PX_WIDTH * 3 - 1 -: RAW_PX_WIDTH] );
+              $fwrite( rx_file, "\n" );
+            end
+        end
+      else
+        @( posedge clk );
+    end
+endtask
+
 bilinear_demosaicing_3x3 #(
   .RAW_PX_WIDTH       ( RAW_PX_WIDTH     ),
   .MAX_LINE_SIZE      ( FRAME_RES_X      )
 ) DUT (
   .clk_i              ( clk              ),
   .rst_i              ( rst              ),
-  .demosaicing_ctrl_i ( demosaicing_ctrl.app ),
+  .demosaicing_ctrl_i ( demosaicing_ctrl ),
   .raw_video_i        ( raw_video        ),
   .rgb_video_o        ( rgb_video        )
 );
@@ -102,12 +135,17 @@ initial
     fork
       clk_gen();
       apply_rst();
+      video_recorder();
     join_none
     repeat( 10 )
       @( posedge clk );
     video_source.run();
-    repeat( 10_000_000 )
-      @( posedge clk );
+    repeat( 2 )
+      begin
+        while( !( rgb_video.tvalid && rgb_video.tready && rgb_video.tuser ) )
+          @( posedge clk );
+        @( posedge clk );
+      end
     $stop();
   end
 

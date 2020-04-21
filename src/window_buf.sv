@@ -228,7 +228,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( post_line_buf_tready )
       for( int y = 0; y < WIN_SIZE; y++ )
         for( int x = 0; x < WIN_SIZE; x++ )
-          window_data_o.tdata[( y * WIN_SIZE + x + 1 ) * PX_WIDTH - 1 -: PX_WIDTH] <= data_shift_reg[y][x].tdata;
+          window_data_o.tdata[( y * WIN_SIZE + x + 1 ) * PX_WIDTH - 1 -: PX_WIDTH] <= data_shift_reg[x][y].tdata;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -252,6 +252,6 @@ always_ff @( posedge clk_i, posedge rst_i )
     window_data_o.tuser <= 1'b0;
   else
     if( post_line_buf_tready )
-      window_data_o.tuser <= data_shift_reg[WIN_SIZE - 1][0].tuser;
+      window_data_o.tuser <= data_shift_reg[0][0].tuser;
 
 endmodule
