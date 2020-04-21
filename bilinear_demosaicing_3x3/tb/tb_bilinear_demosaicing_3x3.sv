@@ -5,19 +5,21 @@
 
 module tb_bilinear_demosaicing_3x3;
 
-parameter int    CLK_T         = 6734;
-parameter int    RAW_PX_WIDTH  = 12;
-parameter int    FRAME_RES_X   = 640;
-parameter int    FRAME_RES_Y   = 480;
-parameter int    TOTAL_X       = 2200;
-parameter int    TOTAL_Y       = 1125;
-parameter string FILE_PATH     = "./img.hex";
-parameter int    RANDOM_TVALID = 0;
-parameter int    RANDOM_TREADY = 0;
-
-parameter int    BITS_PER_RGB_PX = ( RAW_PX_WIDTH * 3 ) % 8 ?
+parameter int    CLK_T           = 6734;
+parameter int    RAW_PX_WIDTH    = 10;
+parameter int    FRAME_RES_X     = 1920;
+parameter int    FRAME_RES_Y     = 1080;
+parameter int    TOTAL_X         = 2200;
+parameter int    TOTAL_Y         = 1125;
+parameter string FILE_PATH       = "./img.hex";
+parameter int    RANDOM_TVALID   = 0;
+parameter int    RANDOM_TREADY   = 0;
+parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 3 * 8;
+parameter int    RAW_TDATA_WIDTH = RAW_PX_WIDTH % 8 ?
+                                   ( RAW_PX_WIDTH  / 8 + 1 ) * 8 :
+                                   RAW_PX_WIDTH * 8;
 
 bit clk;
 bit rst;
@@ -25,23 +27,23 @@ bit rst;
 mailbox rx_video_mbx = new();
 
 axi4_stream_if #(
-  .TDATA_WIDTH ( 16   ),
-  .TID_WIDTH   ( 1    ),
-  .TDEST_WIDTH ( 1    ),
-  .TUSER_WIDTH ( 1    )
+  .TDATA_WIDTH ( RAW_TDATA_WIDTH ),
+  .TID_WIDTH   ( 1               ),
+  .TDEST_WIDTH ( 1               ),
+  .TUSER_WIDTH ( 1               )
 ) raw_video (
-  .aclk        ( clk  ),
-  .aresetn     ( !rst )
+  .aclk        ( clk             ),
+  .aresetn     ( !rst            )
 );
 
 axi4_stream_if #(
-  .TDATA_WIDTH ( 40   ),
-  .TID_WIDTH   ( 1    ),
-  .TDEST_WIDTH ( 1    ),
-  .TUSER_WIDTH ( 1    )
+  .TDATA_WIDTH ( RGB_TDATA_WIDTH ),
+  .TID_WIDTH   ( 1               ),
+  .TDEST_WIDTH ( 1               ),
+  .TUSER_WIDTH ( 1               )
 ) rgb_video (
-  .aclk        ( clk  ),
-  .aresetn     ( !rst )
+  .aclk        ( clk             ),
+  .aresetn     ( !rst            )
 );
 
 demosaicing_ctrl_if demosaicing_ctrl();
@@ -51,20 +53,21 @@ assign demosaicing_ctrl.first_px_is_odd   = 1'b1;
 assign demosaicing_ctrl.first_line_is_odd = 1'b1;
 
 AXI4StreamVideoSource #(
-  .PX_WIDTH    ( RAW_PX_WIDTH ),
-  .FRAME_RES_X ( FRAME_RES_X  ),
-  .FRAME_RES_Y ( FRAME_RES_Y  ),
-  .TOTAL_X     ( TOTAL_X      ),
-  .TOTAL_Y     ( TOTAL_Y      ),
-  .FILE_PATH   ( FILE_PATH    )
+  .PX_WIDTH      ( RAW_PX_WIDTH  ),
+  .FRAME_RES_X   ( FRAME_RES_X   ),
+  .FRAME_RES_Y   ( FRAME_RES_Y   ),
+  .TOTAL_X       ( TOTAL_X       ),
+  .TOTAL_Y       ( TOTAL_Y       ),
+  .FILE_PATH     ( FILE_PATH     ),
+  .RANDOM_TVALID ( RANDOM_TVALID )
 ) video_source;
 
 AXI4StreamSlave #(
-  .TDATA_WIDTH   ( 40            ),
-  .TID_WIDTH     ( 1             ),
-  .TDEST_WIDTH   ( 1             ),
-  .TUSER_WIDTH   ( 1             ),
-  .RANDOM_TREADY ( RANDOM_TREADY )
+  .TDATA_WIDTH   ( RGB_TDATA_WIDTH ),
+  .TID_WIDTH     ( 1               ),
+  .TDEST_WIDTH   ( 1               ),
+  .TUSER_WIDTH   ( 1               ),
+  .RANDOM_TREADY ( RANDOM_TREADY   )
 ) video_sink;
 
 task automatic clk_gen();
@@ -90,7 +93,7 @@ endtask
 task automatic video_recorder();
   
   bit [7 : 0] rx_bytes [$]; 
-  bit [BITS_PER_RGB_PX - 1 : 0] rx_px;
+  bit [RGB_TDATA_WIDTH - 1 : 0] rx_px;
 
   int rx_file = $fopen( "./rx_img.hex", "w" );
 
@@ -101,7 +104,7 @@ task automatic video_recorder();
           rx_video_mbx.get( rx_bytes );
           while( rx_bytes.size() > 0 )
             begin
-              for( int i = 0; i < ( BITS_PER_RGB_PX / 8 ); i++ )
+              for( int i = 0; i < ( RGB_TDATA_WIDTH / 8 ); i++ )
                 rx_px[( i + 1 ) * 8 - 1 -: 8] = rx_bytes.pop_front();
               $fwrite( rx_file, "%0h", rx_px[RAW_PX_WIDTH - 1 : 0] );
               $fwrite( rx_file, "\n" );
