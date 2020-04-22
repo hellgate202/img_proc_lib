@@ -53,7 +53,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( !backpressure )
       begin
         was_aw_handshake <= aw_handshake;
-        was_w_handshake  <= w_handshake
+        was_w_handshake  <= w_handshake;
       end
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -70,7 +70,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     awaddr_lock <= REG_ADDR_W'( 0 );
   else
-    if( aw_handshake );
+    if( aw_handshake )
       awaddr_lock <= csr_i.awaddr;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -106,12 +106,12 @@ always_ff @( posedge clk_i, posedge rst_i )
         DEMOSAICING_EN_CR:
           begin
             if( wstrb_lock[0] )
-              en_cr <= csr_i.wdata[0];
+              en_cr <= wdata_lock[0];
           end
         DEMOSAICING_PATTERN_CR:
           begin
             if( wstrb_lock[0] )
-              pattern_cr <= csr_i.wdata[1 : 0];
+              pattern_cr <= wdata_lock[1 : 0];
           end
         default:;
       endcase
@@ -139,5 +139,8 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       if( r_handshake )
         csr_i.rdata <= 32'd0;
+
+assign demosaicing_ctrl_o.en      = en_cr;
+assign demosaicing_ctrl_o.pattern = pattern_cr;
 
 endmodule

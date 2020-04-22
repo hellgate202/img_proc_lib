@@ -1,7 +1,10 @@
 `include "../../lib/axi4_lib/src/class/AXI4StreamVideoSource.sv"
 `include "../../lib/axi4_lib/src/class/AXI4StreamSlave.sv"
+`include "../../lib/axi4_lib/src/class/AXI4LiteMaster.sv"
 
 `timescale 1 ps / 1 ps
+
+import bilinear_demosaicing_3x3_csr_pkg::*; 
 
 module tb_bilinear_demosaicing_3x3;
 
@@ -14,6 +17,7 @@ parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
 parameter int    RANDOM_TVALID   = 1;
 parameter int    RANDOM_TREADY   = 1;
+parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
 parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 3 * 8;
@@ -51,10 +55,20 @@ axi4_stream_if #(
   .aresetn     ( !rst            )
 );
 
+axi4_lite_if #(
+  .DATA_WIDTH ( 32   ),
+  .ADDR_WIDTH ( 8    )
+) csr_if (
+  .aclk       ( clk  ),
+  .aresetn    ( !rst )
+);
+
 demosaicing_ctrl_if demosaicing_ctrl();
 
-assign demosaicing_ctrl.en      = 1'b1;
-assign demosaicing_ctrl.pattern = RGGB;
+AXI4LiteMaster #(
+  .DATA_WIDTH ( 32 ),
+  .ADDR_WIDTH ( 8  )
+) csr_master;
 
 AXI4StreamVideoSource #(
   .PX_WIDTH      ( RAW_PX_WIDTH  ),
@@ -128,6 +142,15 @@ task automatic video_recorder();
     end
 endtask
 
+bilinear_demosaicing_3x3_csr #(
+  .BASE_ADDR          ( CSR_BASE_ADDR    )
+) DUT_CSR (
+  .clk_i              ( clk              ),
+  .rst_i              ( rst              ),
+  .csr_i              ( csr_if           ),
+  .demosaicing_ctrl_o ( demosaicing_ctrl )
+);
+
 bilinear_demosaicing_3x3 #(
   .RAW_PX_WIDTH       ( RAW_PX_WIDTH     ),
   .MAX_LINE_SIZE      ( FRAME_RES_X      )
@@ -141,6 +164,7 @@ bilinear_demosaicing_3x3 #(
 
 initial
   begin
+    csr_master   = new( csr_if );
     video_source = new( raw_video );
     video_sink   = new( .axi4_stream_if_v ( rgb_video    ),
                         .rx_data_mbx      ( rx_video_mbx ) );
@@ -151,6 +175,8 @@ initial
     join_none
     repeat( 10 )
       @( posedge clk );
+    csr_master.wr_data( CSR_BASE_ADDR + DEMOSAICING_EN_CR << 2, 32'b1 );
+    csr_master.wr_data( CSR_BASE_ADDR + DEMOSAICING_PATTERN_CR << 2, 32'b11 );
     video_source.run();
     repeat( 2 )
       begin

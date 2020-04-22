@@ -1,5 +1,8 @@
 ../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
 ../src/demosaicing_ctrl_if.sv
+../src/bilinear_demosaicing_3x3_csr_pkg.sv
+../src/bilinear_demosaicing_3x3_csr.sv
 ../../ip/dual_port_ram/src/dual_port_ram.sv
 ../../src/line_buf.sv
 ../../src/window_buf.sv
