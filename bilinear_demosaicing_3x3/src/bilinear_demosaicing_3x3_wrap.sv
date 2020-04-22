@@ -1,7 +1,7 @@
 module bilinear_demosaicing_3x3_wrap #(
   parameter CSR_BASE_ADDR     = 0,
   parameter RAW_PX_WIDTH      = 10,
-  parameter MAX_LINE_SIZE     = 1920
+  parameter MAX_LINE_SIZE     = 1920,
   parameter RAW_TDATA_WIDTH   = 16,
   parameter RAW_TDATA_WIDTH_B = 2,
   parameter RGB_TDATA_WIDTH   = 32,
@@ -82,27 +82,27 @@ axi4_stream_if #(
   .TUSER_WIDTH ( 1               )
 ) raw (
   .aclk        ( clk_i           ),
-  .aresetn     ( !rst            )
+  .aresetn     ( !rst_i          )
 );
 
-assign raw.tdata   = raw_tdata_i;
-assign raw.tvalid  = raw_tvalid_i;
-assign raw.tkeep   = raw_tkeep_i;
-assign raw.tstrb   = raw_tstrb_i;
-assign raw.tlast   = raw_tlast_i;
-assign raw.tuser   = raw_tuser_i;
-assign raw.tdest   = raw_tdest_i;
-assign raw.tid     = raw_tid_i;
-assign raw_tread_o = raw.tready;
+assign raw.tdata    = raw_tdata_i;
+assign raw.tvalid   = raw_tvalid_i;
+assign raw.tkeep    = raw_tkeep_i;
+assign raw.tstrb    = raw_tstrb_i;
+assign raw.tlast    = raw_tlast_i;
+assign raw.tuser    = raw_tuser_i;
+assign raw.tdest    = raw_tdest_i;
+assign raw.tid      = raw_tid_i;
+assign raw_tready_o = raw.tready;
 
 axi4_stream_if #(
-  .TDATA_WIDTH ( RAW_TDATA_WIDTH ),
+  .TDATA_WIDTH ( RGB_TDATA_WIDTH ),
   .TDEST_WIDTH ( 1               ),
   .TID_WIDTH   ( 1               ),
   .TUSER_WIDTH ( 1               )
 ) rgb (
   .aclk        ( clk_i           ),
-  .aresetn     ( !rst            )
+  .aresetn     ( !rst_i          )
 );
 
 assign rgb_tdata_o  = rgb.tdata;
@@ -113,7 +113,7 @@ assign rgb_tlast_o  = rgb.tlast;
 assign rgb_tuser_o  = rgb.tuser;
 assign rgb_tdest_o  = rgb.tdest;
 assign rgb_tid_o    = rgb.tid;
-assign rgb.tread    = rgb_tready_i;
+assign rgb.tready   = rgb_tready_i;
 
 demosaicing_ctrl_if demosaicing_ctrl();
 
