@@ -2,11 +2,11 @@ module bilinear_demosaicing_3x3 #(
   parameter int RAW_PX_WIDTH  = 10,
   parameter int MAX_LINE_SIZE = 1920
 )(
-  input                   clk_i,
-  input                   rst_i,
-  demosaicing_ctrl_if.app demosaicing_ctrl_i,
-  axi4_stream_if.master   raw_video_i,
-  axi4_stream_if.slave    rgb_video_o
+  input                     clk_i,
+  input                     rst_i,
+  demosaicing_ctrl_if.slave demosaicing_ctrl_i,
+  axi4_stream_if.master     raw_video_i,
+  axi4_stream_if.slave      rgb_video_o
 );
 
 localparam WIN_SIZE        = 3;

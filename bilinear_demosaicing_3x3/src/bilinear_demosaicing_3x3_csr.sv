@@ -3,10 +3,10 @@ import bilinear_demosaicing_3x3_csr_pkg::*;
 module bilinear_demosaicing_3x3_csr #(
   parameter int BASE_ADDR = 32'h0000_0000 
 )(
-  input                   clk_i,
-  input                   rst_i,
-  axi4_lite_if.slave      csr_i,
-  demosaicing_ctrl_if.csr demosaicing_ctrl_o
+  input                      clk_i,
+  input                      rst_i,
+  axi4_lite_if.slave         csr_i,
+  demosaicing_ctrl_if.master demosaicing_ctrl_o
 );
 
 localparam REG_ADDR_W = TOTAL_CSR_CNT == 1 ? 1 : $clog2( TOTAL_CSR_CNT );
