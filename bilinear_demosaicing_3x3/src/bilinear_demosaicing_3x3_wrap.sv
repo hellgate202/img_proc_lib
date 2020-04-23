@@ -10,7 +10,7 @@ module bilinear_demosaicing_3x3_wrap #(
   input                              clk_i,
   input                              rst_i,
   input                              csr_awvalid_i,
-  input  [11 : 0]                    csr_awaddr_i,
+  input  [31 : 0]                    csr_awaddr_i,
   output                             csr_awready_o,
   input  [2 : 0]                     csr_awprot_i,
   input                              csr_wvalid_i,
@@ -21,7 +21,7 @@ module bilinear_demosaicing_3x3_wrap #(
   input                              csr_bready_i,
   output [1 : 0]                     csr_bresp_o,
   input                              csr_arvalid_i,
-  input  [11 : 0]                    csr_araddr_i,
+  input  [31 : 0]                    csr_araddr_i,
   output                             csr_arready_o,
   input  [2 : 0]                     csr_arprot_i,
   output                             csr_rvalid_o,
@@ -49,7 +49,7 @@ module bilinear_demosaicing_3x3_wrap #(
 );
 
 axi4_lite_if #(
-  .ADDR_WIDTH ( 1      ),
+  .ADDR_WIDTH ( 32     ),
   .DATA_WIDTH ( 32     )
 ) csr (
   .aclk       ( clk_i  ),

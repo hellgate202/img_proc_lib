@@ -5,8 +5,8 @@ module bilinear_demosaicing_3x3 #(
   input                     clk_i,
   input                     rst_i,
   demosaicing_ctrl_if.slave demosaicing_ctrl_i,
-  axi4_stream_if.master     raw_video_i,
-  axi4_stream_if.slave      rgb_video_o
+  axi4_stream_if.slave     raw_video_i,
+  axi4_stream_if.master    rgb_video_o
 );
 
 localparam WIN_SIZE        = 3;
