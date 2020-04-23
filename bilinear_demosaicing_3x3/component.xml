@@ -166,6 +166,54 @@
       </spirit:portMaps>
     </spirit:busInterface>
     <spirit:busInterface>
+      <spirit:name>clk_i</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>CLK</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>clk_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_RESET</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_RESET">rst_i</spirit:value>
+        </spirit:parameter>
+        <spirit:parameter>
+          <spirit:name>ASSOCIATED_BUSIF</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_BUSIF">csr:rgb_o:raw_i</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
+      <spirit:name>rst_i</spirit:name>
+      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
+      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
+      <spirit:slave/>
+      <spirit:portMaps>
+        <spirit:portMap>
+          <spirit:logicalPort>
+            <spirit:name>RST</spirit:name>
+          </spirit:logicalPort>
+          <spirit:physicalPort>
+            <spirit:name>rst_i</spirit:name>
+          </spirit:physicalPort>
+        </spirit:portMap>
+      </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>POLARITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.RST_I.POLARITY">ACTIVE_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
+    </spirit:busInterface>
+    <spirit:busInterface>
       <spirit:name>csr</spirit:name>
       <spirit:busType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm" spirit:version="1.0"/>
       <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="interface" spirit:name="aximm_rtl" spirit:version="1.0"/>
@@ -337,54 +385,6 @@
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
-    <spirit:busInterface>
-      <spirit:name>clk_i</spirit:name>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="clock_rtl" spirit:version="1.0"/>
-      <spirit:slave/>
-      <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>CLK</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>clk_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-      </spirit:portMaps>
-      <spirit:parameters>
-        <spirit:parameter>
-          <spirit:name>ASSOCIATED_RESET</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_RESET">rst_i</spirit:value>
-        </spirit:parameter>
-        <spirit:parameter>
-          <spirit:name>ASSOCIATED_BUSIF</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_BUSIF">raw_i:rgb_o:csr</spirit:value>
-        </spirit:parameter>
-      </spirit:parameters>
-    </spirit:busInterface>
-    <spirit:busInterface>
-      <spirit:name>rst_i</spirit:name>
-      <spirit:busType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset" spirit:version="1.0"/>
-      <spirit:abstractionType spirit:vendor="xilinx.com" spirit:library="signal" spirit:name="reset_rtl" spirit:version="1.0"/>
-      <spirit:slave/>
-      <spirit:portMaps>
-        <spirit:portMap>
-          <spirit:logicalPort>
-            <spirit:name>RST</spirit:name>
-          </spirit:logicalPort>
-          <spirit:physicalPort>
-            <spirit:name>rst_i</spirit:name>
-          </spirit:physicalPort>
-        </spirit:portMap>
-      </spirit:portMaps>
-      <spirit:parameters>
-        <spirit:parameter>
-          <spirit:name>POLARITY</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.RST_I.POLARITY">ACTIVE_HIGH</spirit:value>
-        </spirit:parameter>
-      </spirit:parameters>
-    </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:memoryMaps>
     <spirit:memoryMap>
@@ -441,21 +441,7 @@
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>3e73a312</spirit:value>
-          </spirit:parameter>
-        </spirit:parameters>
-      </spirit:view>
-      <spirit:view>
-        <spirit:name>xilinx_utilityxitfiles</spirit:name>
-        <spirit:displayName>Utility XIT/TTCL</spirit:displayName>
-        <spirit:envIdentifier>:vivado.xilinx.com:xit.util</spirit:envIdentifier>
-        <spirit:fileSetRef>
-          <spirit:localName>xilinx_utilityxitfiles_view_fileset</spirit:localName>
-        </spirit:fileSetRef>
-        <spirit:parameters>
-          <spirit:parameter>
-            <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>2afc4025</spirit:value>
+            <spirit:value>8157f313</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -808,7 +794,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH&apos;)) - 1)">79</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH&apos;)) - 1)">15</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -828,7 +814,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH_B&apos;)) - 1)">9</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH_B&apos;)) - 1)">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -848,7 +834,7 @@
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH_B&apos;)) - 1)">9</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RAW_TDATA_WIDTH_B&apos;)) - 1)">1</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -958,7 +944,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH&apos;)) - 1)">239</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH&apos;)) - 1)">31</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -975,7 +961,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH_B&apos;)) - 1)">29</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH_B&apos;)) - 1)">3</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -992,7 +978,7 @@
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
-            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH_B&apos;)) - 1)">29</spirit:left>
+            <spirit:left spirit:format="long" spirit:resolve="dependent" spirit:dependency="(spirit:decode(id(&apos;MODELPARAM_VALUE.RGB_TDATA_WIDTH_B&apos;)) - 1)">3</spirit:left>
             <spirit:right spirit:format="long">0</spirit:right>
           </spirit:vector>
           <spirit:wireTypeDefs>
@@ -1102,22 +1088,22 @@
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>RAW_TDATA_WIDTH</spirit:name>
         <spirit:displayName>Raw Tdata Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RAW_TDATA_WIDTH">80</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RAW_TDATA_WIDTH">16</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>RAW_TDATA_WIDTH_B</spirit:name>
         <spirit:displayName>Raw Tdata Width B</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RAW_TDATA_WIDTH_B">10</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RAW_TDATA_WIDTH_B">2</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>RGB_TDATA_WIDTH</spirit:name>
         <spirit:displayName>Rgb Tdata Width</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RGB_TDATA_WIDTH">240</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RGB_TDATA_WIDTH">32</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>RGB_TDATA_WIDTH_B</spirit:name>
         <spirit:displayName>Rgb Tdata Width B</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RGB_TDATA_WIDTH_B">30</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.RGB_TDATA_WIDTH_B">4</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -1125,11 +1111,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagesynthesis_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
+        <spirit:name>../lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
+        <spirit:name>../lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1149,15 +1135,15 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
+        <spirit:name>../ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../src/line_buf.sv</spirit:name>
+        <spirit:name>../src/line_buf.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../src/window_buf.sv</spirit:name>
+        <spirit:name>../src/window_buf.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1169,11 +1155,11 @@
     <spirit:fileSet>
       <spirit:name>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>../../lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
+        <spirit:name>../lib/axi4_lib/src/interface/axi4_lite_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
+        <spirit:name>../lib/axi4_lib/src/interface/axi4_stream_if.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1193,15 +1179,15 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
+        <spirit:name>../ip/dual_port_ram/src/dual_port_ram.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../src/line_buf.sv</spirit:name>
+        <spirit:name>../src/line_buf.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>../../src/window_buf.sv</spirit:name>
+        <spirit:name>../src/window_buf.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
@@ -1214,15 +1200,8 @@
       <spirit:file>
         <spirit:name>xgui/bilinear_demosaicing_3x3_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_3e73a312</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_8157f313</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
-      </spirit:file>
-    </spirit:fileSet>
-    <spirit:fileSet>
-      <spirit:name>xilinx_utilityxitfiles_view_fileset</spirit:name>
-      <spirit:file>
-        <spirit:name>gui/bilinear_demosaicing_3x3_v1_0.gtcl</spirit:name>
-        <spirit:userFileType>GTCL</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
@@ -1246,50 +1225,22 @@
     <spirit:parameter>
       <spirit:name>RAW_TDATA_WIDTH</spirit:name>
       <spirit:displayName>Raw Tdata Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RAW_TDATA_WIDTH">80</spirit:value>
-      <spirit:vendorExtensions>
-        <xilinx:parameterInfo>
-          <xilinx:enablement>
-            <xilinx:isEnabled xilinx:resolve="generated" xilinx:id="PARAM_ENABLEMENT.RAW_TDATA_WIDTH">false</xilinx:isEnabled>
-          </xilinx:enablement>
-        </xilinx:parameterInfo>
-      </spirit:vendorExtensions>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RAW_TDATA_WIDTH">16</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>RAW_TDATA_WIDTH_B</spirit:name>
       <spirit:displayName>Raw Tdata Width B</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RAW_TDATA_WIDTH_B">10</spirit:value>
-      <spirit:vendorExtensions>
-        <xilinx:parameterInfo>
-          <xilinx:enablement>
-            <xilinx:isEnabled xilinx:id="PARAM_ENABLEMENT.RAW_TDATA_WIDTH_B">false</xilinx:isEnabled>
-          </xilinx:enablement>
-        </xilinx:parameterInfo>
-      </spirit:vendorExtensions>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RAW_TDATA_WIDTH_B">2</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>RGB_TDATA_WIDTH</spirit:name>
       <spirit:displayName>Rgb Tdata Width</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RGB_TDATA_WIDTH">240</spirit:value>
-      <spirit:vendorExtensions>
-        <xilinx:parameterInfo>
-          <xilinx:enablement>
-            <xilinx:isEnabled xilinx:id="PARAM_ENABLEMENT.RGB_TDATA_WIDTH">false</xilinx:isEnabled>
-          </xilinx:enablement>
-        </xilinx:parameterInfo>
-      </spirit:vendorExtensions>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RGB_TDATA_WIDTH">32</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>RGB_TDATA_WIDTH_B</spirit:name>
       <spirit:displayName>Rgb Tdata Width B</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RGB_TDATA_WIDTH_B">30</spirit:value>
-      <spirit:vendorExtensions>
-        <xilinx:parameterInfo>
-          <xilinx:enablement>
-            <xilinx:isEnabled xilinx:id="PARAM_ENABLEMENT.RGB_TDATA_WIDTH_B">false</xilinx:isEnabled>
-          </xilinx:enablement>
-        </xilinx:parameterInfo>
-      </spirit:vendorExtensions>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.RGB_TDATA_WIDTH_B">4</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
@@ -1317,58 +1268,54 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Bilinear Demosaicing 3x3</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
+      <xilinx:vendorDisplayName>hellgat202</xilinx:vendorDisplayName>
       <xilinx:vendorURL>http://github.com/hellgate202</xilinx:vendorURL>
       <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-04-22T22:04:34Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2020-04-23T14:39:03Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@304f172c_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@467fb423_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7dc6259b_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6effffa3_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@44ea548f_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b045109_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@16fac4b0_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1e586e30_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7b538402_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@71a551fe_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3671a976_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3cb894e3_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@77202104_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@107e0b6b_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@ae257fd_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5cea02ff_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@263a1e4f_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@35a383f3_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@741f3e22_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@43796300_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2bda0a31_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@435ecd93_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@62c783e3_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@2bd32cae_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1749d7dd_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@749a51fd_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@19b6b4d2_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@409f2d6a_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a3dced8_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@9036f4f_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6a93de66_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@514a442_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d03aa94_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@49b580d9_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@d166638_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@54fed6c1_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7df5d411_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@19a6f964_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@95c446e_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c87414d_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6cfdddd0_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@224e305a_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6e7753bf_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7177a674_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@17ac3a34_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5b5147f5_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@56044f27_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@21703afc_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1883087_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@68c86493_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@379d15d_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@59acac09_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@719f5111_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2dada15c_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@a7fb56_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@566b1d9f_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@629fd02_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1250fa0f_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@22efb5b8_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@236e466a_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36331aef_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@64f90619_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@65532615_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1ef27f5_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@330576b0_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5966da3a_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@41b7a6e4_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2b58e9f0_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@258a10f_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3cfe908c_ARCHIVE_LOCATION">/home/liv/fpga/PandaCam/lib/img_proc_lib</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="1ab08706"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="6656c5dc"/>
       <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="a73824b4"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="7ee91b3e"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="0cc09b4b"/>
       <xilinx:checksum xilinx:scope="ports" xilinx:value="379f9647"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="9bc5c6f7"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="bbdd53e7"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="2695fe94"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
