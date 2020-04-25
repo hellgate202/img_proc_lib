@@ -1,8 +1,7 @@
 module line_extender #(
   parameter int LEFT        = 1,
   parameter int RIGHT       = 1,
-  parameter int PX_WIDTH    = 10,
-  parameter int TDATA_WIDTH = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH
+  parameter int PX_WIDTH    = 10
 )(
   input                 clk_i,
   input                 rst_i,
@@ -10,6 +9,7 @@ module line_extender #(
   axi4_stream_if.master video_o
 );
 
+localparam int TDATA_WIDTH     = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH;
 localparam int TDATA_WIDTH_B   = TDATA_WIDTH / 8;
 localparam int LEFT_CNT_WIDTH  = LEFT == 1 ? 1 : $clog2( LEFT );
 localparam int RIGHT_CNT_WIDTH = RIGHT == 1 ? 1 : $clog2( RIGHT );
@@ -75,8 +75,9 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tready && video_i.tvalid && ( tfirst || video_i.tlast ) )
       allow_new_data <= 1'b0;
     else
-      if( ( left_cnt_en && left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) ) ||
-          ( right_cnt_en && right_cnt == RIGHT_CNT_WIDTH'( RIGHT - 1 ) ) )
+      if( ( ( left_cnt_en && left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) ) ||
+            ( right_cnt_en && right_cnt == RIGHT_CNT_WIDTH'( RIGHT - 1 ) ) ) &&
+            video_o.tready )
         allow_new_data <= 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -86,7 +87,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tvalid && video_i.tready && tfirst )
       left_cnt_en <= 1'b1;
     else
-      if( left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) )
+      if( left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) && video_o.tready )
         left_cnt_en <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -96,26 +97,28 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tvalid && video_i.tready && video_i.tlast )
       right_cnt_en <= 1'b1;
     else
-      if( right_cnt == RIGHT_CNT_WIDTH'( RIGHT - 1 ) )
+      if( right_cnt == RIGHT_CNT_WIDTH'( RIGHT - 1 ) && video_o.tready )
         right_cnt_en <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     left_cnt <= LEFT_CNT_WIDTH'( 0 );
   else
-    if( left_cnt_en )
-      left_cnt <= left_cnt + 1'b1;
-    else
-      left_cnt <= LEFT_CNT_WIDTH'( 0 );
+    if( video_o.tready )
+      if( left_cnt_en )
+        left_cnt <= left_cnt + 1'b1;
+      else
+        left_cnt <= LEFT_CNT_WIDTH'( 0 );
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     right_cnt <= RIGHT_CNT_WIDTH'( 0 );
   else
-    if( right_cnt_en )
-      right_cnt <= right_cnt + 1'b1;
-    else
-      right_cnt <= RIGHT_CNT_WIDTH'( 0 );
+    if( video_o.tready )
+      if( right_cnt_en )
+        right_cnt <= right_cnt + 1'b1;
+      else
+        right_cnt <= RIGHT_CNT_WIDTH'( 0 );
 
 assign video_o.tdata  = output_reg.tdata;
 assign video_o.tstrb  = output_reg.tstrb;

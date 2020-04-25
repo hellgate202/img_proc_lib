@@ -1,4 +1,7 @@
+../../ip/dual_port_ram/src/dual_port_ram.sv
 ../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/fifo_lib/src/axi4_stream_fifo.sv
 ../src/line_extender.sv
+../src/fixed_eof_extractor.sv
 ../src/frame_extender.sv
 ./tb_frame_extender.sv

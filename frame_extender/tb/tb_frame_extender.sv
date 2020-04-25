@@ -126,6 +126,7 @@ frame_extender #(
   .LEFT        ( LEFT        ),
   .RIGHT       ( RIGHT       ),
   .FRAME_RES_X ( FRAME_RES_X ),
+  .FRAME_RES_Y ( FRAME_RES_Y ),
   .PX_WIDTH    ( PX_WIDTH    )
 ) DUT (
   .clk_i       ( clk         ),

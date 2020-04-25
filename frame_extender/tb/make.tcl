@@ -4,8 +4,8 @@ quietly set total_x 700
 quietly set total_y 500
 quietly set top 0
 quietly set bottom 0
-quietly set left 1
-quietly set right 1
+quietly set left 100
+quietly set right 100
 
 exec ../../lib/axi4_lib/scripts/rgb_img2rgb_hex.py ../../test.png $x_res $y_res 10
 
