@@ -25,6 +25,7 @@ parameter int    TDATA_WIDTH        = PX_WIDTH % 8 ?
 parameter int    FRAMES_AMOUNT      = 1;
 parameter string EOF_STRATEGY       = "FIXED";
 parameter int    ALLOW_BACKPRESSURE = 1;
+parameter int    MIN_INTERLINE_GAP  = 50;
 
 bit clk;
 bit rst;
@@ -135,7 +136,8 @@ frame_extender #(
   .FRAME_RES_Y        ( FRAME_RES_Y        ),
   .PX_WIDTH           ( PX_WIDTH           ),
   .EOF_STRATEGY       ( EOF_STRATEGY       ),
-  .ALLOW_BACKPRESSURE ( ALLOW_BACKPRESSURE )
+  .ALLOW_BACKPRESSURE ( ALLOW_BACKPRESSURE ),
+  .MIN_INTERLINE_GAP  ( MIN_INTERLINE_GAP  )
 ) DUT (
   .clk_i              ( clk                ),
   .rst_i              ( rst                ),

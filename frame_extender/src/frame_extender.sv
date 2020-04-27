@@ -7,7 +7,8 @@ module frame_extender #(
   parameter int    FRAME_RES_Y        = 1080,
   parameter int    PX_WIDTH           = 10,
   parameter string EOF_STRATEGY       = "FIXED",
-  parameter int    ALLOW_BACKPRESSURE = 0
+  parameter int    ALLOW_BACKPRESSURE = 0,
+  parameter int    MIN_INTERLINE_GAP  = 50
 )(
   input                 clk_i,
   input                 rst_i,
@@ -184,9 +185,9 @@ generate
 endgenerate
 
 assign eof_video_tready = state == IDLE_S || state == FIRST_LINE_PASS_S || state == LAST_LINE_PASS_S ? 
-                          video_o.tready : 1'b0;
+                          pre_gap_video.tready : 1'b0;
 assign eof_video_tvalid = state == IDLE_S || state == FIRST_LINE_PASS_S || state == LAST_LINE_PASS_S ? 
-                          eof_video.tvalid && video_o.tready : 1'b0;
+                          eof_video.tvalid && pre_gap_video.tready : 1'b0;
 
 assign first_eol       = state == FIRST_LINE_PASS_S && eof_video.tvalid && 
                          eof_video.tlast && eof_video.tready;
@@ -259,7 +260,7 @@ assign passthrough_video.tlast  = eof_video.tlast;
 assign passthrough_video.tuser  = eof_video.tuser;
 assign passthrough_video.tid    = eof_video.tid;
 assign passthrough_video.tdest  = eof_video.tdest;
-assign passthrough_video.tready = video_o.tready;
+assign passthrough_video.tready = pre_gap_video.tready;
 
 assign eof_video.tready = eof_video_tready;
 
@@ -308,15 +309,53 @@ line_buf #(
   .empty_o       ( line_buf_empty        )
 );
 
-assign duplicated_video.tready = video_o.tready;
+assign duplicated_video.tready = pre_gap_video.tready;
 
-assign video_o.tvalid =  passthrough_en ? passthrough_video.tvalid : duplicated_video.tvalid;
-assign video_o.tdata  =  passthrough_en ? passthrough_video.tdata  : duplicated_video.tdata;
-assign video_o.tstrb  =  passthrough_en ? passthrough_video.tstrb  : duplicated_video.tstrb;
-assign video_o.tkeep  =  passthrough_en ? passthrough_video.tkeep  : duplicated_video.tkeep;
-assign video_o.tlast  =  passthrough_en ? passthrough_video.tlast  : duplicated_video.tlast;
-assign video_o.tuser  =  passthrough_en ? passthrough_video.tuser  : 1'b0;
-assign video_o.tid    =  passthrough_en ? passthrough_video.tid    : duplicated_video.tid;
-assign video_o.tdest  =  passthrough_en ? passthrough_video.tdest  : duplicated_video.tdest;
+axi4_stream_if #(
+  .TDATA_WIDTH ( TDATA_WIDTH ),
+  .TDEST_WIDTH ( 1           ),
+  .TID_WIDTH   ( 1           ),
+  .TUSER_WIDTH ( 1           )
+) pre_gap_video (
+  .aclk        ( clk_i       ),
+  .aresetn     ( !rst_i      )
+);
+
+assign pre_gap_video.tvalid =  passthrough_en ? passthrough_video.tvalid : duplicated_video.tvalid;
+assign pre_gap_video.tdata  =  passthrough_en ? passthrough_video.tdata  : duplicated_video.tdata;
+assign pre_gap_video.tstrb  =  passthrough_en ? passthrough_video.tstrb  : duplicated_video.tstrb;
+assign pre_gap_video.tkeep  =  passthrough_en ? passthrough_video.tkeep  : duplicated_video.tkeep;
+assign pre_gap_video.tlast  =  passthrough_en ? passthrough_video.tlast  : duplicated_video.tlast;
+assign pre_gap_video.tuser  =  passthrough_en ? passthrough_video.tuser  : 1'b0;
+assign pre_gap_video.tid    =  passthrough_en ? passthrough_video.tid    : duplicated_video.tid;
+assign pre_gap_video.tdest  =  passthrough_en ? passthrough_video.tdest  : duplicated_video.tdest;
+
+generate
+  if( MIN_INTERLINE_GAP > 1 )
+    begin : output_buf
+      gap_buffer #(
+        .TDATA_WIDTH ( TDATA_WIDTH       ),
+        .MIN_GAP     ( MIN_INTERLINE_GAP ),
+        .FRAME_RES_X ( EXTENDED_X        )
+      ) gap_buffer_inst (
+        .clk_i       ( clk_i             ),
+        .rst_i       ( rst_i             ),
+        .video_i     ( pre_gap_video     ),
+        .video_o     ( video_o           )
+      );
+    end
+  else
+    begin : gap_passthrough
+      assign video_o.tvalid       = pre_gap_video.tvalid;
+      assign video_o.tdata        = pre_gap_video.tdata;
+      assign video_o.tkeep        = pre_gap_video.tkeep;
+      assign video_o.tstrb        = pre_gap_video.tstrb;
+      assign video_o.tlast        = pre_gap_video.tlast;
+      assign video_o.tuser        = pre_gap_video.tuser;
+      assign video_o.tid          = pre_gap_video.tid;
+      assign video_o.tdest        = pre_gap_video.tdest;
+      assign pre_gap_video.tready = video_o.tready;
+    end
+endgenerate
 
 endmodule
