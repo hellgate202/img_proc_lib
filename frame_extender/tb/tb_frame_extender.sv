@@ -22,10 +22,12 @@ parameter int    RANDOM_TREADY = 1;
 parameter int    TDATA_WIDTH   = PX_WIDTH % 8 ?
                                  ( PX_WIDTH  / 8 + 1 ) * 8 :
                                  PX_WIDTH * 8;
-parameter int    FRAMES_AMOUNT = 2;
+parameter int    FRAMES_AMOUNT = 1;
 
 bit clk;
 bit rst;
+
+int line_cnt;
 
 mailbox rx_video_mbx = new();
 
@@ -115,6 +117,7 @@ task automatic video_recorder();
               $fwrite( rx_file, "%0h", rx_px[PX_WIDTH / 3 * 3 - 1 -: PX_WIDTH / 3] );
               $fwrite( rx_file, "\n" );
             end
+          line_cnt++;
         end
       else
         @( posedge clk );
@@ -156,6 +159,10 @@ initial
         @( posedge clk );
       end
     @( posedge clk );
+    if( line_cnt != ( FRAME_RES_Y + TOP + BOTTOM ) * FRAMES_AMOUNT )
+      $display( "Wrong frame size! Was %0d, should be %0d", line_cnt, ( FRAME_RES_Y + TOP + BOTTOM ) * FRAMES_AMOUNT );
+    else
+      $display( "Everything is fine" );
     $stop();
   end
 
