@@ -2,11 +2,11 @@ quietly set x_res 640
 quietly set y_res 480
 quietly set total_x 1100
 quietly set total_y 900
-quietly set top 10
+quietly set top 100
 quietly set bottom 100
-quietly set left 80
-quietly set right 20
-quietly set frames 2
+quietly set left 100
+quietly set right 100
+quietly set frames 5
 
 exec ../../lib/axi4_lib/scripts/rgb_img2rgb_hex.py ../../test.png $x_res $y_res 10
 

@@ -17,14 +17,14 @@ parameter int    FRAME_RES_Y        = 1080;
 parameter int    TOTAL_X            = 2200;
 parameter int    TOTAL_Y            = 1125;
 parameter string FILE_PATH          = "./img.hex";
-parameter int    RANDOM_TVALID      = 0;
-parameter int    RANDOM_TREADY      = 0;
+parameter int    RANDOM_TVALID      = 1;
+parameter int    RANDOM_TREADY      = 1;
 parameter int    TDATA_WIDTH        = PX_WIDTH % 8 ?
                                       ( PX_WIDTH  / 8 + 1 ) * 8 :
                                       PX_WIDTH * 8;
 parameter int    FRAMES_AMOUNT      = 1;
 parameter string EOF_STRATEGY       = "FIXED";
-parameter int    ALLOW_BACKPRESSURE = 0;
+parameter int    ALLOW_BACKPRESSURE = 1;
 
 bit clk;
 bit rst;

@@ -11,8 +11,8 @@ module line_extender #(
 
 localparam int TDATA_WIDTH     = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH;
 localparam int TDATA_WIDTH_B   = TDATA_WIDTH / 8;
-localparam int LEFT_CNT_WIDTH  = LEFT == 1 ? 1 : $clog2( LEFT );
-localparam int RIGHT_CNT_WIDTH = RIGHT == 1 ? 1 : $clog2( RIGHT );
+localparam int LEFT_CNT_WIDTH  = LEFT == 1 || LEFT == 0 ? 1 : $clog2( LEFT );
+localparam int RIGHT_CNT_WIDTH = RIGHT == 1 || RIGHT == 0 ? 1 : $clog2( RIGHT );
 
 logic                           allow_new_data;
 logic                           tfirst;
@@ -71,7 +71,8 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     allow_new_data <= 1'b1;
   else
-    if( video_i.tready && video_i.tvalid && ( tfirst || video_i.tlast ) )
+    if( video_i.tready && video_i.tvalid && ( tfirst && ( LEFT > 0 ) || 
+                                              video_i.tlast && ( RIGHT > 0 ) ) )
       allow_new_data <= 1'b0;
     else
       if( ( ( left_cnt_en && left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) ) ||
@@ -83,7 +84,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     left_cnt_en <= 1'b0;
   else
-    if( video_i.tvalid && video_i.tready && tfirst )
+    if( video_i.tvalid && video_i.tready && tfirst && LEFT > 0 )
       left_cnt_en <= 1'b1;
     else
       if( left_cnt == LEFT_CNT_WIDTH'( LEFT - 1 ) && video_o.tready )
@@ -93,7 +94,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     right_cnt_en <= 1'b0;
   else
-    if( video_i.tvalid && video_i.tready && video_i.tlast )
+    if( video_i.tvalid && video_i.tready && video_i.tlast && RIGHT > 0 )
       right_cnt_en <= 1'b1;
     else
       if( right_cnt == RIGHT_CNT_WIDTH'( RIGHT - 1 ) && video_o.tready )
@@ -122,7 +123,8 @@ always_ff @( posedge clk_i, posedge rst_i )
 assign video_o.tdata  = output_reg.tdata;
 assign video_o.tstrb  = output_reg.tstrb;
 assign video_o.tkeep  = output_reg.tkeep;
-assign video_o.tuser  = !allow_new_data && left_cnt == LEFT_CNT_WIDTH'( 0 ) ? output_reg.tuser : 1'b0;
+assign video_o.tuser  = !allow_new_data && left_cnt == LEFT_CNT_WIDTH'( 0 ) || 
+                        LEFT == 0 ? output_reg.tuser : 1'b0;
 assign video_o.tlast  = allow_new_data ? output_reg.tlast : 1'b0;
 assign video_o.tvalid = output_reg.tvalid;
 assign video_o.tid    = output_reg.tid;

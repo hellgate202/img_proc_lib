@@ -17,9 +17,9 @@ module frame_extender #(
 
 localparam int TDATA_WIDTH   = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH;
 localparam int EXTENDED_X    = FRAME_RES_X + LEFT + RIGHT;
-localparam int TOP_CNT_WIDTH = TOP == 1 ? 1 : $clog2( TOP );
-localparam int BOT_CNT_WIDTH = BOTTOM == 1 ? 1 : $clog2( BOTTOM );
-localparam int LINES_IN_FIFO = TOP > BOTTOM ? TOP : BOTTOM;
+localparam int TOP_CNT_WIDTH = TOP == 1 || TOP == 0 ? 1 : $clog2( TOP );
+localparam int BOT_CNT_WIDTH = BOTTOM == 1 || BOTTOM == 0 ? 1 : $clog2( BOTTOM );
+localparam int LINES_IN_FIFO = TOP > BOTTOM ? TOP : BOTTOM == 0 ? 1 : BOTTOM;
 localparam int WORDS_IN_FIFO = EOF_STRATEGY == "FIXED" ? LINES_IN_FIFO * EXTENDED_X :
                                                          LINES_IN_FIFO * EXTENDED_X * 2;
 localparam int DROP_ALLOWED  = !ALLOW_BACKPRESSURE;
@@ -64,7 +64,10 @@ always_comb
         begin
           if( eof_video.tvalid && eof_video.tready &&
               eof_video.tlast )
-            next_state = DUP_TOP_S;
+            if( TOP > 0 )
+              next_state = DUP_TOP_S;
+            else
+              next_state = LAST_LINE_PASS_S;
         end
       DUP_TOP_S:
         begin
@@ -75,7 +78,10 @@ always_comb
       LAST_LINE_PASS_S:
         begin
           if( eof_video.tvalid && eof_video.tready && eof )
-            next_state = DUP_BOT_S;
+            if( BOTTOM > 0 )
+              next_state = DUP_BOT_S;
+            else
+              next_state = IDLE_S;
         end
       DUP_BOT_S:
         begin
@@ -205,7 +211,7 @@ always_ff @( posedge clk_i, posedge rst_i )
         dup_req <= 1'b0;
 
 assign flush_fifo = ( passthrough_video.tvalid && passthrough_video.tready &&
-                      passthrough_video.tlast && !eof && state != FIRST_LINE_PASS_S ) ||
+                      passthrough_video.tlast && ( !eof && state != FIRST_LINE_PASS_S ) || BOTTOM == 0 ) ||
                     ( state == DUP_TOP_S && top_cnt == TOP_CNT_WIDTH'( 1 ) &&
                       duplicated_video.tvalid && duplicated_video.tlast &&
                       duplicated_video.tready ) ||
