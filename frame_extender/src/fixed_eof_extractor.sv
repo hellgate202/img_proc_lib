@@ -46,10 +46,10 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     line_cnt <= LINE_CNT_WIDTH'( 0 );
   else
-    if( video_i.tvalid && video_i.tuser )
+    if( video_i.tvalid && video_i.tuser && video_i.tready )
       line_cnt <= LINE_CNT_WIDTH'( 0 );
     else
-      if( video_o.tvalid && video_o.tready && video_o.tlast && line_cnt < FRAME_RES_Y )
+      if( video_o.tvalid && video_o.tready && video_o.tlast && line_cnt < ( FRAME_RES_Y - 1 ) )
         line_cnt <= line_cnt + 1'b1;
 
 assign eof_o = line_cnt == ( FRAME_RES_Y - 1 ) && video_o.tvalid && video_o.tlast;

@@ -6,23 +6,25 @@
 
 module tb_frame_extender;
 
-parameter int    CLK_T         = 6734;
-parameter int    PX_WIDTH      = 30;
-parameter int    TOP           = 1;
-parameter int    BOTTOM        = 1;
-parameter int    LEFT          = 1;
-parameter int    RIGHT         = 1;
-parameter int    FRAME_RES_X   = 1920;
-parameter int    FRAME_RES_Y   = 1080;
-parameter int    TOTAL_X       = 2200;
-parameter int    TOTAL_Y       = 1125;
-parameter string FILE_PATH     = "./img.hex";
-parameter int    RANDOM_TVALID = 1;
-parameter int    RANDOM_TREADY = 1;
-parameter int    TDATA_WIDTH   = PX_WIDTH % 8 ?
-                                 ( PX_WIDTH  / 8 + 1 ) * 8 :
-                                 PX_WIDTH * 8;
-parameter int    FRAMES_AMOUNT = 1;
+parameter int    CLK_T              = 6734;
+parameter int    PX_WIDTH           = 30;
+parameter int    TOP                = 1;
+parameter int    BOTTOM             = 1;
+parameter int    LEFT               = 1;
+parameter int    RIGHT              = 1;
+parameter int    FRAME_RES_X        = 1920;
+parameter int    FRAME_RES_Y        = 1080;
+parameter int    TOTAL_X            = 2200;
+parameter int    TOTAL_Y            = 1125;
+parameter string FILE_PATH          = "./img.hex";
+parameter int    RANDOM_TVALID      = 0;
+parameter int    RANDOM_TREADY      = 0;
+parameter int    TDATA_WIDTH        = PX_WIDTH % 8 ?
+                                      ( PX_WIDTH  / 8 + 1 ) * 8 :
+                                      PX_WIDTH * 8;
+parameter int    FRAMES_AMOUNT      = 1;
+parameter string EOF_STRATEGY       = "FIXED";
+parameter int    ALLOW_BACKPRESSURE = 0;
 
 bit clk;
 bit rst;
@@ -125,18 +127,20 @@ task automatic video_recorder();
 endtask
 
 frame_extender #(
-  .TOP         ( TOP         ),
-  .BOTTOM      ( BOTTOM      ),
-  .LEFT        ( LEFT        ),
-  .RIGHT       ( RIGHT       ),
-  .FRAME_RES_X ( FRAME_RES_X ),
-  .FRAME_RES_Y ( FRAME_RES_Y ),
-  .PX_WIDTH    ( PX_WIDTH    )
+  .TOP                ( TOP                ),
+  .BOTTOM             ( BOTTOM             ),
+  .LEFT               ( LEFT               ),
+  .RIGHT              ( RIGHT              ),
+  .FRAME_RES_X        ( FRAME_RES_X        ),
+  .FRAME_RES_Y        ( FRAME_RES_Y        ),
+  .PX_WIDTH           ( PX_WIDTH           ),
+  .EOF_STRATEGY       ( EOF_STRATEGY       ),
+  .ALLOW_BACKPRESSURE ( ALLOW_BACKPRESSURE )
 ) DUT (
-  .clk_i       ( clk         ),
-  .rst_i       ( rst         ),
-  .video_i     ( video_i     ),
-  .video_o     ( video_o     )
+  .clk_i              ( clk                ),
+  .rst_i              ( rst                ),
+  .video_i            ( video_i            ),
+  .video_o            ( video_o            )
 );
 
 initial

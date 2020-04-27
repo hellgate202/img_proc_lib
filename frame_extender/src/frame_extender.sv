@@ -1,11 +1,13 @@
 module frame_extender #(
-  parameter int TOP           = 1,
-  parameter int BOTTOM        = 1,
-  parameter int LEFT          = 1,
-  parameter int RIGHT         = 1,
-  parameter int FRAME_RES_X   = 1920,
-  parameter int FRAME_RES_Y   = 1080,
-  parameter int PX_WIDTH      = 10
+  parameter int    TOP                = 1,
+  parameter int    BOTTOM             = 1,
+  parameter int    LEFT               = 1,
+  parameter int    RIGHT              = 1,
+  parameter int    FRAME_RES_X        = 1920,
+  parameter int    FRAME_RES_Y        = 1080,
+  parameter int    PX_WIDTH           = 10,
+  parameter string EOF_STRATEGY       = "FIXED",
+  parameter int    ALLOW_BACKPRESSURE = 0
 )(
   input                 clk_i,
   input                 rst_i,
@@ -17,6 +19,10 @@ localparam int TDATA_WIDTH   = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDT
 localparam int EXTENDED_X    = FRAME_RES_X + LEFT + RIGHT;
 localparam int TOP_CNT_WIDTH = TOP == 1 ? 1 : $clog2( TOP );
 localparam int BOT_CNT_WIDTH = BOTTOM == 1 ? 1 : $clog2( BOTTOM );
+localparam int LINES_IN_FIFO = TOP > BOTTOM ? TOP : BOTTOM;
+localparam int WORDS_IN_FIFO = EOF_STRATEGY == "FIXED" ? LINES_IN_FIFO * EXTENDED_X :
+                                                         LINES_IN_FIFO * EXTENDED_X * 2;
+localparam int DROP_ALLOWED  = !ALLOW_BACKPRESSURE;
 
 logic                         eof;
 logic                         dup_req;
@@ -85,6 +91,37 @@ axi4_stream_if #(
   .TDEST_WIDTH ( 1           ),
   .TID_WIDTH   ( 1           ),
   .TUSER_WIDTH ( 1           )
+) buf_video (
+  .aclk        ( clk_i       ),
+  .aresetn     ( !rst_i      )
+);
+
+axi4_stream_fifo #(
+  .TDATA_WIDTH   ( TDATA_WIDTH   ),
+  .TUSER_WIDTH   ( 1             ),
+  .TDEST_WIDTH   ( 1             ),
+  .TID_WIDTH     ( 1             ),
+  .WORDS_AMOUNT  ( WORDS_IN_FIFO ),
+  .SMART         ( DROP_ALLOWED  ),
+  .SHOW_PKT_SIZE ( 0             )
+) input_fifo (
+  .clk_i         ( clk_i         ),
+  .rst_i         ( rst_i         ),
+  .full_o        (               ),
+  .empty_o       (               ),
+  .drop_o        (               ),
+  .used_words_o  (               ),
+  .pkts_amount_o (               ),
+  .pkt_size_o    (               ),
+  .pkt_i         ( video_i       ),
+  .pkt_o         ( buf_video     )
+);
+
+axi4_stream_if #(
+  .TDATA_WIDTH ( TDATA_WIDTH ),
+  .TDEST_WIDTH ( 1           ),
+  .TID_WIDTH   ( 1           ),
+  .TUSER_WIDTH ( 1           )
 ) extended_video (
   .aclk        ( clk_i       ),
   .aresetn     ( !rst_i      )
@@ -97,7 +134,7 @@ line_extender #(
 ) line_extender_inst (
   .clk_i    ( clk_i          ),
   .rst_i    ( rst_i          ),
-  .video_i  ( video_i        ),
+  .video_i  ( buf_video      ),
   .video_o  ( extended_video )
 );
 
@@ -111,16 +148,34 @@ axi4_stream_if #(
   .aresetn     ( !rst_i      )
 );
 
-fixed_eof_extractor #(
-  .FRAME_RES_Y ( FRAME_RES_Y    ),
-  .PX_WIDTH    ( PX_WIDTH       )
-) eof_extractor_inst (
-  .clk_i       ( clk_i          ),
-  .rst_i       ( rst_i          ),
-  .video_i     ( extended_video ),
-  .video_o     ( eof_video      ),
-  .eof_o       ( eof            )
-);
+generate
+  if( EOF_STRATEGY == "FIXED" )
+    begin : fixed_eof
+      fixed_eof_extractor #(
+        .FRAME_RES_Y ( FRAME_RES_Y    ),
+        .PX_WIDTH    ( PX_WIDTH       )
+      ) eof_extractor_inst (
+        .clk_i       ( clk_i          ),
+        .rst_i       ( rst_i          ),
+        .video_i     ( extended_video ),
+        .video_o     ( eof_video      ),
+        .eof_o       ( eof            )
+      );
+    end
+  else
+    begin : adaptive_eof
+      adaptive_eof_extractor #(
+        .FRAME_RES_X ( FRAME_RES_X    ),
+        .PX_WIDTH    ( PX_WIDTH       )
+      ) eof_extractor_inst (
+        .clk_i       ( clk_i          ),
+        .rst_i       ( rst_i          ),
+        .video_i     ( extended_video ),
+        .video_o     ( eof_video      ),
+        .eof_o       ( eof            )
+      );
+    end
+endgenerate
 
 assign eof_video_tready = state == IDLE_S || state == FIRST_LINE_PASS_S || state == LAST_LINE_PASS_S ? 
                           video_o.tready : 1'b0;

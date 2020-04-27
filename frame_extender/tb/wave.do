@@ -117,6 +117,37 @@ add wave -noupdate /tb_frame_extender/video_o/tlast
 add wave -noupdate /tb_frame_extender/video_o/tid
 add wave -noupdate /tb_frame_extender/video_o/tdest
 add wave -noupdate /tb_frame_extender/video_o/tuser
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/clk_i
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rst_i
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/full_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/empty_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/drop_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/used_words_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkts_amount_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_size_o
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/wr_data
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rd_data
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/wr_addr
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/wr_req
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/full
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/full_comb
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rd_addr
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rd_req
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/used_words
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/used_words_comb
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_cnt
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_word_cnt
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_word_cnt_m1
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_word_cnt_p1
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/pkt_word_cnt_p2
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rd_en
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/data_in_ram
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/data_in_o_reg
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/svrl_w_in_mem
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/first_word
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/wr_pkt_done
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/rd_pkt_done
+add wave -noupdate /tb_frame_extender/DUT/input_fifo/drop_state
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {0 ps} 0}
 quietly wave cursor active 1
@@ -134,4 +165,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {8574662637 ps}
+WaveRestoreZoom {0 ps} {1457691977 ps}
