@@ -2,8 +2,8 @@ quietly set x_res 640
 quietly set y_res 480
 quietly set total_x 700
 quietly set total_y 500
-quietly set top 0
-quietly set bottom 0
+quietly set top 100
+quietly set bottom 100
 quietly set left 100
 quietly set right 100
 

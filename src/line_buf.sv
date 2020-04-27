@@ -13,7 +13,8 @@ module line_buf #(
   output                unread_o
 );
 
-localparam int ADDR_WIDTH = $clog2( MAX_LINE_SIZE + 1 );
+localparam int ADDR_WIDTH    = $clog2( MAX_LINE_SIZE + 1 );
+localparam int TDATA_WIDTH_B = TDATA_WIDTH / 8;
 
 logic [PX_WIDTH - 1 : 0]    tdata_d1;
 logic                       tvalid_d1;
@@ -27,11 +28,13 @@ logic                       empty;
 logic                       was_sof;
 logic                       unread;
 logic                       rd_req;
-logic                       line_locked;
+logic                       line_locked, line_locked_d1;
 logic [PX_WIDTH - 1 : 0]    buf_data;
 logic                       rd_mem;
+logic                       wr_mem;
 
 assign video_i.tready = !line_locked;
+assign wr_mem         = tvalid_d1 && !line_locked_d1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -40,11 +43,17 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tready )
       line_locked <= 1'b0;
     else
-      if( !line_locked && tvalid_d1 && tlast_d1 )
-        line_locked <= 1'b1;
+      if( flush_line_i )
+        line_locked <= 1'b0;
       else
-        if( flush_line_i )
-          line_locked <= 1'b0;
+        if( !line_locked && video_i.tvalid && video_i.tlast )
+          line_locked <= 1'b1;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    line_locked_d1 <= 1'b0;
+  else
+    line_locked_d1 <= line_locked;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -55,7 +64,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       tuser_d1  <= 1'b0;
     end
   else
-    if( video_i.tready )
+    if( !line_locked_d1 )
       begin
         tdata_d1  <= video_i.tdata;
         tvalid_d1 <= video_i.tvalid;
@@ -70,7 +79,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       wr_ptr <= ADDR_WIDTH'( 0 );
     else
-      if( tvalid_d1 && video_i.tready )
+      if( tvalid_d1 && !line_locked_d1 )
         if( tlast_d1 )
           wr_ptr <= ADDR_WIDTH'( 0 );
         else
@@ -83,7 +92,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       line_size <= ADDR_WIDTH'( 0 );
     else
-      if( tvalid_d1 && tlast_d1 && video_i.tready )
+      if( tvalid_d1 && tlast_d1 && !line_locked_d1 )
         line_size <= wr_ptr + 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -93,7 +102,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       empty <= 1'b1;
     else
-      if( tvalid_d1 && video_i.tready )
+      if( tvalid_d1 && !line_locked_d1 )
         if( tlast_d1 )
           empty <= 1'b0;
 
@@ -118,10 +127,13 @@ always_ff @( posedge clk_i, posedge rst_i )
       rd_ptr <= ADDR_WIDTH'( 0 );
     else
       if( pop_line_i && !empty )
-        rd_ptr <= ADDR_WIDTH'( 0 );
+        rd_ptr <= ADDR_WIDTH'( 1 );
       else
-        if( read_in_progress && video_o.tready )
-          rd_ptr <= rd_ptr + 1'b1;
+        if( video_o.tvalid && video_o.tready )
+          if( video_o.tlast )
+            rd_ptr <= ADDR_WIDTH'( 0 );
+          else
+            rd_ptr <= rd_ptr + 1'b1;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -182,7 +194,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     if( video_i.tuser && video_i.tvalid )
       unread <= 1'b0;
     else
-      if( tvalid_d1 && tlast_d1 && video_i.tready )
+      if( tvalid_d1 && tlast_d1 && !line_locked_d1 )
         unread <= 1'b1;
       else
         if( !empty && pop_line_i )
@@ -197,7 +209,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       rd_req <= pop_line_i && !empty;
 
-assign rd_mem = video_o.tready || pop_line_i;
+assign rd_mem = video_o.tvalid && video_o.tready || pop_line_i;
 
 dual_port_ram #(
   .DATA_WIDTH ( PX_WIDTH   ),
@@ -206,7 +218,7 @@ dual_port_ram #(
   .wr_clk_i   ( clk_i      ),
   .wr_addr_i  ( wr_ptr     ),
   .wr_data_i  ( tdata_d1   ),
-  .wr_i       ( tvalid_d1  ),
+  .wr_i       ( wr_mem     ),
   .rd_clk_i   ( clk_i      ),
   .rd_addr_i  ( rd_ptr     ),
   .rd_data_o  ( buf_data   ),
@@ -216,6 +228,10 @@ dual_port_ram #(
 assign empty_o       = empty;
 assign unread_o      = unread;
 assign video_o.tdata = TDATA_WIDTH'( buf_data );
+assign video_o.tstrb = TDATA_WIDTH_B'( 2 ** TDATA_WIDTH_B - 1 );
+assign video_o.tkeep = TDATA_WIDTH_B'( 2 ** TDATA_WIDTH_B - 1 );
+assign video_o.tid   = 1'b0;
+assign video_o.tdest = 1'b0;
 
 
 endmodule

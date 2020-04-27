@@ -3,5 +3,6 @@
 ../../lib/fifo_lib/src/axi4_stream_fifo.sv
 ../src/line_extender.sv
 ../src/fixed_eof_extractor.sv
+../../src/line_buf.sv
 ../src/frame_extender.sv
 ./tb_frame_extender.sv

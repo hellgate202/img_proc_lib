@@ -61,11 +61,10 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     tfirst <= 1'b1;
   else
-    if( video_i.tvalid )
+    if( video_i.tvalid && video_i.tready )
       if( video_i.tlast )
         tfirst <= 1'b1;
       else
-        if( video_i.tready )
         tfirst <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )

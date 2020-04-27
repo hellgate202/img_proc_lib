@@ -28,7 +28,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       video_o.tdest  <= 1'b0;
     end
   else
-    if( video_o.tready )
+    if( video_i.tready )
       begin
         video_o.tvalid <= video_i.tvalid;
         video_o.tdata  <= video_i.tdata;
