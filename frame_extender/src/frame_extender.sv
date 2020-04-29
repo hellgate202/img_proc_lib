@@ -6,7 +6,7 @@ module frame_extender #(
   parameter int    FRAME_RES_X        = 1920,
   parameter int    FRAME_RES_Y        = 1080,
   parameter int    PX_WIDTH           = 10,
-  parameter string EOF_STRATEGY       = "FIXED",
+  parameter        EOF_STRATEGY       = "FIXED",
   parameter int    ALLOW_BACKPRESSURE = 0,
   parameter int    MIN_INTERLINE_GAP  = 50
 )(

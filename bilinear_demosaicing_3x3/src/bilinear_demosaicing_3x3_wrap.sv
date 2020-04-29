@@ -1,11 +1,14 @@
 module bilinear_demosaicing_3x3_wrap #(
   parameter CSR_BASE_ADDR     = 0,
   parameter RAW_PX_WIDTH      = 10,
-  parameter MAX_LINE_SIZE     = 1920,
+  parameter FRAME_RES_X       = 1920,
+  parameter FRAME_RES_Y       = 1080,
   parameter RAW_TDATA_WIDTH   = 16,
   parameter RAW_TDATA_WIDTH_B = 2,
   parameter RGB_TDATA_WIDTH   = 32,
-  parameter RGB_TDATA_WIDTH_B = 4
+  parameter RGB_TDATA_WIDTH_B = 4,
+  parameter COMPENSATE_EN     = 1,
+  parameter INTERLINE_GAP     = 280
 )(
   input                              clk_i,
   input                              rst_i,
@@ -128,7 +131,10 @@ bilinear_demosaicing_3x3_csr #(
 
 bilinear_demosaicing_3x3 #(
   .RAW_PX_WIDTH       ( RAW_PX_WIDTH     ),
-  .MAX_LINE_SIZE      ( MAX_LINE_SIZE    )
+  .FRAME_RES_X        ( FRAME_RES_X      ),
+  .FRAME_RES_Y        ( FRAME_RES_Y      ),
+  .COMPENSATE_EN      ( COMPENSATE_EN    ),
+  .INTERLINE_GAP      ( INTERLINE_GAP    )
 ) bilinear_demosaicing_3x3 (
   .clk_i              ( clk_i            ),
   .rst_i              ( rst_i            ),
