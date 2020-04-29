@@ -153,7 +153,10 @@ always_ff @( posedge clk_i, posedge rst_i )
     video_o.tlast <= 1'b0;
   else
     if( video_i.tuser && video_i.tvalid )
-      video_o.tlast <= 1'b0;
+      if( read_in_progress )
+        video_o.tlast <= 1'b1;
+      else
+        video_o.tlast <= 1'b0;
     else
       if( read_in_progress && rd_ptr == ( line_size - 1'b1 ) && video_o.tready )
         video_o.tlast <= 1'b1;

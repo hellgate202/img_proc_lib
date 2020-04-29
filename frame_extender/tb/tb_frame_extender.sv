@@ -23,7 +23,7 @@ parameter int    TDATA_WIDTH        = PX_WIDTH % 8 ?
                                       ( PX_WIDTH  / 8 + 1 ) * 8 :
                                       PX_WIDTH * 8;
 parameter int    FRAMES_AMOUNT      = 1;
-parameter string EOF_STRATEGY       = "FIXED";
+parameter        EOF_STRATEGY       = "FIXED";
 parameter int    ALLOW_BACKPRESSURE = 0;
 parameter int    MIN_INTERLINE_GAP  = TOTAL_X - FRAME_RES_X;
 
