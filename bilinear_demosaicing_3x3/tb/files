@@ -6,5 +6,12 @@
 ../../ip/dual_port_ram/src/dual_port_ram.sv
 ../../src/line_buf.sv
 ../../src/window_buf.sv
+../../lib/fifo_lib/src/sc_fifo.sv
+../../lib/fifo_lib/src/axi4_stream_fifo.sv
+../../frame_extender/src/adaptive_eof_extractor.sv
+../../frame_extender/src/fixed_eof_extractor.sv
+../../frame_extender/src/line_extender.sv
+../../frame_extender/src/gap_buffer.sv
+../../frame_extender/src/frame_extender.sv
 ../src/bilinear_demosaicing_3x3.sv
 ./tb_bilinear_demosaicing_3x3.sv

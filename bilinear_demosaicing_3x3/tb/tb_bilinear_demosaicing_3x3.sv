@@ -12,11 +12,12 @@ parameter int    CLK_T           = 6734;
 parameter int    RAW_PX_WIDTH    = 10;
 parameter int    FRAME_RES_X     = 1920;
 parameter int    FRAME_RES_Y     = 1080;
+parameter int    COMPENSATE_EN   = 1;
 parameter int    TOTAL_X         = 2200;
 parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
-parameter int    RANDOM_TVALID   = 1;
-parameter int    RANDOM_TREADY   = 1;
+parameter int    RANDOM_TVALID   = 0;
+parameter int    RANDOM_TREADY   = 0;
 parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
 parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
@@ -24,6 +25,8 @@ parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
 parameter int    RAW_TDATA_WIDTH = RAW_PX_WIDTH % 8 ?
                                    ( RAW_PX_WIDTH  / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 8;
+parameter int    CUT             = COMPENSATE_EN ? 0 : 2;
+parameter int    GAP             = TOTAL_X - FRAME_RES_X;
 
 localparam bit [1 : 0] GBRG = 2'b00;
 localparam bit [1 : 0] BGGR = 2'b01;
@@ -120,7 +123,7 @@ task automatic video_recorder();
       if( rx_video_mbx.num() > 0 )
         begin
           rx_video_mbx.get( rx_bytes );
-          if( rx_bytes.size() != ( ( FRAME_RES_X - 2 ) * ( RGB_TDATA_WIDTH / 8 ) ) )
+          if( rx_bytes.size() != ( ( FRAME_RES_X - CUT ) * ( RGB_TDATA_WIDTH / 8 ) ) )
             begin
               $display( "Wrong size of the line: %0d. Should be %0d", rx_bytes.size(), ( FRAME_RES_X - 2 ) * ( RGB_TDATA_WIDTH / 8 ) );
               $stop();
@@ -153,7 +156,10 @@ bilinear_demosaicing_3x3_csr #(
 
 bilinear_demosaicing_3x3 #(
   .RAW_PX_WIDTH       ( RAW_PX_WIDTH     ),
-  .MAX_LINE_SIZE      ( FRAME_RES_X      )
+  .FRAME_RES_X        ( FRAME_RES_X      ),
+  .FRAME_RES_Y        ( FRAME_RES_Y      ),
+  .COMPENSATE_EN      ( COMPENSATE_EN    ),
+  .INTERLINE_GAP      ( GAP              )
 ) DUT (
   .clk_i              ( clk              ),
   .rst_i              ( rst              ),

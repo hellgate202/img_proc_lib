@@ -20,7 +20,7 @@ localparam int TDATA_WIDTH   = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDT
 localparam int EXTENDED_X    = FRAME_RES_X + LEFT + RIGHT;
 localparam int TOP_CNT_WIDTH = TOP == 1 || TOP == 0 ? 1 : $clog2( TOP );
 localparam int BOT_CNT_WIDTH = BOTTOM == 1 || BOTTOM == 0 ? 1 : $clog2( BOTTOM );
-localparam int LINES_IN_FIFO = TOP > BOTTOM ? TOP : BOTTOM == 0 ? 1 : BOTTOM;
+localparam int LINES_IN_FIFO = TOP > BOTTOM ? TOP + 1 : BOTTOM == 0 ? 1 : BOTTOM + 1;
 localparam int WORDS_IN_FIFO = EOF_STRATEGY == "FIXED" ? LINES_IN_FIFO * EXTENDED_X :
                                                          LINES_IN_FIFO * EXTENDED_X * 2;
 localparam int DROP_ALLOWED  = !ALLOW_BACKPRESSURE;

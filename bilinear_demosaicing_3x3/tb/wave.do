@@ -11,49 +11,28 @@ quietly virtual function -install /tb_bilinear_demosaicing_3x3/DUT/win_stream -e
 quietly virtual function -install /tb_bilinear_demosaicing_3x3/DUT/win_stream -env /tb_bilinear_demosaicing_3x3 { &{/tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[93], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[92], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[91], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[90], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[89], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[88], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[87], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[86], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[85], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[84], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[83], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[82] }} win_2_1
 quietly virtual function -install /tb_bilinear_demosaicing_3x3/DUT/win_stream -env /tb_bilinear_demosaicing_3x3 { &{/tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[95], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[94], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[93], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[92], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[91], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[90], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[89], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[88], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[87], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[86], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[85], /tb_bilinear_demosaicing_3x3/DUT/win_stream/tdata[84] }} win_2_1001
 quietly WaveActivateNextPane {} 0
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/aclk
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/aresetn
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/awvalid
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/awready
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/awaddr
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/awprot
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/wvalid
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/wready
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/wdata
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/wstrb
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/bvalid
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/bready
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/bresp
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/arvalid
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/arready
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/araddr
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/arprot
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/rvalid
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/rready
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/rdata
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/csr_i/rresp
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/demosaicing_ctrl_o/en
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/demosaicing_ctrl_o/pattern
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/clk_i
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/rst_i
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/wr_addr_reg
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/rd_addr_reg
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/wr_addr_match
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/rd_addr_match
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/wdata_lock
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/wstrb_lock
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/awaddr_lock
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/aw_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/ar_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/w_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/b_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/r_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/was_aw_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/was_w_handshake
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/backpressure
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/wr_req
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/en_cr
-add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT_CSR/pattern_cr
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/aclk
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/aresetn
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tvalid
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tready
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tdata
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tstrb
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tkeep
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tlast
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tid
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tdest
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/raw_video_i/tuser
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/aclk
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/aresetn
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tvalid
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tready
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tdata
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tstrb
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tkeep
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tlast
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tid
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tdest
+add wave -noupdate /tb_bilinear_demosaicing_3x3/DUT/rgb_video_o/tuser
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {68662905 ps} 0}
 quietly wave cursor active 1
@@ -71,4 +50,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {3293782388 ps} {4516090762 ps}
+WaveRestoreZoom {0 ps} {37782285 ps}

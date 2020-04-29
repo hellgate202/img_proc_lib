@@ -1,26 +1,30 @@
 module bilinear_demosaicing_3x3 #(
   parameter int RAW_PX_WIDTH  = 10,
-  parameter int MAX_LINE_SIZE = 1920
+  parameter int FRAME_RES_X   = 1920,
+  parameter int FRAME_RES_Y   = 1080,
+  parameter int COMPENSATE_EN = 1,
+  parameter int INTERLINE_GAP = 280
 )(
   input                     clk_i,
   input                     rst_i,
   demosaicing_ctrl_if.slave demosaicing_ctrl_i,
-  axi4_stream_if.slave     raw_video_i,
-  axi4_stream_if.master    rgb_video_o
+  axi4_stream_if.slave      raw_video_i,
+  axi4_stream_if.master     rgb_video_o
 );
 
-localparam WIN_SIZE        = 3;
-localparam RGB_PX_WIDTH    = RAW_PX_WIDTH * 3;
-localparam RAW_TDATA_WIDTH = RAW_PX_WIDTH % 8 ?
-                             ( RAW_PX_WIDTH / 8 + 1 ) * 8 :
-                             RAW_PX_WIDTH;
-localparam RGB_TDATA_WIDTH = RGB_PX_WIDTH % 8 ?
-                             ( RGB_PX_WIDTH / 8 + 1 ) * 8 :
-                             RGB_PX_WIDTH;
-localparam WIN_WIDTH       = RAW_PX_WIDTH * WIN_SIZE * WIN_SIZE;
-localparam WIN_TDATA_WIDTH = WIN_WIDTH % 8 ?
-                            ( WIN_WIDTH / 8 + 1 ) * 8 :
-                            WIN_WIDTH;
+localparam int WIN_SIZE        = 3;
+localparam int RGB_PX_WIDTH    = RAW_PX_WIDTH * 3;
+localparam int RAW_TDATA_WIDTH = RAW_PX_WIDTH % 8 ?
+                                 ( RAW_PX_WIDTH / 8 + 1 ) * 8 :
+                                 RAW_PX_WIDTH;
+localparam int RGB_TDATA_WIDTH = RGB_PX_WIDTH % 8 ?
+                                 ( RGB_PX_WIDTH / 8 + 1 ) * 8 :
+                                 RGB_PX_WIDTH;
+localparam int WIN_WIDTH       = RAW_PX_WIDTH * WIN_SIZE * WIN_SIZE;
+localparam int WIN_TDATA_WIDTH = WIN_WIDTH % 8 ?
+                                 ( WIN_WIDTH / 8 + 1 ) * 8 :
+                                 WIN_WIDTH;
+localparam int EXTENDED_X      = COMPENSATE_EN ? FRAME_RES_X + 2 : FRAME_RES_X;
 
 localparam bit [1 : 0] GBRG = 2'b00;
 localparam bit [1 : 0] BGGR = 2'b01;
@@ -66,15 +70,60 @@ axi4_stream_if #(
   .aresetn     ( !rst_i          )
 );
 
+axi4_stream_if #(
+  .TDATA_WIDTH ( RAW_TDATA_WIDTH ),
+  .TID_WIDTH   ( 1               ),
+  .TDEST_WIDTH ( 1               ),
+  .TUSER_WIDTH ( 1               )
+) extended_video (
+  .aclk        ( clk_i           ),
+  .aresetn     ( !rst_i          )
+);
+
+generate
+  if( COMPENSATE_EN )
+    begin : duplicator
+      frame_extender #(
+        .TOP                ( 1              ),
+        .BOTTOM             ( 1              ),
+        .LEFT               ( 1              ),
+        .RIGHT              ( 1              ),
+        .FRAME_RES_X        ( FRAME_RES_X    ),
+        .FRAME_RES_Y        ( FRAME_RES_Y    ),
+        .PX_WIDTH           ( RAW_PX_WIDTH   ),
+        .EOF_STRATEGY       ( "FIXED"        ),
+        .ALLOW_BACKPRESSURE ( 0              ),
+        .MIN_INTERLINE_GAP  ( INTERLINE_GAP  )
+      ) frame_extender_inst (
+        .clk_i              ( clk_i          ),
+        .rst_i              ( rst_i          ),
+        .video_i            ( raw_video_i    ),
+        .video_o            ( extended_video )
+      );
+    end
+  else
+    begin : passthrough
+      assign extended_video.tvalid = raw_video_i.tvalid;
+      assign extended_video.tdata  = raw_video_i.tdata;
+      assign extended_video.tlast  = raw_video_i.tlast;
+      assign extended_video.tuser  = raw_video_i.tuser;
+      assign extended_video.tstrb  = raw_video_i.tstrb;
+      assign extended_video.tkeep  = raw_video_i.tkeep;
+      assign extended_video.tid    = raw_video_i.tid;
+      assign extended_video.tdest  = raw_video_i.tdest;
+      assign raw_video_i.tready    = extended_video.tready;
+    end
+endgenerate
+
 window_buf #(
   .TDATA_WIDTH   ( RAW_TDATA_WIDTH ),
   .PX_WIDTH      ( RAW_PX_WIDTH    ),
   .WIN_SIZE      ( WIN_SIZE        ),
-  .MAX_LINE_SIZE ( MAX_LINE_SIZE   )
+  .MAX_LINE_SIZE ( EXTENDED_X      )
 ) window_buf_inst (
   .clk_i         ( clk_i           ),
   .rst_i         ( rst_i           ),
-  .video_i       ( raw_video_i     ),
+  .video_i       ( extended_video  ),
   .window_data_o ( win_stream      )
 );
 
