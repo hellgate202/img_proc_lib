@@ -40,7 +40,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     line_locked <= 1'b0;
   else
-    if( video_i.tuser && video_i.tready )
+    if( video_i.tuser && video_i.tvalid )
       line_locked <= 1'b0;
     else
       if( flush_line_i )
@@ -53,7 +53,10 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     line_locked_d1 <= 1'b0;
   else
-    line_locked_d1 <= line_locked;
+    if( video_i.tuser && video_i.tvalid )
+      line_locked_d1 <= 1'b0;
+    else
+      line_locked_d1 <= line_locked;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -64,7 +67,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       tuser_d1  <= 1'b0;
     end
   else
-    if( !line_locked_d1 )
+    if( !line_locked_d1 || video_i.tvalid && video_i.tready )
       begin
         tdata_d1  <= video_i.tdata;
         tvalid_d1 <= video_i.tvalid;
@@ -153,10 +156,7 @@ always_ff @( posedge clk_i, posedge rst_i )
     video_o.tlast <= 1'b0;
   else
     if( video_i.tuser && video_i.tvalid )
-      if( read_in_progress )
-        video_o.tlast <= 1'b1;
-      else
-        video_o.tlast <= 1'b0;
+      video_o.tlast <= 1'b0;
     else
       if( read_in_progress && rd_ptr == ( line_size - 1'b1 ) && video_o.tready )
         video_o.tlast <= 1'b1;
@@ -174,7 +174,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( tvalid_d1 && tuser_d1 )
         was_sof <= 1'b1;
       else
-        if( video_o.tvalid && video_o.tready )
+        if( video_o.tvalid && video_o.tready && video_o.tuser )
           was_sof <= 1'b0;
 
 always_ff @( posedge clk_i, posedge rst_i )

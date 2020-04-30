@@ -130,8 +130,8 @@ always_ff @( posedge clk_i, posedge rst_i )
         end
 
 always_comb
-  if( video_i.tdata && video_i.tuser )
-    flush_buf <= '1;
+  if( video_i.tvalid && video_i.tuser )
+    flush_buf = '1;
   else
     for( int i = 0; i <= WIN_SIZE; i++ )
       if( active_flush_buf[i] && read_done )
