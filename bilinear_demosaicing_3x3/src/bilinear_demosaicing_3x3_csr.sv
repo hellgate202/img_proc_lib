@@ -97,8 +97,8 @@ assign csr_i.bresp   = 2'b0;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      en_cr      <= 1'b0;
-      pattern_cr <= 2'b0;
+      en_cr      <= 1'd1;
+      pattern_cr <= 2'd3;
     end
   else
     if( wr_req )
