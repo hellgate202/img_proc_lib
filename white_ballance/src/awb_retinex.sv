@@ -10,17 +10,20 @@ module awb_retinex #(
   output logic [COEF_WIDTH - 1 : 0] b_corr_o
 );
 
+localparam bit [COEF_WIDTH - 1 : 0] FIXED_ONE = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
+
 logic [PX_WIDTH - 1 : 0]   r_max;
 logic [PX_WIDTH - 1 : 0]   g_max;
 logic [PX_WIDTH - 1 : 0]   b_max;
-logic                      g_max_fixed;
+logic [COEF_WIDTH - 1 : 0] g_max_fixed;
 logic                      corr_calc_start;
 logic [COEF_WIDTH - 1 : 0] r_corr;
 logic [COEF_WIDTH - 1 : 0] b_corr;
 logic                      r_corr_valid;
 logic                      b_corr_valid;
 
-assign video_i.tready = 1'b1;
+assign video_i.tready  = 1'b1;
+assign corr_calc_start = video_i.tvalid && video_i.tready && video_i.tuser;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
@@ -56,7 +59,7 @@ division #(
   .rst_i      ( rst_i                ),
   .start_i    ( corr_calc_start      ),
   .divinded_i ( g_max_fixed          ),
-  .divisor    ( COEF_WIDTH'( r_max ) ),
+  .divisor_i  ( COEF_WIDTH'( r_max ) ),
   .ready_o    (                      ),
   .valid_o    ( r_corr_valid         ),
   .quotient_o ( r_corr               ),
@@ -65,7 +68,7 @@ division #(
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    r_corr_o <= COEF_WIDTH'( 0 );
+    r_corr_o <= FIXED_ONE;
   else
     if( r_corr_valid )
       r_corr_o <= r_corr;
@@ -77,7 +80,7 @@ division #(
   .rst_i      ( rst_i                ),
   .start_i    ( corr_calc_start      ),
   .divinded_i ( g_max_fixed          ),
-  .divisor    ( COEF_WIDTH'( b_max ) ),
+  .divisor_i  ( COEF_WIDTH'( b_max ) ),
   .ready_o    (                      ),
   .valid_o    ( b_corr_valid         ),
   .quotient_o ( b_corr               ),
@@ -86,7 +89,7 @@ division #(
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    b_corr_o <= COEF_WIDTH'( 0 );
+    b_corr_o <= FIXED_ONE;
   else
     if( r_corr_valid )
       b_corr_o <= r_corr;

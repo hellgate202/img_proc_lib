@@ -1,5 +1,5 @@
 module white_ballance_corrector #(
-  parameter int PX_WIDTH    = 30,
+  parameter int PX_WIDTH    = 10,
   parameter int FRAME_RES_X = 1920,
   parameter int FRAME_RES_Y = 1080,
   parameter int FRACT_WIDTH = 10
@@ -11,7 +11,7 @@ module white_ballance_corrector #(
   axi4_stream_if.master video_o
 );
 
-localparam bit [1 : 0]              AUTO_GW_MODE     = 2'b00;
+localparam bit [1 : 0]              AUTO_GW_MODE     = 2'd0;
 localparam bit [1 : 0]              AUTO_R_MODE      = 2'd1;
 localparam bit [1 : 0]              MANUAL_MODE      = 2'd2;
 localparam bit [1 : 0]              CALIBRATION_MODE = 2'd3;
@@ -19,8 +19,8 @@ localparam bit [1 : 0]              MANUAL_RED       = 2'd0;
 localparam bit [1 : 0]              MANUAL_GREEN     = 2'd1;
 localparam bit [1 : 0]              MANUAL_BLUE      = 2'd2;
 localparam int                      TDATA_WIDTH      = PX_WIDTH % 8 ? 
-                                                       ( PX_WIDTH / 8 + 1 ) * 8 : 
-                                                       PX_WIDTH;
+                                                       ( PX_WIDTH * 3 / 8 + 1 ) * 8 : 
+                                                       PX_WIDTH * 3;
 localparam int                      TDATA_WIDTH_B    = TDATA_WIDTH / 8;
 localparam int                      COEF_WIDTH       = PX_WIDTH + FRACT_WIDTH;
 localparam bit [COEF_WIDTH - 1 : 0] FIXED_ONE = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
@@ -61,6 +61,24 @@ axi4_stream_if #(
   .aclk        ( clk_i       ),
   .aresetn     ( !rst_i      )
 );
+
+assign gw_path_video.tdata  = video_i.tdata;
+assign gw_path_video.tvalid = video_i.tvalid;
+assign gw_path_video.tstrb  = video_i.tstrb;
+assign gw_path_video.tkeep  = video_i.tkeep;
+assign gw_path_video.tlast  = video_i.tlast;
+assign gw_path_video.tuser  = video_i.tuser;
+assign gw_path_video.tid    = video_i.tid;
+assign gw_path_video.tdest  = video_i.tdest;
+
+assign r_path_video.tdata  = video_i.tdata;
+assign r_path_video.tvalid = video_i.tvalid;
+assign r_path_video.tstrb  = video_i.tstrb;
+assign r_path_video.tkeep  = video_i.tkeep;
+assign r_path_video.tlast  = video_i.tlast;
+assign r_path_video.tuser  = video_i.tuser;
+assign r_path_video.tid    = video_i.tid;
+assign r_path_video.tdest  = video_i.tdest;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
@@ -151,9 +169,9 @@ awb_retinex #(
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      man_r_corr <= COEF_WIDTH'( 0 );
-      man_g_corr <= COEF_WIDTH'( 0 );
-      man_b_corr <= COEF_WIDTH'( 0 );
+      man_r_corr <= FIXED_ONE;
+      man_g_corr <= FIXED_ONE;
+      man_b_corr <= FIXED_ONE;
     end
   else
     if( wb_ctrl_i.man_lock )
@@ -167,9 +185,9 @@ always_ff @( posedge clk_i, posedge rst_i )
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      r_corr <= COEF_WIDTH'( 0 );
-      g_corr <= COEF_WIDTH'( 0 );
-      b_corr <= COEF_WIDTH'( 0 );
+      r_corr <= FIXED_ONE;
+      g_corr <= FIXED_ONE;
+      b_corr <= FIXED_ONE;
     end
   else
     case( wb_ctrl_i.mode )
@@ -179,7 +197,7 @@ always_ff @( posedge clk_i, posedge rst_i )
           g_corr <= FIXED_ONE;
           b_corr <= gw_b_corr;
         end
-      AUTO_GW_MODE:
+      AUTO_R_MODE:
         begin
           r_corr <= r_r_corr;
           g_corr <= FIXED_ONE;

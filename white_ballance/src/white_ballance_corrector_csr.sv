@@ -1,6 +1,6 @@
 import white_ballance_corrector_csr_pkg::*; 
 
-module bilinear_demosaicing_3x3_csr #(
+module white_ballance_corrector_csr #(
   parameter int BASE_ADDR = 32'h0000_0000 
 )(
   input              clk_i,
@@ -28,7 +28,7 @@ logic                      was_w_handshake;
 logic                      backpressure;
 logic                      wr_req;
 
-logic [1 : 0]              mode_sel_cr;
+logic [1 : 0]              mode_cr;
 logic                      cal_stb_cr;
 logic                      cal_stb_cr_d1;
 logic [1 : 0]              man_sel_cr;
@@ -37,10 +37,10 @@ logic                      man_lock_cr;
 
 assign wr_addr_reg   = REG_ADDR_W'( ( csr_i.awaddr - BASE_ADDR ) >> 2 );
 assign rd_addr_reg   = REG_ADDR_W'( ( csr_i.araddr - BASE_ADDR ) >> 2 );
-assign wr_addr_match = csr_i.awaddr >= ( ( DEMOSAICING_EN_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.awaddr <= ( ( DEMOSAICING_PATTERN_CR << 2 ) + BASE_ADDR );
-assign rd_addr_match = csr_i.araddr >= ( ( DEMOSAICING_EN_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.araddr <= ( ( DEMOSAICING_PATTERN_CR << 2 ) + BASE_ADDR );
+assign wr_addr_match = csr_i.awaddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
+                       csr_i.awaddr <= ( ( WB_MAN_LOCK_CR << 2 ) + BASE_ADDR );
+assign rd_addr_match = csr_i.araddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
+                       csr_i.araddr <= ( ( WB_MAN_LOCK_CR << 2 ) + BASE_ADDR );
 assign aw_handshake  = csr_i.awvalid && csr_i.awready && wr_addr_match;
 assign ar_handshake  = csr_i.arvalid && csr_i.arready && rd_addr_match;
 assign w_handshake   = csr_i.wvalid && csr_i.wready && ( wr_addr_match || was_aw_handshake );
@@ -101,16 +101,19 @@ assign csr_i.bresp   = 2'b0;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      en_cr      <= 1'd1;
-      pattern_cr <= 2'd3;
+      mode_cr     <= 2'd0;
+      cal_stb_cr  <= 1'd0;
+      man_sel_cr  <= 2'd0;
+      man_coef_cr <= 32'd0;
+      man_lock_cr <= 1'd0;
     end
   else
     if( wr_req )
       case( wr_addr_reg )
-        WB_MODE_SEL_CR:
+        WB_MODE_CR:
           begin
             if( wstrb_lock[0] )
-              mode_sel_cr <= wdata_lock[1 : 0];
+              mode_cr <= wdata_lock[1 : 0];
           end
         WB_CAL_STB_CR:
           begin
@@ -152,7 +155,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( ar_handshake )
       case( rd_addr_reg )
-        WB_MODE_SEL_CR: csr_i.rdata <= 32'( mode_sel_cr );
+        WB_MODE_CR:     csr_i.rdata <= 32'( mode_cr );
         WB_CAL_STB_CR:  csr_i.rdata <= 32'( cal_stb_cr );
         WB_MAN_SEL_CR:  csr_i.rdata <= 32'( man_sel_cr );
         WB_MAN_COEF_CR: csr_i.rdata <= 32'( man_coef_cr );
@@ -169,10 +172,10 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     cal_stb_cr_d1 <= cal_stb_cr;
 
-assign wb_ctrl_o.mode_sel    = mode_sel_cr;
-assign wb_ctrl_o.cal_stb     = cal_stb_cr && !cal_stb_cr_d1;
-assign wb_ctrl_o.man_sel     = man_sel_cr;
-assign wb_ctrl_o.man_coef_cr = man_coef_cr;
-assign wb_ctrl_o.man_lock_cr = man_lock_cr;
+assign wb_ctrl_o.mode     = mode_cr;
+assign wb_ctrl_o.cal_stb  = cal_stb_cr && !cal_stb_cr_d1;
+assign wb_ctrl_o.man_sel  = man_sel_cr;
+assign wb_ctrl_o.man_coef = man_coef_cr;
+assign wb_ctrl_o.man_lock = man_lock_cr;
 
 endmodule

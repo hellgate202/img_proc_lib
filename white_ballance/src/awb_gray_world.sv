@@ -12,9 +12,10 @@ module awb_gray_world #(
   output logic [COEF_WIDTH - 1 : 0] b_corr_o
 );
 
-localparam int PX_AMOUNT    = FRAME_RES_X + FRAME_RES_Y;
-localparam int PX_CNT_WIDTH = $clog2( PX_AMOUNT + 1 );
-localparam int PX_ACC_WIDTH = PX_WIDTH + PX_CNT_WIDTH;
+localparam int PX_AMOUNT                      = FRAME_RES_X * FRAME_RES_Y;
+localparam int PX_CNT_WIDTH                   = $clog2( PX_AMOUNT + 1 );
+localparam int PX_ACC_WIDTH                   = PX_WIDTH + PX_CNT_WIDTH;
+localparam bit [COEF_WIDTH - 1 : 0] FIXED_ONE = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
 
 logic [PX_ACC_WIDTH - 1 : 0] r_sum;
 logic [PX_ACC_WIDTH - 1 : 0] g_sum;
@@ -31,7 +32,6 @@ logic [COEF_WIDTH - 1 : 0]   g_mean_fixed;
 logic [COEF_WIDTH - 1 : 0]   r_corr;
 logic [COEF_WIDTH - 1 : 0]   b_corr;
 logic                        r_corr_valid;
-logic                        g_corr_valid;
 
 assign video_i.tready = 1'b1;
 
@@ -76,7 +76,7 @@ division #(
   .rst_i      ( rst_i                   ),
   .start_i    ( mean_calc_start         ),
   .divinded_i ( r_sum                   ),
-  .divisor    ( PX_ACC_WIDTH'( px_cnt ) ),
+  .divisor_i  ( PX_ACC_WIDTH'( px_cnt ) ),
   .ready_o    (                         ),
   .valid_o    ( r_mean_valid            ),
   .quotient_o ( r_mean                  ),
@@ -90,7 +90,7 @@ division #(
   .rst_i      ( rst_i                   ),
   .start_i    ( mean_calc_start         ),
   .divinded_i ( g_sum                   ),
-  .divisor    ( PX_ACC_WIDTH'( px_cnt ) ),
+  .divisor_i  ( PX_ACC_WIDTH'( px_cnt ) ),
   .ready_o    (                         ),
   .valid_o    ( g_mean_valid            ),
   .quotient_o ( g_mean                  ),
@@ -104,7 +104,7 @@ division #(
   .rst_i      ( rst_i                   ),
   .start_i    ( mean_calc_start         ),
   .divinded_i ( b_sum                   ),
-  .divisor    ( PX_ACC_WIDTH'( px_cnt ) ),
+  .divisor_i  ( PX_ACC_WIDTH'( px_cnt ) ),
   .ready_o    (                         ),
   .valid_o    ( b_mean_valid            ),
   .quotient_o ( b_mean                  ),
@@ -120,7 +120,7 @@ division #(
   .rst_i      ( rst_i                 ),
   .start_i    ( r_mean_valid          ),
   .divinded_i ( g_mean_fixed          ),
-  .divisor    ( COEF_WIDTH'( r_mean ) ),
+  .divisor_i  ( COEF_WIDTH'( r_mean ) ),
   .ready_o    (                       ),
   .valid_o    ( r_corr_valid          ),
   .quotient_o ( r_corr                ),
@@ -129,7 +129,7 @@ division #(
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    r_corr_o <= COEF_WIDTH'( 0 );
+    r_corr_o <= FIXED_ONE;
   else
     if( r_corr_valid )
       r_corr_o <= r_corr;
@@ -141,7 +141,7 @@ division #(
   .rst_i      ( rst_i                 ),
   .start_i    ( b_mean_valid          ),
   .divinded_i ( g_mean_fixed          ),
-  .divisor    ( COEF_WIDTH'( b_mean ) ),
+  .divisor_i  ( COEF_WIDTH'( b_mean ) ),
   .ready_o    (                       ),
   .valid_o    ( b_corr_valid          ),
   .quotient_o ( b_corr                ),
@@ -150,7 +150,7 @@ division #(
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
-    b_corr_o <= COEF_WIDTH'( 0 );
+    b_corr_o <= FIXED_ONE;
   else
     if( r_corr_valid )
       b_corr_o <= r_corr;

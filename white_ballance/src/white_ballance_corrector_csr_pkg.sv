@@ -1,6 +1,6 @@
 package white_ballance_corrector_csr_pkg;
 
-parameter int WB_MODE_SEL_CR = 0;
+parameter int WB_MODE_CR     = 0;
 parameter int WB_CAL_STB_CR  = 1;
 parameter int WB_MAN_SEL_CR  = 2;
 parameter int WB_MAN_COEF_CR = 3;

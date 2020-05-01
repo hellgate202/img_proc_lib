@@ -1,0 +1,10 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
+../src/wb_ctrl_if.sv
+../src/white_ballance_corrector_csr_pkg.sv
+../src/white_ballance_corrector_csr.sv
+../../lib/math_lib/src/division.sv
+../src/awb_gray_world.sv
+../src/awb_retinex.sv
+../src/white_ballance_corrector.sv
+./tb_white_ballance_corrector.sv

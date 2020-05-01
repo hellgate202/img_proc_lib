@@ -1,6 +1,6 @@
 module white_ballance_corrector_wrap #(
   parameter BASE_ADDR     = 32'h0000_0000,
-  parameter PX_WIDTH      = 30,
+  parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 32,
   parameter TDATA_WIDTH_B = 4,
   parameter FRAME_RES_X   = 1920,
