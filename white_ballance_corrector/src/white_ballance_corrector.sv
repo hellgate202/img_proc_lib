@@ -63,7 +63,7 @@ axi4_stream_if #(
 );
 
 assign gw_path_video.tdata  = video_i.tdata;
-assign gw_path_video.tvalid = video_i.tvalid;
+assign gw_path_video.tvalid = video_i.tvalid && video_i.tready;
 assign gw_path_video.tstrb  = video_i.tstrb;
 assign gw_path_video.tkeep  = video_i.tkeep;
 assign gw_path_video.tlast  = video_i.tlast;
@@ -72,7 +72,7 @@ assign gw_path_video.tid    = video_i.tid;
 assign gw_path_video.tdest  = video_i.tdest;
 
 assign r_path_video.tdata  = video_i.tdata;
-assign r_path_video.tvalid = video_i.tvalid;
+assign r_path_video.tvalid = video_i.tvalid && video_i.tready;
 assign r_path_video.tstrb  = video_i.tstrb;
 assign r_path_video.tkeep  = video_i.tkeep;
 assign r_path_video.tlast  = video_i.tlast;
