@@ -7,3 +7,6 @@
 [submodule "lib/fifo_lib"]
 	path = lib/fifo_lib
 	url = https://github.com/hellgate202/fifo_lib
+[submodule "lib/math_lib"]
+	path = lib/math_lib
+	url = https://github.com/hellgate202/math_lib
