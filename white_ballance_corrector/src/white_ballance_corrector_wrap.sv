@@ -1,5 +1,5 @@
 module white_ballance_corrector_wrap #(
-  parameter BASE_ADDR     = 32'h0000_0000,
+  parameter CSR_BASE_ADDR = 32'h0000_0000,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 32,
   parameter TDATA_WIDTH_B = 4,
@@ -100,7 +100,7 @@ axi4_stream_if #(
   .TDEST_WIDTH ( 1           ),
   .TID_WIDTH   ( 1           ),
   .TUSER_WIDTH ( 1           )
-) rgb (
+) video_o (
   .aclk        ( clk_i       ),
   .aresetn     ( !rst_i      )
 );
