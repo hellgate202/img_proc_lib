@@ -153,6 +153,6 @@ always_ff @( posedge clk_i, posedge rst_i )
     b_corr_o <= FIXED_ONE;
   else
     if( r_corr_valid )
-      b_corr_o <= r_corr;
+      b_corr_o <= b_corr;
 
 endmodule

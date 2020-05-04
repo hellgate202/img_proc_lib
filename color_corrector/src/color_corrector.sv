@@ -22,8 +22,8 @@ function logic [COEF_WIDTH * 2 : 0] oc_to_tc(
 );
 
 logic [COEF_WIDTH * 2 : 0] tc;
-
-tc[COEF_WIDTH * 2] = sign_i;
+if( abs_i )
+  tc[COEF_WIDTH * 2] = sign_i;
 if( sign_i )
   tc[COEF_WIDTH * 2 - 1 : 0] = ~( abs_i - 1'b1 );
 else

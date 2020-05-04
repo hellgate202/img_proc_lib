@@ -101,7 +101,7 @@ assign csr_i.bresp   = 2'b0;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      mode_cr     <= 2'd0;
+      mode_cr     <= 2'd2;
       cal_stb_cr  <= 1'd0;
       man_sel_cr  <= 2'd0;
       man_coef_cr <= 32'd0;
