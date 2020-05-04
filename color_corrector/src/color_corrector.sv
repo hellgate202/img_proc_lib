@@ -14,6 +14,8 @@ localparam int TDATA_WIDTH = PX_WIDTH % 8 ?
                              ( PX_WIDTH * 3 / 8 + 1 ) * 8 :
                              PX_WIDTH * 3;
 
+localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
+
 function logic [COEF_WIDTH * 2 : 0] oc_to_tc(
   input logic                          sign_i
   input logic [COEF_WIDTH * 2 - 1 : 0] abs_i
@@ -95,6 +97,40 @@ logic [COEF_WIDTH * 2 : 0]     b_f_s;
 logic [PX_WIDTH - 1 : 0]       r_clip;
 logic [PX_WIDTH - 1 : 0]       g_clip;
 logic [PX_WIDTH - 1 : 0]       b_clip;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    begin
+      a11 <= FIXED_ONE;
+      a12 <= FIXED_ONE;
+      a13 <= FIXED_ONE;
+      a14 <= FIXED_ONE;
+      a21 <= FIXED_ONE;
+      a22 <= FIXED_ONE;
+      a23 <= FIXED_ONE;
+      a24 <= FIXED_ONE;
+      a31 <= FIXED_ONE;
+      a32 <= FIXED_ONE;
+      a33 <= FIXED_ONE;
+      a34 <= FIXED_ONE;
+    end
+  else
+    if( cc_ctrl_i.coef_lock )
+      case( cc_ctrl_i.coef_sel )
+        4'd0:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd1:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd2:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd3:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd4:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd5:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd6:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd7:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd8:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd9:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd10: a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd11: a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        default:;
+      endcase
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
@@ -284,16 +320,28 @@ always_ff @( posedge clk_i, posedge rst_i )
         b_clip <= clip( b_f_s );
       end
 
-assign video_o.tdata[PX_WIDTH - 1 -: PX_WIDTH]     = g_clip;
-assign video_o.tdata[PX_WIDTH * 2 - 1 -: PX_WIDTH] = b_clip;
-assign video_o.tdata[PX_WIDTH * 3 - 1 -: PX_WIDTH] = r_clip;
-assign video_o.tvalid                              = video_d[4].tvalid;
-assign video_o.tlast                               = video_d[4].tlast;
-assign video_o.tuser                               = video_d[4].tuser;
-assign video_o.tstrb                               = video_d[4].tstrb;
-assign video_o.tkeep                               = video_d[4].tkeep;
-assign video_o.tid                                 = video_d[4].tid;
-assign video_o.tdest                               = video_d[4].tdest;
-assign video_d[4].tready                           = video_o.tready;
+generate
+  if( ( PX_WIDTH * 3 ) == TDATA_WIDTH )
+    begin : n_append
+      assign video_o.tdata[PX_WIDTH - 1 -: PX_WIDTH]     = g_clip;
+      assign video_o.tdata[PX_WIDTH * 2 - 1 -: PX_WIDTH] = b_clip;
+      assign video_o.tdata[PX_WIDTH * 3 - 1 -: PX_WIDTH] = r_clip;
+    end
+  else
+    begin : append
+      assign video_o.tdata[TDATA_WIDTH - 1 : PX_WIDTH * 3] = ( TDATA_WIDTH - PX_WIDTH * 3 )'( 0 );
+      assign video_o.tdata[PX_WIDTH - 1 -: PX_WIDTH]       = g_clip;
+      assign video_o.tdata[PX_WIDTH * 2 - 1 -: PX_WIDTH]   = b_clip;
+      assign video_o.tdata[PX_WIDTH * 3 - 1 -: PX_WIDTH]   = r_clip;
+    end
+
+assign video_o.tvalid    = video_d[4].tvalid;
+assign video_o.tlast     = video_d[4].tlast;
+assign video_o.tuser     = video_d[4].tuser;
+assign video_o.tstrb     = video_d[4].tstrb;
+assign video_o.tkeep     = video_d[4].tkeep;
+assign video_o.tid       = video_d[4].tid;
+assign video_o.tdest     = video_d[4].tdest;
+assign video_d[4].tready = video_o.tready;
 
 endmodule
