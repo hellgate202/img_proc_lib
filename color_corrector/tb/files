@@ -1,0 +1,8 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
+../../lib/axi4_lib/src/utility/axi4_stream_delay.sv
+../src/cc_ctrl_if.sv
+../src/color_corrector_csr_pkg.sv
+../src/color_corrector_csr.sv
+../src/color_corrector.sv
+./tb_color_corrector.sv

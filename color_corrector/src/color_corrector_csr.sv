@@ -6,7 +6,7 @@ module color_corrector_csr #(
   input              clk_i,
   input              rst_i,
   axi4_lite_if.slave csr_i,
-  wb_ctrl_if.master  cc_ctrl_o
+  cc_ctrl_if.master  cc_ctrl_o
 );
 
 localparam REG_ADDR_W = TOTAL_CSR_CNT == 1 ? 1 : $clog2( TOTAL_CSR_CNT );
@@ -151,6 +151,6 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 assign cc_ctrl_o.coef_lock = coef_lock_cr;
 assign cc_ctrl_o.coef_sel  = coef_sel_cr;
-assign cc_ctrl_o.coef_coef = coef_cr;
+assign cc_ctrl_o.coef      = coef_cr;
 
 endmodule

@@ -17,7 +17,7 @@ localparam int TDATA_WIDTH = PX_WIDTH % 8 ?
 localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
 
 function logic [COEF_WIDTH * 2 : 0] oc_to_tc(
-  input logic                          sign_i
+  input logic                          sign_i,
   input logic [COEF_WIDTH * 2 - 1 : 0] abs_i
 );
 
@@ -44,7 +44,7 @@ else
   if( f_s_i[COEF_WIDTH * 2 - 1 -: PX_WIDTH] != PX_WIDTH'( 0 ) )
     clip_value = PX_WIDTH'( 2 ** PX_WIDTH - 1 );
   else
-    clip_value = f_s[PX_WIDTH * 3 - 1 -: PX_WIDTH];
+    clip_value = f_s_i[PX_WIDTH * 3 - 1 -: PX_WIDTH];
 return clip_value;
 
 endfunction
@@ -269,7 +269,7 @@ always_ff @( posedge clk_i, posedge rst_i )
         a33b <= oc_to_tc( a33[PX_WIDTH * 2], a33b_u );
       end
 
-always_ff @( posedge clK_i, posedge rst_i )
+always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
       a11ra12g <= ( COEF_WIDTH * 2 + 1 )'( 0 );
@@ -285,9 +285,9 @@ always_ff @( posedge clK_i, posedge rst_i )
         a11ra12g <= a11r + a12g;
         a21ra22g <= a21r + a22g;
         a31ra32g <= a31r + a32g;
-        a13ba14  <= a13r + a141;
-        a23ba24  <= a23r + a241;
-        a33ba34  <= a33r + a341;
+        a13ba14  <= a13b + a141;
+        a23ba24  <= a23b + a241;
+        a33ba34  <= a33b + a341;
       end
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -334,6 +334,7 @@ generate
       assign video_o.tdata[PX_WIDTH * 2 - 1 -: PX_WIDTH]   = b_clip;
       assign video_o.tdata[PX_WIDTH * 3 - 1 -: PX_WIDTH]   = r_clip;
     end
+endgenerate
 
 assign video_o.tvalid    = video_d[4].tvalid;
 assign video_o.tlast     = video_d[4].tlast;
