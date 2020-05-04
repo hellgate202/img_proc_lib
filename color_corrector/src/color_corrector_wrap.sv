@@ -1,4 +1,4 @@
-module white_ballance_corrector_wrap #(
+module color_corrector_wrap #(
   parameter CSR_BASE_ADDR = 32'h0000_0000,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 32,
