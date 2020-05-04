@@ -102,33 +102,33 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
       a11 <= FIXED_ONE;
-      a12 <= FIXED_ONE;
-      a13 <= FIXED_ONE;
-      a14 <= FIXED_ONE;
-      a21 <= FIXED_ONE;
+      a12 <= COEF_WIDTH'( 0 );
+      a13 <= COEF_WIDTH'( 0 );
+      a14 <= COEF_WIDTH'( 0 );
+      a21 <= COEF_WIDTH'( 0 );
       a22 <= FIXED_ONE;
-      a23 <= FIXED_ONE;
-      a24 <= FIXED_ONE;
-      a31 <= FIXED_ONE;
-      a32 <= FIXED_ONE;
+      a23 <= COEF_WIDTH'( 0 );
+      a24 <= COEF_WIDTH'( 0 );
+      a31 <= COEF_WIDTH'( 0 );
+      a32 <= COEF_WIDTH'( 0 );
       a33 <= FIXED_ONE;
-      a34 <= FIXED_ONE;
+      a34 <= COEF_WIDTH'( 0 );
     end
   else
     if( cc_ctrl_i.coef_lock )
       case( cc_ctrl_i.coef_sel )
         4'd0:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd1:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd2:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd3:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd4:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd5:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd6:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd7:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd8:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd9:  a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd10: a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
-        4'd11: a11 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd1:  a12 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd2:  a13 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd3:  a14 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd4:  a21 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd5:  a22 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd6:  a23 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd7:  a24 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd8:  a31 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd9:  a32 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd10: a33 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
+        4'd11: a34 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
         default:;
       endcase
 
@@ -222,15 +222,15 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( video_i.tvalid && video_i.tready )
       begin
-        a11r_u <= a11[COEF_WIDTH * 2 - 1 : 0] * r_fixed;
-        a12g_u <= a12[COEF_WIDTH * 2 - 1 : 0] * g_fixed;
-        a13b_u <= a13[COEF_WIDTH * 2 - 1 : 0] * b_fixed;
-        a21r_u <= a21[COEF_WIDTH * 2 - 1 : 0] * r_fixed;
-        a22g_u <= a22[COEF_WIDTH * 2 - 1 : 0] * g_fixed;
-        a23b_u <= a23[COEF_WIDTH * 2 - 1 : 0] * b_fixed;
-        a31r_u <= a31[COEF_WIDTH * 2 - 1 : 0] * r_fixed;
-        a32g_u <= a32[COEF_WIDTH * 2 - 1 : 0] * g_fixed;
-        a33b_u <= a33[COEF_WIDTH * 2 - 1 : 0] * b_fixed;
+        a11r_u <= a11[COEF_WIDTH - 1 : 0] * r_fixed;
+        a12g_u <= a12[COEF_WIDTH - 1 : 0] * g_fixed;
+        a13b_u <= a13[COEF_WIDTH - 1 : 0] * b_fixed;
+        a21r_u <= a21[COEF_WIDTH - 1 : 0] * r_fixed;
+        a22g_u <= a22[COEF_WIDTH - 1 : 0] * g_fixed;
+        a23b_u <= a23[COEF_WIDTH - 1 : 0] * b_fixed;
+        a31r_u <= a31[COEF_WIDTH - 1 : 0] * r_fixed;
+        a32g_u <= a32[COEF_WIDTH - 1 : 0] * g_fixed;
+        a33b_u <= a33[COEF_WIDTH - 1 : 0] * b_fixed;
       end
 
 always_ff @( posedge clk_i, posedge rst_i )
@@ -252,11 +252,11 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     if( video_d[0].tvalid && video_d[0].tready )
       begin
-        a141 <= oc_to_tc( a14[COEF_WIDTH * 2], 
+        a141 <= oc_to_tc( a14[COEF_WIDTH], 
                           { ( PX_WIDTH * 3 )'( a14[COEF_WIDTH - 1 : 0] ), FRACT_WIDTH'( 0 ) } );
-        a241 <= oc_to_tc( a24[COEF_WIDTH * 2], 
+        a241 <= oc_to_tc( a24[COEF_WIDTH], 
                           { ( PX_WIDTH * 3 )'( a24[COEF_WIDTH - 1 : 0] ), FRACT_WIDTH'( 0 ) } );
-        a341 <= oc_to_tc( a34[COEF_WIDTH * 2], 
+        a341 <= oc_to_tc( a34[COEF_WIDTH], 
                           { ( PX_WIDTH * 3 )'( a34[COEF_WIDTH - 1 : 0] ), FRACT_WIDTH'( 0 ) } );
         a11r <= oc_to_tc( a11[PX_WIDTH * 2], a11r_u );
         a12g <= oc_to_tc( a12[PX_WIDTH * 2], a12g_u );
