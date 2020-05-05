@@ -14,7 +14,20 @@ localparam int TDATA_WIDTH = PX_WIDTH % 8 ?
                              ( PX_WIDTH * 3 / 8 + 1 ) * 8 :
                              PX_WIDTH * 3;
 
-localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
+localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 0 ) };
+// For OV5640
+localparam logic [COEF_WIDTH : 0] A11_INIT  = { 1'b1, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 1004 ) }; // 1.9808
+localparam logic [COEF_WIDTH : 0] A12_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 716 )  }; // -0.6996
+localparam logic [COEF_WIDTH : 0] A13_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 52 )   }; // -0.0499
+localparam logic [COEF_WIDTH : 0] A14_INIT  = { 1'b1, PX_WIDTH'( 236 ), FRACT_WIDTH'( 863 )  }; // -236.8427
+localparam logic [COEF_WIDTH : 0] A21_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 406 )  }; // -0.3961
+localparam logic [COEF_WIDTH : 0] A22_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 614 )  }; // 1.5994
+localparam logic [COEF_WIDTH : 0] A23_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 8 )    }; // -0.0079
+localparam logic [COEF_WIDTH : 0] A24_INIT  = { 1'b1, PX_WIDTH'( 206 ), FRACT_WIDTH'( 281 )  }; // -206.2747
+localparam logic [COEF_WIDTH : 0] A31_INIT  = { 1'b0, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 63 )   }; // 0.0617
+localparam logic [COEF_WIDTH : 0] A32_INIT  = { 1'b1, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 10 )   }; // -1.0097
+localparam logic [COEF_WIDTH : 0] A33_INIT  = { 1'b0, PX_WIDTH'( 2 ),   FRACT_WIDTH'( 227 )  }; // 2.2212
+localparam logic [COEF_WIDTH : 0] A34_INIT  = { 1'b1, PX_WIDTH'( 279 ), FRACT_WIDTH'( 929 )  }; // -279.9075
 
 function logic [COEF_WIDTH * 2 : 0] oc_to_tc(
   input logic                          sign_i,
