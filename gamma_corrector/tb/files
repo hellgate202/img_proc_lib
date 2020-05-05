@@ -1,0 +1,9 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
+../../img_lut/src/img_lut_csr_pkg.sv
+../../ip/dual_port_ram/src/dual_port_ram.sv
+../../img_lut/src/img_lut.sv
+../../img_lut/src/img_lut_csr.sv
+../../img_lut/src/img_lut_ctrl_if.sv
+../src/gamma_corrector.sv
+./tb_gamma_corrector.sv
