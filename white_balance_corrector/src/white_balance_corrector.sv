@@ -1,4 +1,4 @@
-module white_ballance_corrector #(
+module white_balance_corrector #(
   parameter int PX_WIDTH    = 10,
   parameter int FRAME_RES_X = 1920,
   parameter int FRAME_RES_Y = 1080,

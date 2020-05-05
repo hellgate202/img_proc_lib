@@ -1,6 +1,6 @@
-import white_ballance_corrector_csr_pkg::*; 
+import white_balance_corrector_csr_pkg::*; 
 
-module white_ballance_corrector_csr #(
+module white_balance_corrector_csr #(
   parameter int BASE_ADDR = 32'h0000_0000 
 )(
   input              clk_i,

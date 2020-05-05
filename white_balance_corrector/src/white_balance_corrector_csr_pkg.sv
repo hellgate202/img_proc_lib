@@ -1,4 +1,4 @@
-package white_ballance_corrector_csr_pkg;
+package white_balance_corrector_csr_pkg;
 
 parameter int WB_MODE_CR     = 0;
 parameter int WB_CAL_STB_CR  = 1;

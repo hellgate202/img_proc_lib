@@ -65,6 +65,7 @@ assign csr.wdata   = csr_wdata;
 assign csr.arvalid = csr_arvalid;
 assign csr.araddr  = csr_araddr;
 assign csr_arready = csr.arready;
+assign csr.arprot  = csr_arprot;
 assign csr_bvalid  = csr.bvalid;
 assign csr.bready  = csr_bready;
 assign csr_bresp   = csr.bresp;

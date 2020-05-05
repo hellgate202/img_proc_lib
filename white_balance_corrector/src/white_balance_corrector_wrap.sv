@@ -1,4 +1,4 @@
-module white_ballance_corrector_wrap #(
+module white_balance_corrector_wrap #(
   parameter CSR_BASE_ADDR = 32'h0000_0000,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 32,
@@ -27,25 +27,25 @@ module white_ballance_corrector_wrap #(
   output                         video_o_tid,
   output                         video_o_tdest,
   input                          video_o_tready,
-  input                          csr_awvalid_i,
-  input  [31 : 0]                csr_awaddr_i,
-  output                         csr_awready_o,
-  input  [2 : 0]                 csr_awprot_i,
-  input                          csr_wvalid_i,
-  input  [31 : 0]                csr_wdata_i,
-  input  [3 : 0]                 csr_wstrb_i,
-  output                         csr_wready_o,
-  output                         csr_bvalid_o,
-  input                          csr_bready_i,
-  output [1 : 0]                 csr_bresp_o,
-  input                          csr_arvalid_i,
-  input  [31 : 0]                csr_araddr_i,
-  output                         csr_arready_o,
-  input  [2 : 0]                 csr_arprot_i,
-  output                         csr_rvalid_o,
-  output [31 : 0]                csr_rdata_o,
-  output [1 : 0]                 csr_rresp_o,
-  input                          csr_rready_i
+  input                          csr_awvalid,
+  input  [31 : 0]                csr_awaddr,
+  output                         csr_awready,
+  input  [2 : 0]                 csr_awprot,
+  input                          csr_wvalid,
+  input  [31 : 0]                csr_wdata,
+  input  [3 : 0]                 csr_wstrb,
+  output                         csr_wready,
+  output                         csr_bvalid,
+  input                          csr_bready,
+  output [1 : 0]                 csr_bresp,
+  input                          csr_arvalid,
+  input  [31 : 0]                csr_araddr,
+  output                         csr_arready,
+  input  [2 : 0]                 csr_arprot,
+  output                         csr_rvalid,
+  output [31 : 0]                csr_rdata,
+  output [1 : 0]                 csr_rresp,
+  input                          csr_rready
 );
 
 axi4_lite_if #(
@@ -56,24 +56,25 @@ axi4_lite_if #(
   .aresetn    ( !rst_i )
 );
 
-assign csr.awvalid   = csr_awvalid_i;
-assign csr.awaddr    = csr_awaddr_i;
-assign csr_awready_o = csr.awready;
-assign csr.awprot    = csr_awprot_i;
-assign csr.wvalid    = csr_wvalid_i;
-assign csr.wstrb     = csr_wstrb_i;
-assign csr_wready_o  = csr.wready;
-assign csr.wdata     = csr_wdata_i;
-assign csr.arvalid   = csr_arvalid_i;
-assign csr.araddr    = csr_araddr_i;
-assign csr_arready_o = csr.arready;
-assign csr_bvalid_o  = csr.bvalid;
-assign csr.bready    = csr_bready_i;
-assign csr_bresp_o   = csr.bresp;
-assign csr_rdata_o   = csr.rdata;
-assign csr_rvalid_o  = csr.rvalid;
-assign csr_rresp_o   = csr.rresp;
-assign csr.rready    = csr_rready_i;
+assign csr.awvalid = csr_awvalid;
+assign csr.awaddr  = csr_awaddr;
+assign csr_awready = csr.awready;
+assign csr.awprot  = csr_awprot;
+assign csr.wvalid  = csr_wvalid;
+assign csr.wstrb   = csr_wstrb;
+assign csr_wready  = csr.wready;
+assign csr.wdata   = csr_wdata;
+assign csr.arvalid = csr_arvalid;
+assign csr.araddr  = csr_araddr;
+assign csr_arready = csr.arready;
+assign csr.arprot  = csr_arprot;
+assign csr_bvalid  = csr.bvalid;
+assign csr.bready  = csr_bready;
+assign csr_bresp   = csr.bresp;
+assign csr_rdata   = csr.rdata;
+assign csr_rvalid  = csr.rvalid;
+assign csr_rresp   = csr.rresp;
+assign csr.rready  = csr_rready;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
@@ -117,21 +118,21 @@ assign video_o.tready = video_o_tready;
 
 wb_ctrl_if wb_ctrl();
 
-white_ballance_corrector_csr #(
+white_balance_corrector_csr #(
   .BASE_ADDR ( CSR_BASE_ADDR )
-) white_ballance_corrector_csr (
+) white_balance_corrector_csr (
   .clk_i     ( clk_i         ),
   .rst_i     ( rst_i         ),
   .csr_i     ( csr           ),
   .wb_ctrl_o ( wb_ctrl       )
 );
 
-white_ballance_corrector #(
+white_balance_corrector #(
   .PX_WIDTH    ( PX_WIDTH    ),
   .FRAME_RES_X ( FRAME_RES_X ),
   .FRAME_RES_Y ( FRAME_RES_Y ),
   .FRACT_WIDTH ( FRACT_WIDTH )
-) white_ballance_corrector (
+) white_balance_corrector (
   .clk_i       ( clk_i       ),
   .rst_i       ( rst_i       ),
   .wb_ctrl_i   ( wb_ctrl     ),

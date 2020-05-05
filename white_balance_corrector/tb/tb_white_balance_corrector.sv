@@ -4,9 +4,9 @@
 
 `timescale 1 ps / 1 ps
 
-import white_ballance_corrector_csr_pkg::*; 
+import white_balance_corrector_csr_pkg::*; 
 
-module tb_white_ballance_corrector;
+module tb_white_balance_corrector;
 
 parameter int    CLK_T         = 6734;
 parameter int    PX_WIDTH      = 10;
@@ -136,7 +136,7 @@ task automatic video_recorder();
     end
 endtask
 
-white_ballance_corrector_csr #(
+white_balance_corrector_csr #(
   .BASE_ADDR ( CSR_BASE_ADDR )
 ) DUT_CSR (
   .clk_i     ( clk           ),
@@ -145,7 +145,7 @@ white_ballance_corrector_csr #(
   .wb_ctrl_o ( wb_ctrl       )
 );
 
-white_ballance_corrector #(
+white_balance_corrector #(
   .PX_WIDTH    ( PX_WIDTH    ),
   .FRAME_RES_X ( FRAME_RES_X ),
   .FRAME_RES_Y ( FRAME_RES_Y ),

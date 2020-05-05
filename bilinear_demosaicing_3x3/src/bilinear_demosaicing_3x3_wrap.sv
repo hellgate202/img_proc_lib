@@ -12,43 +12,43 @@ module bilinear_demosaicing_3x3_wrap #(
 )(
   input                              clk_i,
   input                              rst_i,
-  input                              csr_awvalid_i,
-  input  [31 : 0]                    csr_awaddr_i,
-  output                             csr_awready_o,
-  input  [2 : 0]                     csr_awprot_i,
-  input                              csr_wvalid_i,
-  input  [31 : 0]                    csr_wdata_i,
-  input  [3 : 0]                     csr_wstrb_i,
-  output                             csr_wready_o,
-  output                             csr_bvalid_o,
-  input                              csr_bready_i,
-  output [1 : 0]                     csr_bresp_o,
-  input                              csr_arvalid_i,
-  input  [31 : 0]                    csr_araddr_i,
-  output                             csr_arready_o,
-  input  [2 : 0]                     csr_arprot_i,
-  output                             csr_rvalid_o,
-  output [31 : 0]                    csr_rdata_o,
-  output [1 : 0]                     csr_rresp_o,
-  input                              csr_rready_i,
-  input [RAW_TDATA_WIDTH - 1 : 0]    raw_tdata_i,
-  input [RAW_TDATA_WIDTH_B - 1 : 0]  raw_tstrb_i,
-  input [RAW_TDATA_WIDTH_B - 1 : 0]  raw_tkeep_i,
-  input                              raw_tvalid_i,
-  input                              raw_tlast_i,
-  input                              raw_tuser_i,
-  input                              raw_tid_i,
-  input                              raw_tdest_i,
-  output                             raw_tready_o,
-  output [RGB_TDATA_WIDTH - 1 : 0]   rgb_tdata_o,
-  output [RGB_TDATA_WIDTH_B - 1 : 0] rgb_tstrb_o,
-  output [RGB_TDATA_WIDTH_B - 1 : 0] rgb_tkeep_o,
-  output                             rgb_tvalid_o,
-  output                             rgb_tlast_o,
-  output                             rgb_tuser_o,
-  output                             rgb_tid_o,
-  output                             rgb_tdest_o,
-  input                              rgb_tready_i
+  input                              csr_awvalid,
+  input  [31 : 0]                    csr_awaddr,
+  output                             csr_awready,
+  input  [2 : 0]                     csr_awprot,
+  input                              csr_wvalid,
+  input  [31 : 0]                    csr_wdata,
+  input  [3 : 0]                     csr_wstrb,
+  output                             csr_wready,
+  output                             csr_bvalid,
+  input                              csr_bready,
+  output [1 : 0]                     csr_bresp,
+  input                              csr_arvalid,
+  input  [31 : 0]                    csr_araddr,
+  output                             csr_arready,
+  input  [2 : 0]                     csr_arprot,
+  output                             csr_rvalid,
+  output [31 : 0]                    csr_rdata,
+  output [1 : 0]                     csr_rresp,
+  input                              csr_rready,
+  input [RAW_TDATA_WIDTH - 1 : 0]    raw_tdata,
+  input [RAW_TDATA_WIDTH_B - 1 : 0]  raw_tstrb,
+  input [RAW_TDATA_WIDTH_B - 1 : 0]  raw_tkeep,
+  input                              raw_tvalid,
+  input                              raw_tlast,
+  input                              raw_tuser,
+  input                              raw_tid,
+  input                              raw_tdest,
+  output                             raw_tready,
+  output [RGB_TDATA_WIDTH - 1 : 0]   rgb_tdata,
+  output [RGB_TDATA_WIDTH_B - 1 : 0] rgb_tstrb,
+  output [RGB_TDATA_WIDTH_B - 1 : 0] rgb_tkeep,
+  output                             rgb_tvalid,
+  output                             rgb_tlast,
+  output                             rgb_tuser,
+  output                             rgb_tid,
+  output                             rgb_tdest,
+  input                              rgb_tready
 );
 
 axi4_lite_if #(
@@ -59,24 +59,25 @@ axi4_lite_if #(
   .aresetn    ( !rst_i )
 );
 
-assign csr.awvalid   = csr_awvalid_i;
-assign csr.awaddr    = csr_awaddr_i;
-assign csr_awready_o = csr.awready;
-assign csr.awprot    = csr_awprot_i;
-assign csr.wvalid    = csr_wvalid_i;
-assign csr.wstrb     = csr_wstrb_i;
-assign csr_wready_o  = csr.wready;
-assign csr.wdata     = csr_wdata_i;
-assign csr.arvalid   = csr_arvalid_i;
-assign csr.araddr    = csr_araddr_i;
-assign csr_arready_o = csr.arready;
-assign csr_bvalid_o  = csr.bvalid;
-assign csr.bready    = csr_bready_i;
-assign csr_bresp_o   = csr.bresp;
-assign csr_rdata_o   = csr.rdata;
-assign csr_rvalid_o  = csr.rvalid;
-assign csr_rresp_o   = csr.rresp;
-assign csr.rready    = csr_rready_i;
+assign csr.awvalid = csr_awvalid;
+assign csr.awaddr  = csr_awaddr;
+assign csr_awready = csr.awready;
+assign csr.awprot  = csr_awprot;
+assign csr.wvalid  = csr_wvalid;
+assign csr.wstrb   = csr_wstrb;
+assign csr_wready  = csr.wready;
+assign csr.wdata   = csr_wdata;
+assign csr.arvalid = csr_arvalid;
+assign csr.araddr  = csr_araddr;
+assign csr_arready = csr.arready;
+assign csr.arprot  = csr_arprot;
+assign csr_bvalid  = csr.bvalid;
+assign csr.bready  = csr_bready;
+assign csr_bresp   = csr.bresp;
+assign csr_rdata   = csr.rdata;
+assign csr_rvalid  = csr.rvalid;
+assign csr_rresp   = csr.rresp;
+assign csr.rready  = csr_rready;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( RAW_TDATA_WIDTH ),
@@ -88,15 +89,15 @@ axi4_stream_if #(
   .aresetn     ( !rst_i          )
 );
 
-assign raw.tdata    = raw_tdata_i;
-assign raw.tvalid   = raw_tvalid_i;
-assign raw.tkeep    = raw_tkeep_i;
-assign raw.tstrb    = raw_tstrb_i;
-assign raw.tlast    = raw_tlast_i;
-assign raw.tuser    = raw_tuser_i;
-assign raw.tdest    = raw_tdest_i;
-assign raw.tid      = raw_tid_i;
-assign raw_tready_o = raw.tready;
+assign raw.tdata  = raw_tdata;
+assign raw.tvalid = raw_tvalid;
+assign raw.tkeep  = raw_tkeep;
+assign raw.tstrb  = raw_tstrb;
+assign raw.tlast  = raw_tlast;
+assign raw.tuser  = raw_tuser;
+assign raw.tdest  = raw_tdest;
+assign raw.tid    = raw_tid;
+assign raw_tready = raw.tready;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( RGB_TDATA_WIDTH ),
@@ -108,15 +109,15 @@ axi4_stream_if #(
   .aresetn     ( !rst_i          )
 );
 
-assign rgb_tdata_o  = rgb.tdata;
-assign rgb_tvalid_o = rgb.tvalid;
-assign rgb_tkeep_o  = rgb.tkeep;
-assign rgb_tstrb_o  = rgb.tstrb;
-assign rgb_tlast_o  = rgb.tlast;
-assign rgb_tuser_o  = rgb.tuser;
-assign rgb_tdest_o  = rgb.tdest;
-assign rgb_tid_o    = rgb.tid;
-assign rgb.tready   = rgb_tready_i;
+assign rgb_tdata  = rgb.tdata;
+assign rgb_tvalid = rgb.tvalid;
+assign rgb_tkeep  = rgb.tkeep;
+assign rgb_tstrb  = rgb.tstrb;
+assign rgb_tlast  = rgb.tlast;
+assign rgb_tuser  = rgb.tuser;
+assign rgb_tdest  = rgb.tdest;
+assign rgb_tid    = rgb.tid;
+assign rgb.tready = rgb_tready;
 
 demosaicing_ctrl_if demosaicing_ctrl();
 

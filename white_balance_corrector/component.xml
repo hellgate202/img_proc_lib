@@ -2,7 +2,7 @@
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <spirit:vendor>hellgate202</spirit:vendor>
   <spirit:library>user</spirit:library>
-  <spirit:name>white_ballance_corrector</spirit:name>
+  <spirit:name>white_balance_corrector</spirit:name>
   <spirit:version>1.0</spirit:version>
   <spirit:busInterfaces>
     <spirit:busInterface>
@@ -178,7 +178,7 @@
             <spirit:name>AWADDR</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_awaddr_i</spirit:name>
+            <spirit:name>csr_awaddr</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -186,7 +186,7 @@
             <spirit:name>AWPROT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_awprot_i</spirit:name>
+            <spirit:name>csr_awprot</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -194,7 +194,7 @@
             <spirit:name>AWVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_awvalid_i</spirit:name>
+            <spirit:name>csr_awvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -202,7 +202,7 @@
             <spirit:name>AWREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_awready_o</spirit:name>
+            <spirit:name>csr_awready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -210,7 +210,7 @@
             <spirit:name>WDATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_wdata_i</spirit:name>
+            <spirit:name>csr_wdata</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -218,7 +218,7 @@
             <spirit:name>WSTRB</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_wstrb_i</spirit:name>
+            <spirit:name>csr_wstrb</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -226,7 +226,7 @@
             <spirit:name>WVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_wvalid_i</spirit:name>
+            <spirit:name>csr_wvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -234,7 +234,7 @@
             <spirit:name>WREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_wready_o</spirit:name>
+            <spirit:name>csr_wready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -242,7 +242,7 @@
             <spirit:name>BRESP</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_bresp_o</spirit:name>
+            <spirit:name>csr_bresp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -250,7 +250,7 @@
             <spirit:name>BVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_bvalid_o</spirit:name>
+            <spirit:name>csr_bvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -258,7 +258,7 @@
             <spirit:name>BREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_bready_i</spirit:name>
+            <spirit:name>csr_bready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -266,7 +266,7 @@
             <spirit:name>ARADDR</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_araddr_i</spirit:name>
+            <spirit:name>csr_araddr</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -274,7 +274,7 @@
             <spirit:name>ARPROT</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_arprot_i</spirit:name>
+            <spirit:name>csr_arprot</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -282,7 +282,7 @@
             <spirit:name>ARVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_arvalid_i</spirit:name>
+            <spirit:name>csr_arvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -290,7 +290,7 @@
             <spirit:name>ARREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_arready_o</spirit:name>
+            <spirit:name>csr_arready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -298,7 +298,7 @@
             <spirit:name>RDATA</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_rdata_o</spirit:name>
+            <spirit:name>csr_rdata</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -306,7 +306,7 @@
             <spirit:name>RRESP</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_rresp_o</spirit:name>
+            <spirit:name>csr_rresp</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -314,7 +314,7 @@
             <spirit:name>RVALID</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_rvalid_o</spirit:name>
+            <spirit:name>csr_rvalid</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
         <spirit:portMap>
@@ -322,7 +322,7 @@
             <spirit:name>RREADY</spirit:name>
           </spirit:logicalPort>
           <spirit:physicalPort>
-            <spirit:name>csr_rready_i</spirit:name>
+            <spirit:name>csr_rready</spirit:name>
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
@@ -349,7 +349,7 @@
         </spirit:parameter>
         <spirit:parameter>
           <spirit:name>ASSOCIATED_BUSIF</spirit:name>
-          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_BUSIF">video_o:video_i:csr</spirit:value>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.CLK_I.ASSOCIATED_BUSIF">csr:video_o:video_i</spirit:value>
         </spirit:parameter>
       </spirit:parameters>
     </spirit:busInterface>
@@ -368,6 +368,12 @@
           </spirit:physicalPort>
         </spirit:portMap>
       </spirit:portMaps>
+      <spirit:parameters>
+        <spirit:parameter>
+          <spirit:name>POLARITY</spirit:name>
+          <spirit:value spirit:id="BUSIFPARAM_VALUE.RST_I.POLARITY">ACTIVE_HIGH</spirit:value>
+        </spirit:parameter>
+      </spirit:parameters>
     </spirit:busInterface>
   </spirit:busInterfaces>
   <spirit:memoryMaps>
@@ -375,7 +381,6 @@
       <spirit:name>csr</spirit:name>
       <spirit:addressBlock>
         <spirit:name>csr</spirit:name>
-        <spirit:displayName>csr</spirit:displayName>
         <spirit:baseAddress spirit:format="long">0</spirit:baseAddress>
         <spirit:range spirit:format="long">4096</spirit:range>
         <spirit:width spirit:format="long">0</spirit:width>
@@ -389,14 +394,14 @@
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>white_ballance_corrector_wrap</spirit:modelName>
+        <spirit:modelName>white_balance_corrector_wrap</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagesynthesis_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b7a09f34</spirit:value>
+            <spirit:value>99b7bc9c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -405,14 +410,14 @@
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
         <spirit:language>SystemVerilog</spirit:language>
-        <spirit:modelName>white_ballance_corrector_wrap</spirit:modelName>
+        <spirit:modelName>white_balance_corrector_wrap</spirit:modelName>
         <spirit:fileSetRef>
           <spirit:localName>xilinx_anylanguagebehavioralsimulation_view_fileset</spirit:localName>
         </spirit:fileSetRef>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>b7a09f34</spirit:value>
+            <spirit:value>99b7bc9c</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -741,7 +746,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_awvalid_i</spirit:name>
+        <spirit:name>csr_awvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -757,7 +762,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_awaddr_i</spirit:name>
+        <spirit:name>csr_awaddr</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -777,7 +782,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_awready_o</spirit:name>
+        <spirit:name>csr_awready</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -790,7 +795,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_awprot_i</spirit:name>
+        <spirit:name>csr_awprot</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -810,7 +815,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_wvalid_i</spirit:name>
+        <spirit:name>csr_wvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -826,7 +831,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_wdata_i</spirit:name>
+        <spirit:name>csr_wdata</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -846,7 +851,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_wstrb_i</spirit:name>
+        <spirit:name>csr_wstrb</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -866,7 +871,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_wready_o</spirit:name>
+        <spirit:name>csr_wready</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -879,7 +884,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_bvalid_o</spirit:name>
+        <spirit:name>csr_bvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -892,7 +897,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_bready_i</spirit:name>
+        <spirit:name>csr_bready</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -908,7 +913,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_bresp_o</spirit:name>
+        <spirit:name>csr_bresp</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -925,7 +930,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_arvalid_i</spirit:name>
+        <spirit:name>csr_arvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -941,7 +946,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_araddr_i</spirit:name>
+        <spirit:name>csr_araddr</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -961,7 +966,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_arready_o</spirit:name>
+        <spirit:name>csr_arready</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -974,7 +979,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_arprot_i</spirit:name>
+        <spirit:name>csr_arprot</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:vector>
@@ -994,7 +999,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_rvalid_o</spirit:name>
+        <spirit:name>csr_rvalid</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1007,7 +1012,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_rdata_o</spirit:name>
+        <spirit:name>csr_rdata</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -1024,7 +1029,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_rresp_o</spirit:name>
+        <spirit:name>csr_rresp</spirit:name>
         <spirit:wire>
           <spirit:direction>out</spirit:direction>
           <spirit:vector>
@@ -1041,7 +1046,7 @@
         </spirit:wire>
       </spirit:port>
       <spirit:port>
-        <spirit:name>csr_rready_i</spirit:name>
+        <spirit:name>csr_rready</spirit:name>
         <spirit:wire>
           <spirit:direction>in</spirit:direction>
           <spirit:wireTypeDefs>
@@ -1123,21 +1128,21 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_csr_pkg.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_csr_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_csr.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_csr.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_wrap.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_wrap.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
-        <spirit:userFileType>CHECKSUM_e6450b29</spirit:userFileType>
+        <spirit:userFileType>CHECKSUM_dc1d3ed0</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
@@ -1167,33 +1172,33 @@
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_csr_pkg.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_csr_pkg.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_csr.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_csr.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
       <spirit:file>
-        <spirit:name>src/white_ballance_corrector_wrap.sv</spirit:name>
+        <spirit:name>src/white_balance_corrector_wrap.sv</spirit:name>
         <spirit:fileType>systemVerilogSource</spirit:fileType>
       </spirit:file>
     </spirit:fileSet>
     <spirit:fileSet>
       <spirit:name>xilinx_xpgui_view_fileset</spirit:name>
       <spirit:file>
-        <spirit:name>xgui/white_ballance_corrector_v1_0.tcl</spirit:name>
+        <spirit:name>xgui/white_balance_corrector_v1_0.tcl</spirit:name>
         <spirit:fileType>tclSource</spirit:fileType>
         <spirit:userFileType>CHECKSUM_1bfb3ea1</spirit:userFileType>
         <spirit:userFileType>XGUI_VERSION_2</spirit:userFileType>
       </spirit:file>
     </spirit:fileSet>
   </spirit:fileSets>
-  <spirit:description>White Ballance Corrector</spirit:description>
+  <spirit:description>White Balance Corrector</spirit:description>
   <spirit:parameters>
     <spirit:parameter>
       <spirit:name>CSR_BASE_ADDR</spirit:name>
@@ -1232,7 +1237,7 @@
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
-      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">white_ballance_corrector_wrap_v1_0</spirit:value>
+      <spirit:value spirit:resolve="user" spirit:id="PARAM_VALUE.Component_Name" spirit:order="1">white_balance_corrector_wrap_v1_0</spirit:value>
     </spirit:parameter>
   </spirit:parameters>
   <spirit:vendorExtensions>
@@ -1254,53 +1259,51 @@
       <xilinx:taxonomies>
         <xilinx:taxonomy>/UserIP</xilinx:taxonomy>
       </xilinx:taxonomies>
-      <xilinx:displayName>White Ballance Corrector</xilinx:displayName>
+      <xilinx:displayName>White Balance Corrector</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
       <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
       <xilinx:vendorURL>http://github.com/hellgate202</xilinx:vendorURL>
       <xilinx:coreRevision>2</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2020-05-01T18:46:31Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2020-05-05T10:10:56Z</xilinx:coreCreationDateTime>
       <xilinx:tags>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@54699375_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@70dcd249_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@20b45c1a_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a12accf_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@695e2588_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a819658_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3b4586d3_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@74b58096_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@58b14388_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@23fcd50e_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6065280b_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6c21c9fe_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@76589a4b_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@4efec893_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@ebabb54_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@83c2b78_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@48c02b5d_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@132e1789_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@6bc450ca_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@73f985ab_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@123355f7_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@46e64def_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@257b259_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@7453445c_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@361f4e5_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@61431557_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@412752ca_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@1efb2eb1_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@18c311b4_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
-        <xilinx:tag xilinx:name="ui.data.coregen.dd@3f566e90_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@576b94ab_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@263f9d89_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@739099c0_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@26179b19_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7a8e79d_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@43d9a94d_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@4a42f6b6_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@230f1f74_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@15bcdca7_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@600af48_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2c093b29_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@7bd2b8da_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@71699f1e_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2a9febf0_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@36336146_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6b0c251d_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d4ec356_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@49668edb_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@6ef4dd76_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@553af822_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@3396b9e_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@72e0e5c6_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@28ab908_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5d65cedf_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@ad816c5_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@5a1a9653_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@1faa8dda_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
+        <xilinx:tag xilinx:name="ui.data.coregen.dd@2942ff9b_ARCHIVE_LOCATION">/home/liv/fpga/img_proc_lib</xilinx:tag>
       </xilinx:tags>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2018.3</xilinx:xilinxVersion>
-      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="795927aa"/>
-      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="bd85c840"/>
-      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="dbd3507c"/>
-      <xilinx:checksum xilinx:scope="ports" xilinx:value="8a102ace"/>
+      <xilinx:checksum xilinx:scope="busInterfaces" xilinx:value="7a7b419f"/>
+      <xilinx:checksum xilinx:scope="memoryMaps" xilinx:value="a73824b4"/>
+      <xilinx:checksum xilinx:scope="fileGroups" xilinx:value="ed950094"/>
+      <xilinx:checksum xilinx:scope="ports" xilinx:value="16517baf"/>
       <xilinx:checksum xilinx:scope="hdlParameters" xilinx:value="95c4300e"/>
-      <xilinx:checksum xilinx:scope="parameters" xilinx:value="e8a9e612"/>
+      <xilinx:checksum xilinx:scope="parameters" xilinx:value="63a4c36b"/>
     </xilinx:packagingInfo>
   </spirit:vendorExtensions>
 </spirit:component>
