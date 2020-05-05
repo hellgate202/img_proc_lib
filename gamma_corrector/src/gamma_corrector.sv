@@ -1,7 +1,6 @@
 module gamma_corrector #(
   parameter int PX_WIDTH        = 10,
-  parameter int CHANNELS_AMOUNT = 3,
-  parameter     INIT_FILE       = ""
+  parameter int CHANNELS_AMOUNT = 3
 )(
   input                 clk_i,
   input                 rst_i,
@@ -17,6 +16,7 @@ localparam int TDATA_WIDTH        = PX_WIDTH % 8 ?
                                     ( PX_WIDTH * CHANNELS_AMOUNT / 8 + 1 ) * 8 :
                                     PX_WIDTH * CHANNELS_AMOUNT;
 localparam int TDATA_WIDTH_B      = TDATA_WIDTH / 8;
+localparam     INIT_FILE          = "../../../gamma_corrector/scripts/gamma_rom.hex";
 
 assign video_i.tready = comp_stream[0].tready;
 

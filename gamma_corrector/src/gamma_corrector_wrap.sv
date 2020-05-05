@@ -2,8 +2,7 @@ module gamma_corrector_wrap #(
   parameter CSR_BASE_ADDR = 0,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 32,
-  parameter TDATA_WIDTH_B = 4,
-  parameter INIT_FILE     = ""
+  parameter TDATA_WIDTH_B = 4
 )(
   input                           clk_i,
   input                           rst_i,
@@ -126,8 +125,7 @@ img_lut_csr #(
 );
 
 gamma_corrector #(
-  .PX_WIDTH  ( PX_WIDTH  ),
-  .INIT_FILE ( INIT_FILE )
+  .PX_WIDTH  ( PX_WIDTH  )
 ) gamma_corrector (
   .clk_i     ( clk_i     ),
   .rst_i     ( rst_i     ),
