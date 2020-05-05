@@ -22,6 +22,9 @@ add wave -noupdate /tb_gamma_corrector/video_o/tlast
 add wave -noupdate /tb_gamma_corrector/video_o/tid
 add wave -noupdate /tb_gamma_corrector/video_o/tdest
 add wave -noupdate /tb_gamma_corrector/video_o/tuser
+add wave -noupdate /tb_gamma_corrector/gc_ctrl/orig_px
+add wave -noupdate /tb_gamma_corrector/gc_ctrl/mod_px
+add wave -noupdate /tb_gamma_corrector/gc_ctrl/wr_stb
 TreeUpdate [SetDefaultTree]
 WaveRestoreCursors {{Cursor 1} {484574800 ps} 0}
 quietly wave cursor active 1
@@ -39,4 +42,4 @@ configure wave -griddelta 40
 configure wave -timeline 0
 configure wave -timelineunits ns
 update
-WaveRestoreZoom {0 ps} {187374 ps}
+WaveRestoreZoom {0 ps} {6634243366 ps}

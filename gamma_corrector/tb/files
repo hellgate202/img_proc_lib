@@ -1,7 +1,7 @@
 ../../lib/axi4_lib/src/interface/axi4_stream_if.sv
 ../../lib/axi4_lib/src/interface/axi4_lite_if.sv
 ../src/lut_rom_pkg.sv
-../src/lut_rom.sv
+../../img_lut/src/lut_rom.sv
 ../../img_lut/src/img_lut_csr_pkg.sv
 ../../img_lut/src/img_lut.sv
 ../../img_lut/src/img_lut_csr.sv

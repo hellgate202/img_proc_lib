@@ -19,7 +19,7 @@ parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
 parameter int    RANDOM_TVALID   = 1;
 parameter int    RANDOM_TREADY   = 1;
-parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
+parameter int    CSR_BASE_ADDR   = 32'h0005_0000;
 parameter int    TDATA_WIDTH     = PX_WIDTH % 8 ?
                                    ( PX_WIDTH * 3 / 8 + 1 ) * 8 :
                                    PX_WIDTH * 3 * 8;
@@ -52,7 +52,7 @@ axi4_stream_if #(
 
 axi4_lite_if #(
   .DATA_WIDTH ( 32   ),
-  .ADDR_WIDTH ( 8    )
+  .ADDR_WIDTH ( 32    )
 ) csr (
   .aclk       ( clk  ),
   .aresetn    ( !rst )
@@ -62,7 +62,7 @@ img_lut_ctrl_if gc_ctrl();
 
 AXI4LiteMaster #(
   .DATA_WIDTH ( 32 ),
-  .ADDR_WIDTH ( 8  )
+  .ADDR_WIDTH ( 32  )
 ) csr_master;
 
 AXI4StreamVideoSource #(
@@ -171,7 +171,13 @@ initial
     repeat( 10 )
       @( posedge clk );
     video_source.run();
-    //csr_master.wr_data( CSR_BASE_ADDR + WB_MODE_CR << 2, 32'd0 );
+    for( int i = 0; i < 1024; i++ )
+      begin
+        csr_master.wr_data( CSR_BASE_ADDR + ( LUT_ORIG_PX_CR << 2 ), i );
+        csr_master.wr_data( CSR_BASE_ADDR + ( LUT_MOD_PX_CR << 2 ), i );
+        csr_master.wr_data( CSR_BASE_ADDR + ( LUT_WR_STB_CR << 2 ), 1 );
+        csr_master.wr_data( CSR_BASE_ADDR + ( LUT_WR_STB_CR << 2 ), 0 );
+      end
     repeat( FRAMES_AMOUNT + 1 )
       begin
         while( !( video_o.tvalid && video_o.tready && video_o.tuser ) )

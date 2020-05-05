@@ -18,7 +18,7 @@ parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
 parameter int    RANDOM_TVALID   = 0;
 parameter int    RANDOM_TREADY   = 0;
-parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
+parameter int    CSR_BASE_ADDR   = 32'h0002_0000;
 parameter int    RGB_TDATA_WIDTH = ( RAW_PX_WIDTH * 3 ) % 8 ?
                                    ( RAW_PX_WIDTH * 3 / 8 + 1 ) * 8 :
                                    RAW_PX_WIDTH * 3 * 8;
@@ -60,7 +60,7 @@ axi4_stream_if #(
 
 axi4_lite_if #(
   .DATA_WIDTH ( 32   ),
-  .ADDR_WIDTH ( 8    )
+  .ADDR_WIDTH ( 32    )
 ) csr_if (
   .aclk       ( clk  ),
   .aresetn    ( !rst )
@@ -70,7 +70,7 @@ demosaicing_ctrl_if demosaicing_ctrl();
 
 AXI4LiteMaster #(
   .DATA_WIDTH ( 32 ),
-  .ADDR_WIDTH ( 8  )
+  .ADDR_WIDTH ( 32 )
 ) csr_master;
 
 AXI4StreamVideoSource #(
@@ -181,8 +181,8 @@ initial
     join_none
     repeat( 10 )
       @( posedge clk );
-    csr_master.wr_data( CSR_BASE_ADDR + DEMOSAICING_EN_CR << 2, 32'b1 );
-    csr_master.wr_data( CSR_BASE_ADDR + DEMOSAICING_PATTERN_CR << 2, 32'b11 );
+    csr_master.wr_data( CSR_BASE_ADDR + ( DEMOSAICING_EN_CR << 2 ), 32'b1 );
+    csr_master.wr_data( CSR_BASE_ADDR + ( DEMOSAICING_PATTERN_CR << 2 ), 32'b11 );
     video_source.run();
     repeat( 2 )
       begin
