@@ -35,8 +35,6 @@ logic [1 : 0]              man_sel_cr;
 logic [31 : 0]             man_coef_cr;
 logic                      man_lock_cr;
 
-assign wr_addr_reg   = REG_ADDR_W'( ( csr_i.awaddr - BASE_ADDR ) >> 2 );
-assign rd_addr_reg   = REG_ADDR_W'( ( csr_i.araddr - BASE_ADDR ) >> 2 );
 assign wr_addr_match = csr_i.awaddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
                        csr_i.awaddr <= ( ( WB_MAN_LOCK_CR << 2 ) + BASE_ADDR );
 assign rd_addr_match = csr_i.araddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
@@ -46,6 +44,20 @@ assign ar_handshake  = csr_i.arvalid && csr_i.arready && rd_addr_match;
 assign w_handshake   = csr_i.wvalid && csr_i.wready && ( wr_addr_match || was_aw_handshake );
 assign b_handshake   = csr_i.bvalid && csr_i.bready;
 assign r_handshake   = csr_i.rvalid && csr_i.rready;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    begin
+      wr_addr_reg <= REG_ADDR_W'( 0 );
+      rd_addr_reg <= REG_ADDR_W'( 0 );
+    end
+  else
+    begin
+      if( aw_handshake )
+        wr_addr_reg <= REG_ADDR_W'( ( csr_i.awaddr - BASE_ADDR ) >> 2 );
+      if( ar_handshake )
+        rd_addr_reg <= REG_ADDR_W'( ( csr_i.araddr - BASE_ADDR ) >> 2 );
+    end
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
