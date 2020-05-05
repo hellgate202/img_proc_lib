@@ -16,7 +16,7 @@ localparam int TDATA_WIDTH = PX_WIDTH % 8 ?
 
 localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 0 ) };
 // For OV5640
-localparam logic [COEF_WIDTH : 0] A11_INIT  = { 1'b1, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 1004 ) }; // 1.9808
+localparam logic [COEF_WIDTH : 0] A11_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 1004 ) }; // 1.9808
 localparam logic [COEF_WIDTH : 0] A12_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 716 )  }; // -0.6996
 localparam logic [COEF_WIDTH : 0] A13_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 52 )   }; // -0.0499
 localparam logic [COEF_WIDTH : 0] A14_INIT  = { 1'b1, PX_WIDTH'( 236 ), FRACT_WIDTH'( 863 )  }; // -236.8427
