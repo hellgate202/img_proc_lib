@@ -114,18 +114,18 @@ logic [PX_WIDTH - 1 : 0]       b_clip;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      a11 <= FIXED_ONE;
-      a12 <= COEF_WIDTH'( 0 );
-      a13 <= COEF_WIDTH'( 0 );
-      a14 <= COEF_WIDTH'( 0 );
-      a21 <= COEF_WIDTH'( 0 );
-      a22 <= FIXED_ONE;
-      a23 <= COEF_WIDTH'( 0 );
-      a24 <= COEF_WIDTH'( 0 );
-      a31 <= COEF_WIDTH'( 0 );
-      a32 <= COEF_WIDTH'( 0 );
-      a33 <= FIXED_ONE;
-      a34 <= COEF_WIDTH'( 0 );
+      a11 <= A11_INIT;
+      a12 <= A12_INIT;
+      a13 <= A13_INIT;
+      a14 <= A14_INIT;
+      a21 <= A21_INIT;
+      a22 <= A22_INIT;
+      a23 <= A23_INIT;
+      a24 <= A24_INIT;
+      a31 <= A31_INIT;
+      a32 <= A32_INIT;
+      a33 <= A33_INIT;
+      a34 <= A34_INIT;
     end
   else
     if( cc_ctrl_i.coef_lock )
