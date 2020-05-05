@@ -380,11 +380,11 @@
     <spirit:memoryMap>
       <spirit:name>csr</spirit:name>
       <spirit:addressBlock>
-        <spirit:name>reg0</spirit:name>
-        <spirit:baseAddress spirit:format="bitString" spirit:resolve="user" spirit:bitStringLength="32">0</spirit:baseAddress>
-        <spirit:range spirit:format="long" spirit:resolve="user" spirit:minimum="4096" spirit:rangeType="long">4294967296</spirit:range>
-        <spirit:width spirit:format="long" spirit:resolve="user">32</spirit:width>
-        <spirit:usage>register</spirit:usage>
+        <spirit:name>csr</spirit:name>
+        <spirit:displayName>csr</spirit:displayName>
+        <spirit:baseAddress spirit:format="long">0</spirit:baseAddress>
+        <spirit:range spirit:format="long">4096</spirit:range>
+        <spirit:width spirit:format="long">0</spirit:width>
       </spirit:addressBlock>
     </spirit:memoryMap>
   </spirit:memoryMaps>
