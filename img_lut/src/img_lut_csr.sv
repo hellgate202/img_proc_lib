@@ -17,7 +17,6 @@ logic                      wr_addr_match;
 logic                      rd_addr_match;
 logic [31 : 0]             wdata_lock;
 logic [3 : 0]              wstrb_lock;
-logic [REG_ADDR_W - 1 : 0] awaddr_lock;
 logic                      aw_handshake;
 logic                      ar_handshake;
 logic                      w_handshake;
@@ -79,13 +78,6 @@ always_ff @( posedge clk_i, posedge rst_i )
     else
       if( r_handshake )
         csr_i.rvalid <= 1'b0;
-
-always_ff @( posedge clk_i, posedge rst_i )
-  if( rst_i )
-    awaddr_lock <= REG_ADDR_W'( 0 );
-  else
-    if( aw_handshake )
-      awaddr_lock <= csr_i.awaddr;
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )

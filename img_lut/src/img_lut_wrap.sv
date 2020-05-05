@@ -3,7 +3,6 @@ module img_lut_wrap #(
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 16,
   parameter TDATA_WIDTH_B = 2,
-  parameter INTERLINE_GAP = 280,
   parameter INIT_FILE     = ""
 )(
   input                           clk_i,
@@ -66,6 +65,7 @@ assign csr.wdata   = csr_wdata;
 assign csr.arvalid = csr_arvalid;
 assign csr.araddr  = csr_araddr;
 assign csr_arready = csr.arready;
+assign csr.arprot  = csr_arprot;
 assign csr_bvalid  = csr.bvalid;
 assign csr.bready  = csr_bready;
 assign csr_bresp   = csr.bresp;
@@ -104,15 +104,15 @@ axi4_stream_if #(
   .aresetn     ( !rst_i      )
 );
 
-assign video_o_tdata_o  = video_o.tdata;
-assign video_o_tvalid_o = video_o.tvalid;
-assign video_o_tkeep_o  = video_o.tkeep;
-assign video_o_tstrb_o  = video_o.tstrb;
-assign video_o_tlast_o  = video_o.tlast;
-assign video_o_tuser_o  = video_o.tuser;
-assign video_o_tdest_o  = video_o.tdest;
-assign video_o_tid_o    = video_o.tid;
-assign video_o.tready   = video_o_tready_i;
+assign video_o_tdata  = video_o.tdata;
+assign video_o_tvalid = video_o.tvalid;
+assign video_o_tkeep  = video_o.tkeep;
+assign video_o_tstrb  = video_o.tstrb;
+assign video_o_tlast  = video_o.tlast;
+assign video_o_tuser  = video_o.tuser;
+assign video_o_tdest  = video_o.tdest;
+assign video_o_tid    = video_o.tid;
+assign video_o.tready = video_o_tready;
 
 img_lut_ctrl_if img_lut_ctrl();
 
@@ -126,14 +126,14 @@ img_lut_csr #(
 );
 
 img_lut #(
-  .PX_WIDTH   ( PX_WIDTH     ),
-  .INIT_PATH  ( INIT_PATH    )
+  .PX_WIDTH       ( PX_WIDTH     ),
+  .INIT_FILE      ( INIT_FILE    )
 ) img_lut (
-  .clk_i      ( clk_i        ),
-  .rst_i      ( rst_i        ),
-  .lut_ctrl_i ( img_lut_ctrl ),
-  .video_i    ( video_i      ),
-  .video_o    ( video_o      )
+  .clk_i          ( clk_i        ),
+  .rst_i          ( rst_i        ),
+  .img_lut_ctrl_i ( img_lut_ctrl ),
+  .video_i        ( video_i      ),
+  .video_o        ( video_o      )
 );
 
 endmodule
