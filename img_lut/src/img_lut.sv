@@ -1,14 +1,14 @@
-module lut_table #(
-  parameter int PX_WIDTH = 10
+module img_lut #(
+  parameter int PX_WIDTH  = 10,
+  parameter     INIT_FILE = ""
 )(
   input                 clk_i,
   input                 rst_i,
-  lut_ctrl_if.slave     lut_ctrl_i,
+  img_lut_ctrl_if.slave img_lut_ctrl_i,
   axi4_stream_if.slave  video_i,
   axi4_stream_if.master video_o
 );
 
-localparam     INIT_PATH     = "";
 localparam int TDATA_WIDTH   = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH;
 localparam int TDATA_WIDTH_B = TDATA_WIDTH / 8;
 
@@ -40,18 +40,18 @@ always_ff @( posedge clk_i, posedge rst_i )
 assign video_i.tready = !video_o.tvalid || video_o.tready;
 
 dual_port_ram #(
-  .DATA_WIDTH ( PX_WIDTH                             ),
-  .ADDR_WIDTH ( PX_WIDTH                             ),
-  .INIT_PATH  ( INIT_PATH                            )
+  .DATA_WIDTH ( PX_WIDTH                                 ),
+  .ADDR_WIDTH ( PX_WIDTH                                 ),
+  .INIT_FILE  ( INIT_FILE                                )
 ) lut (
-  .wr_clk_i   ( wr_clk                               ),
-  .wr_addr_i  ( lut_ctrl_i.orig_px[PX_WIDTH - 1 : 0] ),
-  .wr_data_i  ( lut_ctrl_i.mod_px[PX_WIDTH - 1 : 0]  ),
-  .wr_i       ( lut_ctrl_i.wr_stb                    ),
-  .rd_clk_i   ( rd_clk                               ),
-  .rd_addr_i  ( video_i.tdata[PX_WIDTH - 1 : 0]      ),
-  .rd_data_o  ( lut_tdata                            ),
-  .rd_i       ( 1'b1                                 )
+  .wr_clk_i   ( clk_i                                    ),
+  .wr_addr_i  ( img_lut_ctrl_i.orig_px[PX_WIDTH - 1 : 0] ),
+  .wr_data_i  ( img_lut_ctrl_i.mod_px[PX_WIDTH - 1 : 0]  ),
+  .wr_i       ( img_lut_ctrl_i.wr_stb                    ),
+  .rd_clk_i   ( clk_i                                    ),
+  .rd_addr_i  ( video_i.tdata[PX_WIDTH - 1 : 0]          ),
+  .rd_data_o  ( lut_tdata                                ),
+  .rd_i       ( 1'b1                                     )
 );
 
 assign video_o.tdata = TDATA_WIDTH'( lut_tdata );

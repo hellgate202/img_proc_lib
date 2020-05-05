@@ -1,4 +1,4 @@
-package lut_ctrl_csr_pkg;
+package img_lut_csr_pkg;
 
 parameter LUT_ORIG_PX_CR = 0;
 parameter LUT_MOD_PX_CR  = 1;

@@ -1,4 +1,4 @@
-interface lut_ctrl_if;
+interface img_lut_ctrl_if;
 
 logic [31 : 0] orig_px;
 logic [31 : 0] mod_px;

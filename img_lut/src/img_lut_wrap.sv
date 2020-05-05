@@ -1,9 +1,10 @@
-module lut_table_wrap #(
+module img_lut_wrap #(
   parameter CSR_BASE_ADDR = 0,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 16,
   parameter TDATA_WIDTH_B = 2,
-  parameter INTERLINE_GAP = 280
+  parameter INTERLINE_GAP = 280,
+  parameter INIT_FILE     = ""
 )(
   input                           clk_i,
   input                           rst_i,
@@ -113,25 +114,26 @@ assign video_o_tdest_o  = video_o.tdest;
 assign video_o_tid_o    = video_o.tid;
 assign video_o.tready   = video_o_tready_i;
 
-lut_ctrl_if lut_ctrl();
+img_lut_ctrl_if img_lut_ctrl();
 
-lut_table_csr #(
-  .BASE_ADDR          ( CSR_BASE_ADDR )
-) lut_table_csr (
-  .clk_i              ( clk_i         ),
-  .rst_i              ( rst_i         ),
-  .csr_i              ( csr           ),
-  .lut_ctrl_o         ( lut_ctrl      )
+img_lut_csr #(
+  .BASE_ADDR      ( CSR_BASE_ADDR )
+) img_lut_csr (
+  .clk_i          ( clk_i         ),
+  .rst_i          ( rst_i         ),
+  .csr_i          ( csr           ),
+  .img_lut_ctrl_o ( img_lut_ctrl  )
 );
 
-lut_table #(
-  .PX_WIDTH   ( PX_WIDTH ),
-) lut_table (
-  .clk_i      ( clk_i    ),
-  .rst_i      ( rst_i    ),
-  .lut_ctrl_i ( lut_ctrl ),
-  .video_i    ( video_i  ),
-  .video_o    ( video_o  )
+img_lut #(
+  .PX_WIDTH   ( PX_WIDTH     ),
+  .INIT_PATH  ( INIT_PATH    )
+) img_lut (
+  .clk_i      ( clk_i        ),
+  .rst_i      ( rst_i        ),
+  .lut_ctrl_i ( img_lut_ctrl ),
+  .video_i    ( video_i      ),
+  .video_o    ( video_o      )
 );
 
 endmodule
