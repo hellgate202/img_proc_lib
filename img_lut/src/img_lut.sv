@@ -1,6 +1,5 @@
 module img_lut #(
-  parameter int PX_WIDTH  = 10,
-  parameter     INIT_FILE = ""
+  parameter int PX_WIDTH  = 10
 )(
   input                 clk_i,
   input                 rst_i,
@@ -39,10 +38,9 @@ always_ff @( posedge clk_i, posedge rst_i )
 
 assign video_i.tready = !video_o.tvalid || video_o.tready;
 
-dual_port_ram #(
+lut_rom #(
   .DATA_WIDTH ( PX_WIDTH                                 ),
-  .ADDR_WIDTH ( PX_WIDTH                                 ),
-  .INIT_FILE  ( INIT_FILE                                )
+  .ADDR_WIDTH ( PX_WIDTH                                 )
 ) lut (
   .wr_clk_i   ( clk_i                                    ),
   .wr_addr_i  ( img_lut_ctrl_i.orig_px[PX_WIDTH - 1 : 0] ),

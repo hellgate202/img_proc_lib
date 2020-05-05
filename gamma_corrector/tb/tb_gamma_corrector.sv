@@ -17,7 +17,6 @@ parameter int    FRAME_RES_Y     = 1080;
 parameter int    TOTAL_X         = 2200;
 parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
-parameter        INIT_FILE       = "../scripts/gamma_rom.hex";
 parameter int    RANDOM_TVALID   = 1;
 parameter int    RANDOM_TREADY   = 1;
 parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
@@ -149,8 +148,7 @@ img_lut_csr #(
 
 gamma_corrector #(
   .PX_WIDTH        ( PX_WIDTH        ),
-  .CHANNELS_AMOUNT ( CHANNELS_AMOUNT ),
-  .INIT_FILE       ( INIT_FILE       )
+  .CHANNELS_AMOUNT ( CHANNELS_AMOUNT )
 ) DUT (
   .clk_i           ( clk             ),
   .rst_i           ( rst             ),

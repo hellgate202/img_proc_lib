@@ -2,8 +2,7 @@ module img_lut_wrap #(
   parameter CSR_BASE_ADDR = 0,
   parameter PX_WIDTH      = 10,
   parameter TDATA_WIDTH   = 16,
-  parameter TDATA_WIDTH_B = 2,
-  parameter INIT_FILE     = ""
+  parameter TDATA_WIDTH_B = 2
 )(
   input                           clk_i,
   input                           rst_i,
@@ -126,8 +125,7 @@ img_lut_csr #(
 );
 
 img_lut #(
-  .PX_WIDTH       ( PX_WIDTH     ),
-  .INIT_FILE      ( INIT_FILE    )
+  .PX_WIDTH       ( PX_WIDTH     )
 ) img_lut (
   .clk_i          ( clk_i        ),
   .rst_i          ( rst_i        ),

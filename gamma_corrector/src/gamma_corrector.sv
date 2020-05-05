@@ -16,7 +16,6 @@ localparam int TDATA_WIDTH        = PX_WIDTH % 8 ?
                                     ( PX_WIDTH * CHANNELS_AMOUNT / 8 + 1 ) * 8 :
                                     PX_WIDTH * CHANNELS_AMOUNT;
 localparam int TDATA_WIDTH_B      = TDATA_WIDTH / 8;
-localparam     INIT_FILE          = "../../../gamma_corrector/scripts/gamma_rom.hex";
 
 assign video_i.tready = comp_stream[0].tready;
 
@@ -55,8 +54,7 @@ generate
       assign comp_stream[g].tdest  = video_i.tdest;
 
       img_lut #(
-        .PX_WIDTH       ( PX_WIDTH             ),
-        .INIT_FILE      ( INIT_FILE            )
+        .PX_WIDTH       ( PX_WIDTH             )
       ) gamma_lut (
         .clk_i          ( clk_i                ),
         .rst_i          ( rst_i                ),
@@ -92,6 +90,5 @@ assign video_o.tstrb  = TDATA_WIDTH_B'( TDATA_WIDTH_B ** 2 - 1 );
 assign video_o.tkeep  = TDATA_WIDTH_B'( TDATA_WIDTH_B ** 2 - 1 );
 assign video_o.tdest  = comp_gamma_stream[0].tdest;
 assign video_o.tid    = comp_gamma_stream[0].tid;
-
 
 endmodule

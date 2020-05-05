@@ -142,8 +142,7 @@ img_lut_csr #(
 );
 
 img_lut #(
-  .PX_WIDTH       ( PX_WIDTH     ),
-  .INIT_FILE      ( ""           )
+  .PX_WIDTH       ( PX_WIDTH     )
 ) DUT (
   .clk_i          ( clk          ),
   .rst_i          ( rst          ),
