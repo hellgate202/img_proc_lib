@@ -1099,6 +1099,11 @@
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.COMPENSATE_EN">1</spirit:value>
       </spirit:modelParameter>
       <spirit:modelParameter spirit:dataType="integer">
+        <spirit:name>INTERLINE_GAP</spirit:name>
+        <spirit:displayName>Interline Gap</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.INTERLINE_GAP">100</spirit:value>
+      </spirit:modelParameter>
+      <spirit:modelParameter spirit:dataType="integer">
         <spirit:name>TDATA_WIDTH</spirit:name>
         <spirit:displayName>Tdata Width</spirit:displayName>
         <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.TDATA_WIDTH">32</spirit:value>
@@ -1309,6 +1314,11 @@
       <spirit:displayName>Compensate En</spirit:displayName>
       <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.COMPENSATE_EN">1</spirit:value>
     </spirit:parameter>
+      <spirit:parameter spirit:dataType="integer">
+        <spirit:name>INTERLINE_GAP</spirit:name>
+        <spirit:displayName>Interline Gap</spirit:displayName>
+        <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.INTERLINE_GAP">100</spirit:value>
+      </spirit:parameter>
     <spirit:parameter>
       <spirit:name>TDATA_WIDTH</spirit:name>
       <spirit:displayName>Tdata Width</spirit:displayName>

@@ -7,7 +7,8 @@ module median_filter_wrap #(
   parameter FRAME_RES_Y     = 1080,
   parameter COMPENSATE_EN   = 1,
   parameter TDATA_WIDTH     = 32,
-  parameter TDATA_WIDTH_B   = 4
+  parameter TDATA_WIDTH_B   = 4,
+  parameter INTERLINE_GAP   = 100
 )(
   input                           clk_i,
   input                           rst_i,
@@ -135,7 +136,8 @@ median_filter #(
   .WIN_SIZE        ( WIN_SIZE        ),
   .FRAME_RES_X     ( FRAME_RES_X     ),
   .FRAME_RES_Y     ( FRAME_RES_Y     ),
-  .COMPENSATE_EN   ( COMPENSATE_EN   )
+  .COMPENSATE_EN   ( COMPENSATE_EN   ),
+  .INTERLINE_GAP   ( INTERLINE_GAP   )
 ) median_filter (
   .clk_i           ( clk_i           ),
   .rst_i           ( rst_i           ),

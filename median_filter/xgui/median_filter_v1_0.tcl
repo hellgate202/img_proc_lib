@@ -5,6 +5,7 @@ proc init_gui { IPINST } {
   set Page_0 [ipgui::add_page $IPINST -name "Page 0"]
   ipgui::add_param $IPINST -name "CHANNELS_AMOUNT" -parent ${Page_0}
   ipgui::add_param $IPINST -name "COMPENSATE_EN" -parent ${Page_0}
+  ipgui::add_param $IPINST -name "INTERLINE_GAP" -parent ${Page_0}
   ipgui::add_param $IPINST -name "CSR_BASE_ADDR" -parent ${Page_0}
   ipgui::add_param $IPINST -name "FRAME_RES_X" -parent ${Page_0}
   ipgui::add_param $IPINST -name "FRAME_RES_Y" -parent ${Page_0}
@@ -31,6 +32,15 @@ proc update_PARAM_VALUE.COMPENSATE_EN { PARAM_VALUE.COMPENSATE_EN } {
 
 proc validate_PARAM_VALUE.COMPENSATE_EN { PARAM_VALUE.COMPENSATE_EN } {
 	# Procedure called to validate COMPENSATE_EN
+	return true
+}
+
+proc update_PARAM_VALUE.INTERLINE_GAP { PARAM_VALUE.INTERLINE_GAP } {
+	# Procedure called to update INTERLINE_GAP when any of the dependent parameters in the arguments change
+}
+
+proc validate_PARAM_VALUE.INTERLINE_GAP { PARAM_VALUE.INTERLINE_GAP } {
+	# Procedure called to validate INTERLINE_GAP
 	return true
 }
 
@@ -131,6 +141,11 @@ proc update_MODELPARAM_VALUE.FRAME_RES_Y { MODELPARAM_VALUE.FRAME_RES_Y PARAM_VA
 proc update_MODELPARAM_VALUE.COMPENSATE_EN { MODELPARAM_VALUE.COMPENSATE_EN PARAM_VALUE.COMPENSATE_EN } {
 	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
 	set_property value [get_property value ${PARAM_VALUE.COMPENSATE_EN}] ${MODELPARAM_VALUE.COMPENSATE_EN}
+}
+
+proc update_MODELPARAM_VALUE.INTERLINE_GAP { MODELPARAM_VALUE.INTERLINE_GAP PARAM_VALUE.INTERLINE_GAP } {
+	# Procedure called to set VHDL generic/Verilog parameter value(s) based on TCL parameter value
+	set_property value [get_property value ${PARAM_VALUE.INTERLINE_GAP}] ${MODELPARAM_VALUE.INTERLINE_GAP}
 }
 
 proc update_MODELPARAM_VALUE.TDATA_WIDTH { MODELPARAM_VALUE.TDATA_WIDTH PARAM_VALUE.TDATA_WIDTH } {
