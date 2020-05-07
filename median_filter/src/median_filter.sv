@@ -29,6 +29,7 @@ localparam int DELAY_VALUE        = 2 * ( WIN_SIZE + 1 ) + 4;
 localparam int MEDIAN_POS         = WIN_SIZE / 2;
 localparam int EXTEND_VALUE       = WIN_SIZE / 2;
 localparam int WIN_CENTER         = ( WIN_SIZE ** 2 ) / 2;
+localparam int EXTENDED_X         = FRAME_RES_X + EXTEND_VALUE * 2;
 
 logic [CHANNELS_AMOUNT - 1 : 0][PX_WIDTH - 1 : 0] median_value;
 
@@ -159,7 +160,7 @@ generate
         .TDATA_WIDTH   ( COMP_TDATA_WIDTH   ),
         .PX_WIDTH      ( PX_WIDTH           ),
         .WIN_SIZE      ( WIN_SIZE           ),
-        .MAX_LINE_SIZE ( FRAME_RES_X        )
+        .MAX_LINE_SIZE ( EXTENDED_X         )
       ) window_buf_inst (
         .clk_i         ( clk_i              ),
         .rst_i         ( rst_i              ),

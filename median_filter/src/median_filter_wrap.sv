@@ -135,7 +135,7 @@ median_filter #(
   .WIN_SIZE        ( WIN_SIZE        ),
   .FRAME_RES_X     ( FRAME_RES_X     ),
   .FRAME_RES_Y     ( FRAME_RES_Y     ),
-  .COMPENSATE_EN   ( COMPENSATE_EN   ),
+  .COMPENSATE_EN   ( COMPENSATE_EN   )
 ) median_filter (
   .clk_i           ( clk_i           ),
   .rst_i           ( rst_i           ),
