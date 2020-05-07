@@ -179,7 +179,7 @@ initial
     repeat( 10 )
       @( posedge clk );
     video_source.run();
-    //csr_master.wr_data( CSR_BASE_ADDR + WB_MODE_CR << 2, 32'd0 );
+    csr_master.wr_data( CSR_BASE_ADDR + MED_FILT_EN_CR << 2, 32'd0 );
     repeat( FRAMES_AMOUNT + 1 )
       begin
         while( !( video_o.tvalid && video_o.tready && video_o.tuser ) )
