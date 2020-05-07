@@ -14,7 +14,7 @@ vopt +acc tb_median_filter -o tb_median_filter_opt                     \
                               -G/tb_median_filter/TOTAL_X=$total_x     \
                               -G/tb_median_filter/TOTAL_Y=$total_y     \
                               -G/tb_median_filter/FRAMES_AMOUNT=$frames
-vsim tb_median_filter
+vsim tb_median_filter_opt
 do wave.do
 run -all
 

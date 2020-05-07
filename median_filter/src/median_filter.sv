@@ -28,6 +28,7 @@ localparam int TDATA_WIDTH_B      = TDATA_WIDTH / 8;
 localparam int DELAY_VALUE        = 2 * ( WIN_SIZE + 1 ) + 4;
 localparam int MEDIAN_POS         = WIN_SIZE / 2;
 localparam int EXTEND_VALUE       = WIN_SIZE / 2;
+localparam int WIN_CENTER         = ( WIN_SIZE ** 2 ) / 2;
 
 logic [CHANNELS_AMOUNT - 1 : 0][PX_WIDTH - 1 : 0] median_value;
 
@@ -97,6 +98,16 @@ axi4_stream_if #(
 );
 
 axi4_stream_if #(
+  .TDATA_WIDTH ( WIN_TDATA_WIDTH ),
+  .TUSER_WIDTH ( 1               ),
+  .TID_WIDTH   ( 1               ),
+  .TDEST_WIDTH ( 1               )
+) bypass_stream (
+  .aclk        ( clk_i           ),
+  .aresetn     ( !rst_i          )
+);
+
+axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
   .TUSER_WIDTH ( 1           ),
   .TID_WIDTH   ( 1           ),
@@ -109,8 +120,41 @@ axi4_stream_if #(
 genvar c, p, sr, se;
 
 generate
+  if( ( PX_WIDTH * CHANNELS_AMOUNT ) == TDATA_WIDTH )
+    begin : n_append_bypass
+      for( c = 0; c < CHANNELS_AMOUNT; c++ )
+        assign bypass_stream.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = comp_win_stream[c].tdata[( WIN_CENTER + 1 ) * PX_WIDTH - 1 -: PX_WIDTH];
+    end
+  else
+    begin : append_bypass
+      assign bypass_stream.tdata[TDATA_WIDTH - 1 : PX_WIDTH * CHANNELS_AMOUNT] = ( TDATA_WIDTH - PX_WIDTH * CHANNELS_AMOUNT )'( 0 );
+      for( c = 0; c < CHANNELS_AMOUNT; c++ )
+        assign bypass_stream.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = comp_win_stream[c].tdata[( WIN_CENTER + 1 ) * PX_WIDTH - 1 -: PX_WIDTH];
+    end
+endgenerate
+
+assign bypass_stream.tvalid = comp_win_stream[0].tvalid;
+assign bypass_stream.tlast  = comp_win_stream[0].tlast;
+assign bypass_stream.tuser  = comp_win_stream[0].tuser;
+assign bypass_stream.tstrb  = comp_win_stream[0].tstrb;
+assign bypass_stream.tkeep  = comp_win_stream[0].tkeep;
+assign bypass_stream.tdest  = comp_win_stream[0].tdest;
+assign bypass_stream.tid    = comp_win_stream[0].tid;
+
+assign extended_video.tready = comp_stream[0].tready;
+
+generate
   for( c = 0; c < CHANNELS_AMOUNT; c++ )
     begin : win_for_color
+      assign comp_stream[c].tvalid = extended_video.tvalid;
+      assign comp_stream[c].tlast  = extended_video.tlast;
+      assign comp_stream[c].tuser  = extended_video.tuser;
+      assign comp_stream[c].tstrb  = extended_video.tstrb;
+      assign comp_stream[c].tkeep  = extended_video.tkeep;
+      assign comp_stream[c].tdest  = extended_video.tdest;
+      assign comp_stream[c].tid    = extended_video.tid;
+      assign comp_stream[c].tdata  = extended_video.tdata[( c + 1 ) * PX_WIDTH - 1 -: PX_WIDTH];
+
       window_buf #(
         .TDATA_WIDTH   ( COMP_TDATA_WIDTH   ),
         .PX_WIDTH      ( PX_WIDTH           ),
@@ -139,16 +183,7 @@ generate
       logic [2 : 0][PX_WIDTH - 1 : 0]                              median_candidates;
       logic [2 : 0][PX_WIDTH - 1 : 0]                              sorted_median_candidates;
 
-      assign comp_stream[c].tvalid = extended_video.tvalid;
-      assign comp_stream[c].tlast  = extended_video.tlast;
-      assign comp_stream[c].tuser  = extended_video.tuser;
-      assign comp_stream[c].tstrb  = extended_video.tstrb;
-      assign comp_stream[c].tkeep  = extended_video.tkeep;
-      assign comp_stream[c].tdest  = extended_video.tdest;
-      assign comp_stream[c].tid    = extended_video.tid;
-      assign comp_stream[c].tdata  = extended_video.tdata[( c + 1 ) * PX_WIDTH - 1 -: PX_WIDTH];
-
-      assign unsorted_data = comp_win_stream[c].tdata[WIN_WIDTH];
+      assign unsorted_data = comp_win_stream[c].tdata[WIN_WIDTH - 1 : 0];
 
       for( sr = 0; sr < WIN_SIZE; sr++ )
         begin : sort_rows
@@ -171,8 +206,10 @@ generate
           assign extremums[2][sr] = sorted_row[sr][WIN_SIZE - 1];
         end
 
+      assign comp_win_stream[c].tready = bypass_stream.tready;
+
       for( se = 0; se < 3; se++ )
-        begin
+        begin : sort_extremums
           sorting_network #(
             .NUMBER_WIDTH   ( PX_WIDTH                   ),
             .NUMBERS_AMOUNT ( WIN_SIZE                   )
@@ -206,44 +243,42 @@ generate
         .ready_i        ( video_o.tready            )
       );
 
-      assign median_value[c] = sorted_median_candidates[MEDIAN_POS];
+      assign median_value[c] = sorted_median_candidates[1];
     end
 endgenerate
 
 genvar d;
 
 generate
-  begin
-    for( d = 0; d < ( DELAY_VALUE - 1 ); d++ )
-      if( d == 0 )
-        begin : first_stage
-          axi4_stream_delay #(
-            .TDATA_WIDTH ( TDATA_WIDTH    ),
-            .TUSER_WIDTH ( 1              ),
-            .TDEST_WIDTH ( 1              ),
-            .TID_WIDTH   ( 1              )
-          ) delay_0 (
-            .clk_i       ( clk_i          ),
-            .rst_i       ( rst_i          ),
-            .pkt_i       ( extended_video ),
-            .pkt_o       ( video_d[0]     )
-          ); 
-        end
-      else
-        begin : later_stages
-          axi4_stream_delay #(
-            .TDATA_WIDTH ( TDATA_WIDTH    ),
-            .TUSER_WIDTH ( 1              ),
-            .TDEST_WIDTH ( 1              ),
-            .TID_WIDTH   ( 1              )
-          ) delay_0 (
-            .clk_i       ( clk_i          ),
-            .rst_i       ( rst_i          ),
-            .pkt_i       ( video_d[d]     ),
-            .pkt_o       ( video_d[d + 1] )
-          ); 
-        end
-  end
+  for( d = 0; d < DELAY_VALUE; d++ )
+    if( d == 0 )
+      begin : first_stage
+        axi4_stream_delay #(
+          .TDATA_WIDTH ( TDATA_WIDTH   ),
+          .TUSER_WIDTH ( 1             ),
+          .TDEST_WIDTH ( 1             ),
+          .TID_WIDTH   ( 1             )
+        ) delay_0 (
+          .clk_i       ( clk_i         ),
+          .rst_i       ( rst_i         ),
+          .pkt_i       ( bypass_stream ),
+          .pkt_o       ( video_d[0]    )
+        ); 
+      end
+    else
+      begin : later_stages
+        axi4_stream_delay #(
+          .TDATA_WIDTH ( TDATA_WIDTH    ),
+          .TUSER_WIDTH ( 1              ),
+          .TDEST_WIDTH ( 1              ),
+          .TID_WIDTH   ( 1              )
+        ) delay_0 (
+          .clk_i       ( clk_i          ),
+          .rst_i       ( rst_i          ),
+          .pkt_i       ( video_d[d - 1] ),
+          .pkt_o       ( video_d[d]     )
+        ); 
+      end
 endgenerate
 
 assign video_d[DELAY_VALUE - 1].tready = video_o.tready;
@@ -251,22 +286,22 @@ assign video_d[DELAY_VALUE - 1].tready = video_o.tready;
 assign video_o.tvalid = video_d[DELAY_VALUE - 1].tvalid;
 assign video_o.tlast  = video_d[DELAY_VALUE - 1].tlast;
 assign video_o.tuser  = video_d[DELAY_VALUE - 1].tuser;
-assign video_o.tstrb  = video_d[DELAY_VALUE - 1].tstrb;
-assign video_o.tkeep  = video_d[DELAY_VALUE - 1].tkeep;
+assign video_o.tstrb  = TDATA_WIDTH_B'( TDATA_WIDTH_B ** 2 - 1 );
+assign video_o.tkeep  = TDATA_WIDTH_B'( TDATA_WIDTH_B ** 2 - 1 );
 assign video_o.tid    = video_d[DELAY_VALUE - 1].tid;
 assign video_o.tdest  = video_d[DELAY_VALUE - 1].tdest;
 
 generate
   if( ( PX_WIDTH * CHANNELS_AMOUNT ) == TDATA_WIDTH )
-    begin : n_append
+    begin : n_append_output
       for( c = 0; c < CHANNELS_AMOUNT; c++ )
-        assign video_o.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = mf_ctrl_i.en ? median_value[c] : video_d[DELAY_VALUE - 1].tdata[PX_WIDTH - 1 : 0];
+        assign video_o.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = mf_ctrl_i.en ? median_value[c] : video_d[DELAY_VALUE - 1].tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH];
     end
   else
-    begin : append
+    begin : append_output
       assign video_o.tdata[TDATA_WIDTH - 1 : PX_WIDTH * CHANNELS_AMOUNT] = ( TDATA_WIDTH - PX_WIDTH * CHANNELS_AMOUNT )'( 0 );
-      for( c = 0; c < CHANNELS_AMOUNT; c++ )  
-        assign video_o.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = mf_ctrl_i.en ? median_value[c] : video_d[DELAY_VALUE - 1].tdata[PX_WIDTH - 1 : 0];
+      for( c = 0; c < CHANNELS_AMOUNT; c++ )
+        assign video_o.tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH] = mf_ctrl_i.en ? median_value[c] : video_d[DELAY_VALUE - 1].tdata[PX_WIDTH * ( c + 1 ) - 1 -: PX_WIDTH];
     end
 endgenerate
 

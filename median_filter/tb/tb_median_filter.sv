@@ -16,8 +16,8 @@ parameter int    FRAME_RES_Y     = 1080;
 parameter int    TOTAL_X         = 2200;
 parameter int    TOTAL_Y         = 1125;
 parameter string FILE_PATH       = "./img.hex";
-parameter int    RANDOM_TVALID   = 0;
-parameter int    RANDOM_TREADY   = 0;
+parameter int    RANDOM_TVALID   = 1;
+parameter int    RANDOM_TREADY   = 1;
 parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
 parameter int    TDATA_WIDTH     = PX_WIDTH % 8 ?
                                    ( PX_WIDTH * 3 / 8 + 1 ) * 8 :
@@ -26,6 +26,7 @@ parameter int    CHANNELS_AMOUNT = 3;
 parameter int    FRAMES_AMOUNT   = 2;
 parameter int    COMPENSATE_EN   = 1;
 parameter int    INTERLINE_GAP   = TOTAL_X - FRAME_RES_X;
+parameter int    WIN_SIZE        = 7;
 
 bit clk;
 bit rst;
@@ -154,7 +155,8 @@ median_filter #(
   .FRAME_RES_Y     ( FRAME_RES_Y     ),
   .CHANNELS_AMOUNT ( CHANNELS_AMOUNT ),
   .COMPENSATE_EN   ( COMPENSATE_EN   ),
-  .WIN_SIZE        ( 3               )
+  .WIN_SIZE        ( WIN_SIZE        ),
+  .INTERLINE_GAP   ( INTERLINE_GAP   )
 ) DUT (
   .clk_i           ( clk             ),
   .rst_i           ( rst             ),
