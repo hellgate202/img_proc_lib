@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <spirit:component xmlns:xilinx="http://www.xilinx.com" xmlns:spirit="http://www.spiritconsortium.org/XMLSchema/SPIRIT/1685-2009" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <spirit:vendor>hellgate</spirit:vendor>
+  <spirit:vendor>hellgate202</spirit:vendor>
   <spirit:library>user</spirit:library>
   <spirit:name>median_filter</spirit:name>
   <spirit:version>1.0</spirit:version>
@@ -1355,7 +1355,7 @@
       </xilinx:taxonomies>
       <xilinx:displayName>Median Filter</xilinx:displayName>
       <xilinx:definitionSource>package_project</xilinx:definitionSource>
-      <xilinx:vendorDisplayName>hellgate</xilinx:vendorDisplayName>
+      <xilinx:vendorDisplayName>hellgate202</xilinx:vendorDisplayName>
       <xilinx:vendorURL>http://github.com/hellgate202</xilinx:vendorURL>
       <xilinx:coreRevision>3</xilinx:coreRevision>
       <xilinx:coreCreationDateTime>2020-05-07T13:17:04Z</xilinx:coreCreationDateTime>
