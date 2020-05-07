@@ -100,9 +100,7 @@ assign csr_i.bresp   = 2'b0;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      orig_px_cr <= 32'd0;
-      mod_px_cr  <= 32'd0;
-      wr_stb_cr  <= 1'b0;
+      en_cr <= 1'b1;
     end
   else
     if( wr_req )
