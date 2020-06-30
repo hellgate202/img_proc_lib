@@ -34,11 +34,12 @@ logic                      cal_stb_cr_d1;
 logic [1 : 0]              man_sel_cr;
 logic [31 : 0]             man_coef_cr;
 logic                      man_lock_cr;
+logic [31 : 0]             cur_coef_sr;       
 
 assign wr_addr_match = csr_i.awaddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
                        csr_i.awaddr <= ( ( WB_MAN_LOCK_CR << 2 ) + BASE_ADDR );
 assign rd_addr_match = csr_i.araddr >= ( ( WB_MODE_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.araddr <= ( ( WB_MAN_LOCK_CR << 2 ) + BASE_ADDR );
+                       csr_i.araddr <= ( ( WB_CUR_COEF_SR << 2 ) + BASE_ADDR );
 assign aw_handshake  = csr_i.awvalid && csr_i.awready && wr_addr_match;
 assign ar_handshake  = csr_i.arvalid && csr_i.arready && rd_addr_match;
 assign w_handshake   = csr_i.wvalid && csr_i.wready && ( wr_addr_match || was_aw_handshake );
@@ -172,6 +173,7 @@ always_ff @( posedge clk_i, posedge rst_i )
         WB_MAN_SEL_CR:  csr_i.rdata <= 32'( man_sel_cr );
         WB_MAN_COEF_CR: csr_i.rdata <= 32'( man_coef_cr );
         WB_MAN_LOCK_CR: csr_i.rdata <= 32'( man_lock_cr );
+        WB_CUR_COEF_SR: csr_i.rdata <= 32'( cur_coef_sr );
         default:;
       endcase
     else
@@ -184,6 +186,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     cal_stb_cr_d1 <= cal_stb_cr;
 
+assign cur_coef_sr        = wb_ctrl_o.cur_coef;
 assign wb_ctrl_o.mode     = mode_cr;
 assign wb_ctrl_o.cal_stb  = cal_stb_cr && !cal_stb_cr_d1;
 assign wb_ctrl_o.man_sel  = man_sel_cr;

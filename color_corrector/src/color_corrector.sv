@@ -114,18 +114,18 @@ logic [PX_WIDTH - 1 : 0]       b_clip;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      a11 <= A11_INIT;
-      a12 <= A12_INIT;
-      a13 <= A13_INIT;
-      a14 <= A14_INIT;
-      a21 <= A21_INIT;
-      a22 <= A22_INIT;
-      a23 <= A23_INIT;
-      a24 <= A24_INIT;
-      a31 <= A31_INIT;
-      a32 <= A32_INIT;
-      a33 <= A33_INIT;
-      a34 <= A34_INIT;
+      a11 <= FIXED_ONE;
+      a12 <= '0;
+      a13 <= '0;
+      a14 <= '0;
+      a21 <= '0;
+      a22 <= FIXED_ONE;
+      a23 <= '0;
+      a24 <= '0;
+      a31 <= '0;
+      a32 <= '0;
+      a33 <= FIXED_ONE;
+      a34 <= '0;
     end
   else
     if( cc_ctrl_i.coef_lock )
@@ -144,6 +144,26 @@ always_ff @( posedge clk_i, posedge rst_i )
         4'd11: a34 <= cc_ctrl_i.coef[COEF_WIDTH : 0];
         default:;
       endcase
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    cc_ctrl_i.cur_coef <= '0;
+  else
+    case( cc_ctrl_i.coef_sel )
+      4'd0:  cc_ctrl_i.cur_coef <= a11;
+      4'd1:  cc_ctrl_i.cur_coef <= a12;
+      4'd2:  cc_ctrl_i.cur_coef <= a13;
+      4'd3:  cc_ctrl_i.cur_coef <= a14;
+      4'd4:  cc_ctrl_i.cur_coef <= a21;
+      4'd5:  cc_ctrl_i.cur_coef <= a22;
+      4'd6:  cc_ctrl_i.cur_coef <= a23;
+      4'd7:  cc_ctrl_i.cur_coef <= a24;
+      4'd8:  cc_ctrl_i.cur_coef <= a31;
+      4'd9:  cc_ctrl_i.cur_coef <= a32;
+      4'd10: cc_ctrl_i.cur_coef <= a33;
+      4'd11: cc_ctrl_i.cur_coef <= a34;
+      default:;
+    endcase
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),

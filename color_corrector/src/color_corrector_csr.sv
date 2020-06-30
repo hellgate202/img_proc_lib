@@ -31,11 +31,12 @@ logic                      wr_req;
 logic                      coef_lock_cr;
 logic [3 : 0]              coef_sel_cr;
 logic [31 : 0]             coef_cr;
+logic [31 : 0]             cur_coef_sr;
 
 assign wr_addr_match = csr_i.awaddr >= ( ( CC_COEF_LOCK_CR << 2 ) + BASE_ADDR ) &&
                        csr_i.awaddr <= ( ( CC_COEF_CR << 2 ) + BASE_ADDR );
 assign rd_addr_match = csr_i.araddr >= ( ( CC_COEF_LOCK_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.araddr <= ( ( CC_COEF_CR << 2 ) + BASE_ADDR );
+                       csr_i.araddr <= ( ( CC_CUR_COEF_SR << 2 ) + BASE_ADDR );
 assign aw_handshake  = csr_i.awvalid && csr_i.awready && wr_addr_match;
 assign ar_handshake  = csr_i.arvalid && csr_i.arready && rd_addr_match;
 assign w_handshake   = csr_i.wvalid && csr_i.wready && ( wr_addr_match || was_aw_handshake );
@@ -155,12 +156,14 @@ always_ff @( posedge clk_i, posedge rst_i )
         CC_COEF_LOCK_CR: csr_i.rdata <= 32'( coef_lock_cr );
         CC_COEF_SEL_CR:  csr_i.rdata <= 32'( coef_sel_cr );
         CC_COEF_CR:      csr_i.rdata <= 32'( coef_cr );
+        CC_CUR_COEF_SR:  csr_i.rdata <= 32'( cur_coef_sr );
         default:;
       endcase
     else
       if( r_handshake )
         csr_i.rdata <= 32'd0;
 
+assign cur_coef_sr         = cc_ctrl_o.cur_coef;
 assign cc_ctrl_o.coef_lock = coef_lock_cr;
 assign cc_ctrl_o.coef_sel  = coef_sel_cr;
 assign cc_ctrl_o.coef      = coef_cr;

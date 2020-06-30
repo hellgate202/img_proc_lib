@@ -171,9 +171,9 @@ awb_retinex #(
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      man_r_corr <= R_INIT;
+      man_r_corr <= FIXED_ONE;
       man_g_corr <= FIXED_ONE;
-      man_b_corr <= B_INIT;
+      man_b_corr <= FIXED_ONE;
     end
   else
     if( wb_ctrl_i.man_lock )
@@ -183,6 +183,17 @@ always_ff @( posedge clk_i, posedge rst_i )
         MANUAL_BLUE:  man_b_corr <= wb_ctrl_i.man_coef[COEF_WIDTH - 1 : 0];
         default:;
       endcase
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    wb_ctrl_i.cur_coef <= '0;
+  else
+    case( wb_ctrl_i.man_sel )
+      MANUAL_RED:   wb_ctrl_i.cur_coef <= r_corr;
+      MANUAL_GREEN: wb_ctrl_i.cur_coef <= g_corr;
+      MANUAL_BLUE:  wb_ctrl_i.cur_coef <= b_corr;
+      default:;
+    endcase
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
