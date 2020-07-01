@@ -23,6 +23,7 @@ logic                      w_handshake;
 logic                      b_handshake;
 logic                      r_handshake;
 logic                      was_aw_handshake;
+logic                      was_ar_handshake;
 logic                      was_w_handshake;
 logic                      backpressure;
 logic                      wr_req;
@@ -57,20 +58,21 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
       was_aw_handshake <= 1'b0;
+      was_ar_handshake <= 1'b0;
       was_w_handshake  <= 1'b0;
     end
   else
-    if( !backpressure )
-      begin
-        was_aw_handshake <= aw_handshake;
-        was_w_handshake  <= w_handshake;
-      end
+    begin
+      was_aw_handshake <= aw_handshake;
+      was_ar_handshake <= ar_handshake;
+      was_w_handshake  <= w_handshake;
+    end
 
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     csr_i.rvalid <= 1'b0;
   else
-    if( ar_handshake && rd_addr_match )
+    if( was_ar_handshake )
       csr_i.rvalid <= 1'b1;
     else
       if( r_handshake )
@@ -127,7 +129,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     csr_i.rdata <= 32'b0;
   else
-    if( ar_handshake )
+    if( was_ar_handshake )
       case( rd_addr_reg )
         MED_FILT_EN_CR:  csr_i.rdata <= 32'( en_cr );
         default:;
