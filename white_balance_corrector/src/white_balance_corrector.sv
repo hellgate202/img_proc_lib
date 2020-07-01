@@ -24,8 +24,8 @@ localparam int                      TDATA_WIDTH      = PX_WIDTH % 8 ?
 localparam int                      TDATA_WIDTH_B    = TDATA_WIDTH / 8;
 localparam int                      COEF_WIDTH       = PX_WIDTH + FRACT_WIDTH;
 localparam bit [COEF_WIDTH - 1 : 0] FIXED_ONE = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
-localparam bit [COEF_WIDTH - 1 : 0] R_INIT    = { PX_WIDTH'( 2 ), FRACT_WIDTH'( 454 ) }; //2.4433
-localparam bit [COEF_WIDTH - 1 : 0] B_INIT    = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 418 ) }; //1.4082
+localparam bit [COEF_WIDTH - 1 : 0] R_INIT    = { PX_WIDTH'( 2 ), FRACT_WIDTH'( 10'h14c ) }; //2.324
+localparam bit [COEF_WIDTH - 1 : 0] B_INIT    = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 10'h183 ) }; //1.377
 
 logic [COEF_WIDTH - 1 : 0]     gw_r_corr;
 logic [COEF_WIDTH - 1 : 0]     gw_b_corr;
