@@ -24,8 +24,8 @@ localparam int                      TDATA_WIDTH      = PX_WIDTH % 8 ?
 localparam int                      TDATA_WIDTH_B    = TDATA_WIDTH / 8;
 localparam int                      COEF_WIDTH       = PX_WIDTH + FRACT_WIDTH;
 localparam bit [COEF_WIDTH - 1 : 0] FIXED_ONE = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 0 ) };
-localparam bit [COEF_WIDTH - 1 : 0] R_INIT    = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 119 ) }; //1.1162
-localparam bit [COEF_WIDTH - 1 : 0] B_INIT    = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 295 ) };  //1.2881
+localparam bit [COEF_WIDTH - 1 : 0] R_INIT    = { PX_WIDTH'( 2 ), FRACT_WIDTH'( 454 ) }; //2.4433
+localparam bit [COEF_WIDTH - 1 : 0] B_INIT    = { PX_WIDTH'( 1 ), FRACT_WIDTH'( 418 ) }; //1.4082
 
 logic [COEF_WIDTH - 1 : 0]     gw_r_corr;
 logic [COEF_WIDTH - 1 : 0]     gw_b_corr;
@@ -171,9 +171,9 @@ awb_retinex #(
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      man_r_corr <= FIXED_ONE;
+      man_r_corr <= R_INIT;
       man_g_corr <= FIXED_ONE;
-      man_b_corr <= FIXED_ONE;
+      man_b_corr <= B_INIT;
     end
   else
     if( wb_ctrl_i.man_lock )
