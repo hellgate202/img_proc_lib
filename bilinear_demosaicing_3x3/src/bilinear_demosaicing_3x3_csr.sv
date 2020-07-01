@@ -112,7 +112,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
       en_cr      <= 1'd1;
-      pattern_cr <= 2'd1;
+      pattern_cr <= 2'd3;
     end
   else
     if( wr_req )
