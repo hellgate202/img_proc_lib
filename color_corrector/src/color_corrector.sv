@@ -15,19 +15,19 @@ localparam int TDATA_WIDTH = PX_WIDTH % 8 ?
                              PX_WIDTH * 3;
 
 localparam logic [COEF_WIDTH : 0] FIXED_ONE = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 0 ) };
-// For OV5640
-localparam logic [COEF_WIDTH : 0] A11_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 1004 ) }; // 1.9808
-localparam logic [COEF_WIDTH : 0] A12_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 716 )  }; // -0.6996
-localparam logic [COEF_WIDTH : 0] A13_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 52 )   }; // -0.0499
-localparam logic [COEF_WIDTH : 0] A14_INIT  = { 1'b1, PX_WIDTH'( 236 ), FRACT_WIDTH'( 863 )  }; // -236.8427
-localparam logic [COEF_WIDTH : 0] A21_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 406 )  }; // -0.3961
-localparam logic [COEF_WIDTH : 0] A22_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 614 )  }; // 1.5994
-localparam logic [COEF_WIDTH : 0] A23_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 8 )    }; // -0.0079
-localparam logic [COEF_WIDTH : 0] A24_INIT  = { 1'b1, PX_WIDTH'( 206 ), FRACT_WIDTH'( 281 )  }; // -206.2747
-localparam logic [COEF_WIDTH : 0] A31_INIT  = { 1'b0, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 63 )   }; // 0.0617
-localparam logic [COEF_WIDTH : 0] A32_INIT  = { 1'b1, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 10 )   }; // -1.0097
-localparam logic [COEF_WIDTH : 0] A33_INIT  = { 1'b0, PX_WIDTH'( 2 ),   FRACT_WIDTH'( 227 )  }; // 2.2212
-localparam logic [COEF_WIDTH : 0] A34_INIT  = { 1'b1, PX_WIDTH'( 279 ), FRACT_WIDTH'( 929 )  }; // -279.9075
+// For IMX477
+localparam logic [COEF_WIDTH : 0] A11_INIT  = { 1'b0, PX_WIDTH'( 2 ),   FRACT_WIDTH'( 655 ) }; // 2.64
+localparam logic [COEF_WIDTH : 0] A12_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 901 )  }; // -0.88
+localparam logic [COEF_WIDTH : 0] A13_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 61 )   }; // -0.06
+localparam logic [COEF_WIDTH : 0] A14_INIT  = { 1'b1, PX_WIDTH'( 465 ), FRACT_WIDTH'( 522 )  }; // -465.51
+localparam logic [COEF_WIDTH : 0] A21_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 245 )  }; // -0.24
+localparam logic [COEF_WIDTH : 0] A22_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 808 )  }; // 1.79
+localparam logic [COEF_WIDTH : 0] A23_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 542 )    }; // -0.53
+localparam logic [COEF_WIDTH : 0] A24_INIT  = { 1'b1, PX_WIDTH'( 104 ), FRACT_WIDTH'( 552 )  }; // -104.54
+localparam logic [COEF_WIDTH : 0] A31_INIT  = { 1'b0, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 71 )   }; // 0.07
+localparam logic [COEF_WIDTH : 0] A32_INIT  = { 1'b1, PX_WIDTH'( 0 ),   FRACT_WIDTH'( 573 )   }; // -0.56
+localparam logic [COEF_WIDTH : 0] A33_INIT  = { 1'b0, PX_WIDTH'( 1 ),   FRACT_WIDTH'( 655 )  }; // 1.64
+localparam logic [COEF_WIDTH : 0] A34_INIT  = { 1'b1, PX_WIDTH'( 216 ), FRACT_WIDTH'( 634 )  }; // -216.62
 
 function logic [COEF_WIDTH * 2 : 0] oc_to_tc(
   input logic                          sign_i,
@@ -114,18 +114,18 @@ logic [PX_WIDTH - 1 : 0]       b_clip;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      a11 <= FIXED_ONE;
-      a12 <= '0;
-      a13 <= '0;
-      a14 <= '0;
-      a21 <= '0;
-      a22 <= FIXED_ONE;
-      a23 <= '0;
-      a24 <= '0;
-      a31 <= '0;
-      a32 <= '0;
-      a33 <= FIXED_ONE;
-      a34 <= '0;
+      a11 <= A11_INIT;
+      a12 <= A12_INIT;
+      a13 <= A13_INIT;
+      a14 <= A14_INIT;
+      a21 <= A21_INIT;
+      a22 <= A22_INIT;
+      a23 <= A23_INIT;
+      a24 <= A24_INIT;
+      a31 <= A31_INIT;
+      a32 <= A32_INIT;
+      a33 <= A33_INIT;
+      a34 <= A34_INIT;
     end
   else
     if( cc_ctrl_i.coef_lock )
