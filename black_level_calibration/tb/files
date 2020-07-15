@@ -1,0 +1,7 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
+../src/blc_ctrl_if.sv
+../src/blc_csr_pkg.sv
+../src/blc_csr.sv
+../src/blc.sv
+./tb_blc.sv
