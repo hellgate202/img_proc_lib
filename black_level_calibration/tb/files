@@ -3,5 +3,6 @@
 ../src/blc_ctrl_if.sv
 ../src/blc_csr_pkg.sv
 ../src/blc_csr.sv
+../../lib/math_lib/src/division.sv
 ../src/blc.sv
 ./tb_blc.sv

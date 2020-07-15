@@ -22,7 +22,6 @@ localparam int TDATA_WIDTH_B = TDATA_WIDTH / 8;
 logic [PX_CNT_WIDTH - 1 : 0] px_cnt;
 logic [PX_ACC_WIDTH - 1 : 0] px_acc;
 logic [PX_ACC_WIDTH - 1 : 0] round_threshold;
-logic [PX_ACC_WIDTH - 1 : 0] px_acc_width;
 logic                        mean_calc_start;
 logic                        mean_valid;
 logic [PX_ACC_WIDTH - 1 : 0] mean;

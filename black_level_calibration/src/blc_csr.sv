@@ -172,7 +172,7 @@ always_ff @( posedge clk_i, posedge rst_i )
   else
     cal_stb_cr_d1 <= cal_stb_cr;
 
-assign cur_bl_sr          = wb_ctrl_o.cur_bl;
+assign cur_bl_sr          = blc_ctrl_o.cur_bl;
 assign blc_ctrl_o.mode    = mode_cr;
 assign blc_ctrl_o.cal_stb = cal_stb_cr && !cal_stb_cr_d1;
 assign blc_ctrl_o.man_bl  = man_bl_cr;
