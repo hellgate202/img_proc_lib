@@ -2,7 +2,7 @@ module blc #(
   parameter int PX_WIDTH         = 10,
   parameter int FRAME_RES_X      = 1920,
   parameter int FRAME_RES_Y      = 1080,
-  parameter int INIT_BLACK_LEVEL = 16
+  parameter int INIT_BLACK_LEVEL = 64
 )(
   input                 clk_i,
   input                 rst_i,
@@ -127,6 +127,6 @@ always_ff @( posedge clk_i, posedge rst_i )
       if( video_i.tdata[PX_WIDTH - 1 : 0] < black_level )
         video_o.tdata <= TDATA_WIDTH'( 0 );
       else
-        video_o.tdata <= TDATA_WIDTH'( video_o.tdata - black_level );
+        video_o.tdata <= TDATA_WIDTH'( video_i.tdata - black_level );
 
 endmodule
