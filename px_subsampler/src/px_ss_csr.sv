@@ -35,11 +35,13 @@ logic [15 : 0]             add_px_skip_interval_cr;
 logic [15 : 0]             ln_to_skip_cr;
 logic [15 : 0]             ln_skip_interval_cr;
 logic [15 : 0]             add_ln_skip_interval_cr;
+logic                      apply_stb_cr;
+logic                      apply_stb_cr_d1;
 
 assign wr_addr_match = csr_i.awaddr >= ( ( PS_PX_SKIP_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.awaddr <= ( ( PS_LN_ADD_INTERVAL_CR << 2 ) + BASE_ADDR );
+                       csr_i.awaddr <= ( ( PS_APPLY_STB_CR << 2 ) + BASE_ADDR );
 assign rd_addr_match = csr_i.araddr >= ( ( PS_PX_SKIP_CR << 2 ) + BASE_ADDR ) &&
-                       csr_i.araddr <= ( ( PS_LN_ADD_INTERVAL_CR << 2 ) + BASE_ADDR );
+                       csr_i.araddr <= ( ( PS_APPLY_STB_CR << 2 ) + BASE_ADDR );
 assign aw_handshake  = csr_i.awvalid && csr_i.awready && wr_addr_match;
 assign ar_handshake  = csr_i.arvalid && csr_i.arready && rd_addr_match;
 assign w_handshake   = csr_i.wvalid && csr_i.wready && ( wr_addr_match || was_aw_handshake );
@@ -161,6 +163,11 @@ always_ff @( posedge clk_i, posedge rst_i )
               if( wstrb_lock[i] )
                 add_ln_skip_interval_cr[( i + 1 ) * 8 - 1 -: 8] <= wdata_lock[( i + 1 ) * 8 - 1 -: 8];
           end
+        PS_APPLY_STB_CR:
+          begin
+            if( wstrb_lock[0] )
+              apply_stb_cr <= wdata_lock[0];
+          end
         default:;
       endcase
 
@@ -186,11 +193,18 @@ always_ff @( posedge clk_i, posedge rst_i )
         PS_LN_SKIP_CR:         csr_i.rdata <= 32'( ln_to_skip_cr );
         PS_LN_INTERVAL_CR:     csr_i.rdata <= 32'( ln_skip_interval_cr );
         PS_LN_ADD_INTERVAL_CR: csr_i.rdata <= 32'( add_ln_skip_interval_cr );
+        PS_APPLY_STB_CR:       csr_i.rdata <= 32'( apply_stb_cr );
         default:;
       endcase
     else
       if( r_handshake )
         csr_i.rdata <= 32'd0;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    apply_stb_cr_d1 <= 1'b0;
+  else
+    apply_stb_cr_d1 <= apply_stb_cr;
 
 assign px_ss_o.px_to_skip           = px_to_skip_cr;
 assign px_ss_o.px_skip_interval     = px_skip_interval_cr;
@@ -198,5 +212,6 @@ assign px_ss_o.add_px_skip_interval = add_px_skip_interval_cr;
 assign px_ss_o.ln_to_skip           = ln_to_skip_cr;
 assign px_ss_o.ln_skip_interval     = ln_skip_interval_cr;
 assign px_ss_o.add_ln_skip_interval = add_ln_skip_interval_cr;
+assign px_ss_o.apply_stb            = apply_stb_cr && !apply_stb_cr_d1;
 
 endmodule

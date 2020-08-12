@@ -6,7 +6,8 @@ parameter int PS_PX_ADD_INTERVAL_CR = 2;
 parameter int PS_LN_SKIP_CR         = 3;
 parameter int PS_LN_INTERVAL_CR     = 4;
 parameter int PS_LN_ADD_INTERVAL_CR = 5;
+parameter int PS_APPLY_STB_CR       = 6;
 
-parameter int TOTAL_CSR_CNT         = 6;
+parameter int TOTAL_CSR_CNT         = 7;
 
 endpackage

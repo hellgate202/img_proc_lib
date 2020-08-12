@@ -28,6 +28,7 @@ logic [15 : 0] ln_skip_cnt;
 logic [15 : 0] ln_add_cnt;
 logic          force_valid;
 logic          skiped_valid;
+logic          was_apply_stb;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
@@ -74,7 +75,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       line_add_lock         <= 16'd0;
     end
   else
-    if( frame_start )
+    if( frame_start && was_apply_stb )
       begin
         valid_px_per_interval <= px_ss_i.px_skip_interval - px_ss_i.px_to_skip - 'd1;
         px_skip_lock          <= px_ss_i.px_to_skip - 'd1;
@@ -85,6 +86,16 @@ always_ff @( posedge clk_i, posedge rst_i )
       end
 
 assign frame_start = video_i.tvalid && video_i.tuser && video_i.tready;
+
+always_ff @( posedge clk_i, posedge rst_i )
+  if( rst_i )
+    was_apply_stb <= 1'b0;
+  else
+    if( frame_start )
+      was_apply_stb <= 1'b0;
+    else
+      if( px_ss_i.apply_stb )
+        was_apply_stb <= 1'b1;
 
 enum logic [2 : 0] { PASS_S,
                      SKIP_PX_S,
