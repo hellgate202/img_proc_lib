@@ -10,13 +10,13 @@ module tb_px_subsampler;
 
 parameter int    CLK_T           = 6734;
 parameter int    PX_WIDTH        = 30;
-parameter int    FRAME_RES_X     = 1920;
-parameter int    FRAME_RES_Y     = 1080;
-parameter int    TOTAL_X         = 2200;
-parameter int    TOTAL_Y         = 1125;
+parameter int    FRAME_RES_X     = 640;
+parameter int    FRAME_RES_Y     = 480;
+parameter int    TOTAL_X         = 700;
+parameter int    TOTAL_Y         = 500;
 parameter string FILE_PATH       = "./img.hex";
-parameter int    RANDOM_TVALID   = 0;
-parameter int    RANDOM_TREADY   = 0;
+parameter int    RANDOM_TVALID   = 1;
+parameter int    RANDOM_TREADY   = 1;
 parameter int    CSR_BASE_ADDR   = 32'h0000_0000;
 parameter int    TDATA_WIDTH     = PX_WIDTH % 8 ?
                                    ( PX_WIDTH / 8 + 1 ) * 8 :
@@ -56,7 +56,7 @@ axi4_lite_if #(
   .aresetn    ( !rst )
 );
 
-px_ss_if px_ssl();
+px_ss_if px_ss();
 
 AXI4LiteMaster #(
   .DATA_WIDTH ( 32 ),
@@ -64,7 +64,7 @@ AXI4LiteMaster #(
 ) csr_master;
 
 AXI4StreamVideoSource #(
-  .PX_WIDTH      ( PX_WIDTH * 3  ),
+  .PX_WIDTH      ( PX_WIDTH      ),
   .FRAME_RES_X   ( FRAME_RES_X   ),
   .FRAME_RES_Y   ( FRAME_RES_Y   ),
   .TOTAL_X       ( TOTAL_X       ),
@@ -113,20 +113,15 @@ task automatic video_recorder();
       if( rx_video_mbx.num() > 0 )
         begin
           rx_video_mbx.get( rx_bytes );
-          if( rx_bytes.size() != ( FRAME_RES_X * ( TDATA_WIDTH / 8 ) ) )
-            begin
-              $display( "Wrong size of the line: %0d. Should be %0d", rx_bytes.size(), FRAME_RES_X * ( TDATA_WIDTH / 8 ) );
-              $stop();
-            end 
           while( rx_bytes.size() > 0 )
             begin
               for( int i = 0; i < ( TDATA_WIDTH / 8 ); i++ )
                 rx_px[( i + 1 ) * 8 - 1 -: 8] = rx_bytes.pop_front();
-              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH - 1 : 0] );
+              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH / 3 - 1 : 0] );
               $fwrite( rx_file, "\n" );
-              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH * 2 - 1 -: PX_WIDTH] );
+              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH / 3 * 2 - 1 -: PX_WIDTH / 3] );
               $fwrite( rx_file, "\n" );
-              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH * 3 - 1 -: PX_WIDTH] );
+              $fwrite( rx_file, "%0h", rx_px[PX_WIDTH / 3 * 3 - 1 -: PX_WIDTH / 3] );
               $fwrite( rx_file, "\n" );
             end
         end
@@ -149,7 +144,7 @@ px_subsampler #(
   .FRAME_RES_X ( FRAME_RES_X )
 ) DUT (
   .clk_i       ( clk         ),
-  .rst_i       ( rst_i       ),
+  .rst_i       ( rst         ),
   .px_ss_i     ( px_ss       ),
   .video_i     ( video_i     ),
   .video_o     ( video_o     )
@@ -168,6 +163,13 @@ initial
     join_none
     repeat( 10 )
       @( posedge clk );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_PX_SKIP_CR << 2, 32'd2 );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_PX_INTERVAL_CR << 2, 32'd6 );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_PX_ADD_INTERVAL_CR << 2, 32'd3 );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_LN_SKIP_CR << 2, 32'd2 );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_LN_INTERVAL_CR << 2, 32'd6 );
+    csr_master.wr_data( CSR_BASE_ADDR + PS_LN_ADD_INTERVAL_CR << 2, 32'd3 );
+    @( posedge clk );
     video_source.run();
     repeat( FRAMES_AMOUNT + 1 )
       begin

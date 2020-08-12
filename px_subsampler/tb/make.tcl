@@ -8,13 +8,13 @@ exec ../../lib/axi4_lib/scripts/rgb_img2rgb_hex.py ../../test.png $x_res $y_res 
 
 vlib work
 vlog -sv -f ./files 
-vopt +acc tb_px_subsampler -o tb_px_subsampler_opt                     \
+vsim tb_px_subsampler                     \
                               -G/tb_px_subsampler/FRAME_RES_X=$x_res   \
                               -G/tb_px_subsampler/FRAME_RES_Y=$y_res   \
                               -G/tb_px_subsampler/TOTAL_X=$total_x     \
                               -G/tb_px_subsampler/TOTAL_Y=$total_y     \
                               -G/tb_px_subsampler/FRAMES_AMOUNT=$frames
-vsim tb_px_subsampler_opt
+vsim tb_px_subsampler
 do wave.do
 run -all
 
