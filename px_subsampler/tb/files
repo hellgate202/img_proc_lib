@@ -1,0 +1,10 @@
+../../lib/axi4_lib/src/interface/axi4_stream_if.sv
+../../lib/axi4_lib/src/interface/axi4_lite_if.sv
+../../lib/axi4_lib/src/utility/axi4_stream_delay.sv
+../src/px_ss_if.sv
+../src/px_ss_csr_pkg.sv
+../src/px_ss_csr.sv
+../../ip/dual_port_ram/src/dual_port_ram.sv
+../../lib/fifo_lib/src/axi4_stream_fifo.sv
+../src/px_subsampler.sv
+./tb_px_subsampler.sv
