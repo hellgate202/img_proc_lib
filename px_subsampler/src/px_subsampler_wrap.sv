@@ -1,14 +1,9 @@
 module px_subsampler_wrap #(
   parameter CSR_BASE_ADDR   = 0,
-  parameter CHANNELS_AMOUNT = 3,
-  parameter PX_WIDTH        = 10,
-  parameter WIN_SIZE        = 3,
+  parameter PX_WIDTH        = 30,
   parameter FRAME_RES_X     = 1920,
-  parameter FRAME_RES_Y     = 1080,
-  parameter COMPENSATE_EN   = 1,
   parameter TDATA_WIDTH     = 32,
-  parameter TDATA_WIDTH_B   = 4,
-  parameter INTERLINE_GAP   = 100
+  parameter TDATA_WIDTH_B   = 4
 )(
   input                           clk_i,
   input                           rst_i,

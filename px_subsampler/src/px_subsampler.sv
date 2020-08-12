@@ -2,11 +2,11 @@ module px_subsampler #(
   parameter int PX_WIDTH    = 30,
   parameter int FRAME_RES_X = 1920
 )(
-  input                clk_i,
-  input                rst_i,
-  px_ss_if.slave       px_ss_i,
-  axi4_stream_if.slave video_i,
-  axi4_stream_if.slave video_o
+  input                 clk_i,
+  input                 rst_i,
+  px_ss_if.slave        px_ss_i,
+  axi4_stream_if.slave  video_i,
+  axi4_stream_if.master video_o
 );
 
 localparam int TDATA_WIDTH = PX_WIDTH % 8 ? ( PX_WIDTH / 8 + 1 ) * 8 : PX_WIDTH;

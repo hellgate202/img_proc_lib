@@ -29,12 +29,12 @@ logic                      was_w_handshake;
 logic                      backpressure;
 logic                      wr_req;
 
-logic [7 : 0]              px_to_skip_cr;
-logic [7 : 0]              px_skip_interval_cr;
-logic [7 : 0]              add_px_skip_interval_cr;
-logic [7 : 0]              ln_to_skip_cr;
-logic [7 : 0]              ln_skip_interval_cr;
-logic [7 : 0]              add_ln_skip_interval_cr;
+logic [15 : 0]             px_to_skip_cr;
+logic [15 : 0]             px_skip_interval_cr;
+logic [15 : 0]             add_px_skip_interval_cr;
+logic [15 : 0]             ln_to_skip_cr;
+logic [15 : 0]             ln_skip_interval_cr;
+logic [15 : 0]             add_ln_skip_interval_cr;
 
 assign wr_addr_match = csr_i.awaddr >= ( ( PS_PX_SKIP_CR << 2 ) + BASE_ADDR ) &&
                        csr_i.awaddr <= ( ( PS_LN_ADD_INTERVAL_CR << 2 ) + BASE_ADDR );
@@ -115,12 +115,12 @@ assign csr_i.bresp   = 2'b0;
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     begin
-      px_to_skip_cr           <= 8'd0;
-      px_skip_interval_cr     <= 8'd0;
-      add_px_skip_interval_cr <= 8'd0;
-      ln_to_skip_cr           <= 8'd0;
-      ln_skip_interval_cr     <= 8'd0;
-      add_ln_skip_interval_cr <= 8'd0;
+      px_to_skip_cr           <= 16'd0;
+      px_skip_interval_cr     <= 16'd0;
+      add_px_skip_interval_cr <= 16'd0;
+      ln_to_skip_cr           <= 16'd0;
+      ln_skip_interval_cr     <= 16'd0;
+      add_ln_skip_interval_cr <= 16'd0;
     end
   else
     if( wr_req )
