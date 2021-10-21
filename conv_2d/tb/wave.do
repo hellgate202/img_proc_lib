@@ -29,6 +29,8 @@ add wave -noupdate /tb_conv_2d/DUT/clk_i
 add wave -noupdate /tb_conv_2d/DUT/rst_i
 add wave -noupdate /tb_conv_2d/DUT/coef_i
 add wave -noupdate /tb_conv_2d/DUT/raw_window
+add wave -noupdate /tb_conv_2d/DUT/casted_raw_window
+add wave -noupdate /tb_conv_2d/DUT/casted_coef_window
 add wave -noupdate /tb_conv_2d/DUT/mult_window
 add wave -noupdate /tb_conv_2d/DUT/tc_mult_window
 add wave -noupdate /tb_conv_2d/DUT/adder_valid
@@ -40,8 +42,29 @@ add wave -noupdate /tb_conv_2d/DUT/tuser_delay_mult
 add wave -noupdate /tb_conv_2d/DUT/tlast_delay_mult
 add wave -noupdate /tb_conv_2d/DUT/tuser_delay_add
 add wave -noupdate /tb_conv_2d/DUT/tlast_delay_add
+add wave -noupdate /tb_conv_2d/DUT/sum_int
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/COEF_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/COEF_FRACT_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/PX_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/TDATA_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/WIN_SIZE
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/FRAME_RES_X
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/FRAME_RES_Y
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/INTERLINE_GAP
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/COMPENSATE_EN
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/COEF_INT_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/WIN_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/WIN_TDATA_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/BIGGEST_INT_PART
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/CAST_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/MULT_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/MULT_WIN_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/MULT_TDATA_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/SUM_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/SUM_INT_WIDTH
+add wave -noupdate -radix unsigned /tb_conv_2d/DUT/ADD_DELAY
 TreeUpdate [SetDefaultTree]
-WaveRestoreCursors {{Cursor 1} {839096128 ps} 0}
+WaveRestoreCursors {{Cursor 1} {25488950 ps} 0}
 quietly wave cursor active 1
 configure wave -namecolwidth 728
 configure wave -valuecolwidth 147

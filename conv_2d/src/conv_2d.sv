@@ -1,12 +1,13 @@
 module conv_2d #(
-  parameter int COEF_WIDTH    = 8,
-  parameter int PX_WIDTH      = 8,
-  parameter int TDATA_WIDTH   = 8,
-  parameter int WIN_SIZE      = 3,
-  parameter int FRAME_RES_X   = 1920,
-  parameter int FRAME_RES_Y   = 1080,
-  parameter int INTERLINE_GAP = 100,
-  parameter int COMPENSATE_EN = 1
+  parameter int COEF_WIDTH       = 10,
+  parameter int COEF_FRACT_WIDTH = 7,
+  parameter int PX_WIDTH         = 8,
+  parameter int TDATA_WIDTH      = 8,
+  parameter int WIN_SIZE         = 3,
+  parameter int FRAME_RES_X      = 1920,
+  parameter int FRAME_RES_Y      = 1080,
+  parameter int INTERLINE_GAP    = 100,
+  parameter int COMPENSATE_EN    = 1
 )(
   input                                                          clk_i,
   input                                                          rst_i,
@@ -15,16 +16,20 @@ module conv_2d #(
   axi4_stream_if.master                                          video_o
 );
 
+localparam int COEF_INT_WIDTH   = COEF_WIDTH - COEF_FRACT_WIDTH - 1;
 localparam int WIN_WIDTH        = PX_WIDTH * WIN_SIZE * WIN_SIZE;
 localparam int WIN_TDATA_WIDTH  = WIN_WIDTH % 8 ?
                                   ( WIN_WIDTH / 8 + 1 ) * 8 :
                                   WIN_WIDTH;
-localparam int MULT_WIDTH       = COEF_WIDTH + PX_WIDTH;
+localparam int BIGGEST_INT_PART = PX_WIDTH > COEF_INT_WIDTH ? PX_WIDTH : COEF_INT_WIDTH;
+localparam int CAST_WIDTH       = BIGGEST_INT_PART + COEF_FRACT_WIDTH;
+localparam int MULT_WIDTH       = CAST_WIDTH * 2 + 1;
 localparam int MULT_WIN_WIDTH   = MULT_WIDTH * WIN_SIZE * WIN_SIZE;
 localparam int MULT_TDATA_WIDTH = MULT_WIN_WIDTH % 8 ?
                                   ( MULT_WIN_WIDTH / 8 + 1 ) * 8 :
                                   MULT_WIN_WIDTH;
 localparam int SUM_WIDTH        = MULT_WIDTH + $clog2( WIN_SIZE * WIN_SIZE );
+localparam int SUM_INT_WIDTH    = SUM_WIDTH - COEF_FRACT_WIDTH * 2;
 localparam int ADD_DELAY        = $clog2( WIN_SIZE * WIN_SIZE ) + 1;
 
 function logic [MULT_WIDTH - 1 : 0] signed_abs_to_tc(
@@ -44,6 +49,8 @@ else
 endfunction
 
 logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][PX_WIDTH - 1 : 0]   raw_window;
+logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][CAST_WIDTH - 1 : 0] casted_raw_window;
+logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][CAST_WIDTH - 1 : 0] casted_coef_window;
 logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][MULT_WIDTH - 1 : 0] mult_window;
 logic [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][MULT_WIDTH - 1 : 0] tc_mult_window;
 logic                                                          adder_valid;
@@ -55,6 +62,7 @@ logic                                                          tuser_delay_mult;
 logic                                                          tlast_delay_mult;
 logic [ADD_DELAY - 1 : 0]                                      tuser_delay_add;
 logic [ADD_DELAY - 1 : 0]                                      tlast_delay_add;
+logic [SUM_INT_WIDTH - 1 : 0]                                  sum_int;
 
 axi4_stream_if #(
   .TDATA_WIDTH ( TDATA_WIDTH ),
@@ -142,6 +150,31 @@ always_ff @( posedge clk_i, posedge rst_i )
         tlast_delay_mult <= win_stream.tlast;
       end
 
+generate
+  if( COEF_FRACT_WIDTH == 0 )
+    begin : int_cast
+      always_comb
+        for( int i = 0; i < WIN_SIZE; i++ )
+          for( int j = 0; j < WIN_SIZE; j++ )
+            begin
+              casted_raw_window[i][j]  = CAST_WIDTH'( raw_window[i][j] );
+              casted_coef_window[i][j] = CAST_WIDTH'( coef_i[i][j][COEF_WIDTH - 2 : 0] );
+            end
+    end
+  else
+    begin : fix_point_cast
+      always_comb
+        for( int i = 0; i < WIN_SIZE; i++ )
+          for( int j = 0; j < WIN_SIZE; j++ )
+            begin
+              casted_raw_window[i][j]  = { BIGGEST_INT_PART'( raw_window[i][j] ), COEF_FRACT_WIDTH'( 0 ) };
+              casted_coef_window[i][j] = { BIGGEST_INT_PART'( coef_i[i][j][COEF_WIDTH - 2 -: COEF_INT_WIDTH] ),
+                                           coef_i[i][j][COEF_FRACT_WIDTH - 1 : 0] };
+            end
+    end
+endgenerate
+
+
 always_ff @( posedge clk_i, posedge rst_i )
   if( rst_i )
     mult_window <= MULT_WIN_WIDTH'( 0 );
@@ -150,7 +183,7 @@ always_ff @( posedge clk_i, posedge rst_i )
       for( int i = 0; i < WIN_SIZE; i++ )
         for( int j = 0; j < WIN_SIZE; j++ )
           begin
-            mult_window[i][j]                 <= raw_window[i][j] * coef_i[i][j][COEF_WIDTH - 2 : 0];
+            mult_window[i][j]                 <= casted_raw_window[i][j] * casted_coef_window[i][j][CAST_WIDTH - 2 : 0];
             mult_window[i][j][MULT_WIDTH - 1] <= coef_i[i][j][COEF_WIDTH - 1];
           end
 
@@ -192,10 +225,12 @@ always_ff @( posedge clk_i, posedge rst_i )
           end
       end
 
+assign sum_int = mult_sum[SUM_WIDTH - 1 -: SUM_INT_WIDTH];
+
 assign video_o.tvalid = sum_valid;
-assign video_o.tdata  = mult_sum[SUM_WIDTH - 1] ? '0 :
-                        mult_sum[SUM_WIDTH - 2 : PX_WIDTH] ? TDATA_WIDTH'( 2 ** PX_WIDTH - 1 ) :
-                        TDATA_WIDTH'( mult_sum );
+assign video_o.tdata  = sum_int[SUM_INT_WIDTH - 1] ? '0 :
+                        sum_int[SUM_INT_WIDTH - 2 : PX_WIDTH] ? TDATA_WIDTH'( 2 ** PX_WIDTH - 1 ) :
+                        TDATA_WIDTH'( sum_int );
 assign video_o.tlast  = tlast_delay_add[ADD_DELAY - 1];
 assign video_o.tuser  = tuser_delay_add[ADD_DELAY - 1];
 assign video_o.tkeep  = '1;

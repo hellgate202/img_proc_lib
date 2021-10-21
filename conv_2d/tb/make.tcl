@@ -1,7 +1,7 @@
-quietly set x_res 640
-quietly set y_res 480
-quietly set total_x 700
-quietly set total_y 500
+quietly set x_res 1920
+quietly set y_res 1080
+quietly set total_x 2200
+quietly set total_y 1125
 
 exec ../../lib/axi4_lib/scripts/rgb_img2grayscale_hex.py ../../test.png $x_res $y_res 8
 

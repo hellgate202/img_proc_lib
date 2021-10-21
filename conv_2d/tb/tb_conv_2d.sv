@@ -6,25 +6,31 @@
 
 module tb_conv_2d;
 
-parameter int    CLK_T           = 6734;
-parameter int    PX_WIDTH        = 8;
-parameter int    FRAME_RES_X     = 1920;
-parameter int    FRAME_RES_Y     = 1080;
-parameter int    COMPENSATE_EN   = 1;
-parameter int    TOTAL_X         = 2200;
-parameter int    TOTAL_Y         = 1125;
-parameter string FILE_PATH       = "./img.hex";
-parameter int    RANDOM_TVALID   = 0;
-parameter int    RANDOM_TREADY   = 0;
-parameter int    TDATA_WIDTH     = PX_WIDTH % 8 ?
-                                   ( PX_WIDTH / 8 + 1 ) * 8 :
-                                   PX_WIDTH;
-parameter int    GAP             = TOTAL_X - FRAME_RES_X;
-parameter int    WIN_SIZE        = 3;
+parameter int    CLK_T            = 6734;
+parameter int    PX_WIDTH         = 8;
+parameter int    FRAME_RES_X      = 1920;
+parameter int    FRAME_RES_Y      = 1080;
+parameter int    COMPENSATE_EN    = 1;
+parameter int    TOTAL_X          = 2200;
+parameter int    TOTAL_Y          = 1125;
+parameter string FILE_PATH        = "./img.hex";
+parameter int    RANDOM_TVALID    = 0;
+parameter int    RANDOM_TREADY    = 0;
+parameter int    TDATA_WIDTH      = PX_WIDTH % 8 ?
+                                    ( PX_WIDTH / 8 + 1 ) * 8 :
+                                    PX_WIDTH;
+parameter int    WIN_SIZE         = 5;
+parameter int    GAP              = TOTAL_X - FRAME_RES_X - WIN_SIZE;
+parameter int    COEF_WIDTH       = 13;
+parameter int    COEF_FRACT_WIDTH = 8;
 
 bit clk;
 bit rst;
-bit [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][PX_WIDTH - 1 : 0] coef = {8'd129, 8'd130, 8'd129, 8'd0, 8'd0, 8'd0, 8'd1, 8'd2, 8'd1 };
+bit [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][COEF_WIDTH - 1 : 0] coef = { COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ),
+                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), 
+                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0500 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), 
+                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), 
+                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ) };
 
 mailbox rx_video_mbx = new();
 
@@ -117,20 +123,21 @@ task automatic video_recorder();
 endtask
 
 conv_2d #(
-  .COEF_WIDTH    ( PX_WIDTH    ),
-  .PX_WIDTH      ( PX_WIDTH    ),
-  .TDATA_WIDTH   ( TDATA_WIDTH ),
-  .WIN_SIZE      ( 3           ),
-  .FRAME_RES_X   ( FRAME_RES_X ),
-  .FRAME_RES_Y   ( FRAME_RES_Y ),
-  .INTERLINE_GAP ( GAP         ),
-  .COMPENSATE_EN ( 1           )
+  .COEF_WIDTH       ( COEF_WIDTH       ),
+  .COEF_FRACT_WIDTH ( COEF_FRACT_WIDTH ),
+  .PX_WIDTH         ( PX_WIDTH         ),
+  .TDATA_WIDTH      ( TDATA_WIDTH      ),
+  .WIN_SIZE         ( WIN_SIZE         ),
+  .FRAME_RES_X      ( FRAME_RES_X      ),
+  .FRAME_RES_Y      ( FRAME_RES_Y      ),
+  .INTERLINE_GAP    ( GAP              ),
+  .COMPENSATE_EN    ( 1                )
 ) DUT (
-  .clk_i         ( clk         ),
-  .rst_i         ( rst         ),
-  .coef_i        ( coef        ),
-  .video_i       ( video_i     ),
-  .video_o       ( video_o     )
+  .clk_i            ( clk              ),
+  .rst_i            ( rst              ),
+  .coef_i           ( coef             ),
+  .video_i          ( video_i          ),
+  .video_o          ( video_o          )
 );
 
 initial
