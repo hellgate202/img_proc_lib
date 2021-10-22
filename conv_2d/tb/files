@@ -11,4 +11,8 @@
 ../../frame_extender/src/gap_buffer.sv
 ../../frame_extender/src/frame_extender.sv
 ../src/conv_2d.sv
+../src/conv_2d_if.sv
+../src/conv_2d_csr_pkg.sv
+../src/conv_2d_csr.sv
+../src/conv_2d_coef_bridge.sv
 ./tb_conv_2d.sv

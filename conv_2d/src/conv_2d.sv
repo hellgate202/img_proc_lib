@@ -1,6 +1,6 @@
 module conv_2d #(
-  parameter int COEF_WIDTH       = 10,
-  parameter int COEF_FRACT_WIDTH = 7,
+  parameter int COEF_WIDTH       = 13,
+  parameter int COEF_FRACT_WIDTH = 8,
   parameter int PX_WIDTH         = 8,
   parameter int TDATA_WIDTH      = 8,
   parameter int WIN_SIZE         = 3,

@@ -4,6 +4,8 @@
 
 `timescale 1 ps / 1 ps
 
+import conv_2d_csr_pkg::*; 
+
 module tb_conv_2d;
 
 parameter int    CLK_T            = 6734;
@@ -16,6 +18,7 @@ parameter int    TOTAL_Y          = 1125;
 parameter string FILE_PATH        = "./img.hex";
 parameter int    RANDOM_TVALID    = 0;
 parameter int    RANDOM_TREADY    = 0;
+parameter int    CSR_BASE_ADDR    = 32'h0002_0000;
 parameter int    TDATA_WIDTH      = PX_WIDTH % 8 ?
                                     ( PX_WIDTH / 8 + 1 ) * 8 :
                                     PX_WIDTH;
@@ -24,13 +27,15 @@ parameter int    GAP              = TOTAL_X - FRAME_RES_X - WIN_SIZE;
 parameter int    COEF_WIDTH       = 13;
 parameter int    COEF_FRACT_WIDTH = 8;
 
+parameter int    COEF_AMOUNT      = WIN_SIZE * WIN_SIZE;
+
 bit clk;
 bit rst;
-bit [WIN_SIZE - 1 : 0][WIN_SIZE - 1 : 0][COEF_WIDTH - 1 : 0] coef = { COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ),
-                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), 
-                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0500 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), 
-                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), 
-                                                                      COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ) };
+bit [COEF_AMOUNT - 1 : 0][COEF_WIDTH - 1 : 0] coef = { COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ),
+                                                       COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), 
+                                                       COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0900 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), 
+                                                       COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h1100 ), COEF_WIDTH'( 'h0000 ), 
+                                                       COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ), COEF_WIDTH'( 'h0000 ) };
 
 mailbox rx_video_mbx = new();
 
@@ -53,6 +58,21 @@ axi4_stream_if #(
   .aclk        ( clk         ),
   .aresetn     ( !rst        )
 );
+
+axi4_lite_if #(
+  .DATA_WIDTH ( 32   ),
+  .ADDR_WIDTH ( 32    )
+) csr_if (
+  .aclk       ( clk  ),
+  .aresetn    ( !rst )
+);
+
+conv_2d_if conv_2d_ctrl();
+
+AXI4LiteMaster #(
+  .DATA_WIDTH ( 32 ),
+  .ADDR_WIDTH ( 32 )
+) csr_master;
 
 AXI4StreamVideoSource #(
   .PX_WIDTH      ( PX_WIDTH      ),
@@ -122,7 +142,17 @@ task automatic video_recorder();
     end
 endtask
 
-conv_2d #(
+conv_2d_csr #(
+  .BASE_ADDR      ( CSR_BASE_ADDR )
+) DUT_CSR (
+  .clk_i          ( clk           ),
+  .rst_i          ( rst           ),
+  .csr_i          ( csr_if        ),
+  .conv_2d_ctrl_o ( conv_2d_ctrl  )
+);
+
+
+conv_2d_coef_bridge #(
   .COEF_WIDTH       ( COEF_WIDTH       ),
   .COEF_FRACT_WIDTH ( COEF_FRACT_WIDTH ),
   .PX_WIDTH         ( PX_WIDTH         ),
@@ -135,13 +165,14 @@ conv_2d #(
 ) DUT (
   .clk_i            ( clk              ),
   .rst_i            ( rst              ),
-  .coef_i           ( coef             ),
+  .conv_2d_ctrl_i   ( conv_2d_ctrl     ),
   .video_i          ( video_i          ),
   .video_o          ( video_o          )
 );
 
 initial
   begin
+    csr_master   = new( csr_if );
     video_source = new( video_i );
     video_sink   = new( .axi4_stream_if_v ( video_o      ),
                         .rx_data_mbx      ( rx_video_mbx ) );
@@ -152,6 +183,13 @@ initial
     join_none
     repeat( 10 )
       @( posedge clk );
+    for( int i = 0; i < 25; i++ )
+      begin
+        csr_master.wr_data( CSR_BASE_ADDR + ( COEF_NUM_CR << 2 ), i );
+        csr_master.wr_data( CSR_BASE_ADDR + ( COEF_VAL_CR << 2 ), coef[i] );
+        csr_master.wr_data( CSR_BASE_ADDR + ( WR_STB_CR << 2 ), 1 );
+        csr_master.wr_data( CSR_BASE_ADDR + ( WR_STB_CR << 2 ), 0 );
+      end
     video_source.run();
     repeat( 2 )
       begin
